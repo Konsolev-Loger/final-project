@@ -1,11 +1,13 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    static associate() {}
+    static associate(models) {
+      User.hasMany(models.Order, { foreignKey: 'user_id', as: 'orders' });
+    }
 
     // =================================================
     static validateEmail(email) {
-      // const emailPattern = /^[A-z0-9!-_%.]+@[A-z0-9.-]+\.[A-z]{2,}$/;
+      // const emailPattern = /^[A-z0-9!-_%.]+@[A-z0-9.-]+\.[A-z]{2,}$/;aaa
       const emailPattern = /^\S+@\S+\.\S+$/;
       return emailPattern.test(email);
     }
@@ -88,7 +90,7 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       phone: DataTypes.STRING,
-      role: DataTypes.STRING,
+      is_admin: DataTypes.BOOLEAN,
     },
     {
       sequelize,
