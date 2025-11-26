@@ -1,22 +1,21 @@
 // services/orderService.js
-const { Order, OrderItem, CastomRoom, sequelize } = require('../../db/models');
+const { Order, OrderItem, CastomRoom } = require('../../db/models');
 
 class OrderService {
   // Создание полного заказа (как было раньше)
-
   static async createFullOrder({
-    user_id,
+    user_id: userId,
     comment = '',
-    total_price, // ← уже готовое число с фронта
+    total_price, // ← возможно нужно будет передалть что бы считалось на бэке
     customRooms = [],
     items = [],
   }) {
     // 1. Создаём заказ (total_price берём как есть)
     const order = await Order.create({
-      user_id,
+      user_id: userId,
       comment,
       status: false,
-      total_price, // просто сохраняем то, что прислал клиент
+      total_price,
     });
 
     // 2. Кастомные комнаты (если есть)
@@ -43,7 +42,7 @@ class OrderService {
     }
 
     // 4. Возвращаем полный заказ
-    return  Order.findByPk(order.id, {
+    return Order.findByPk(order.id, {
       include: [
         { model: OrderItem, as: 'items', include: ['material', 'room', 'customRoom'] },
         { model: CastomRoom, as: 'customRooms' },
@@ -52,57 +51,82 @@ class OrderService {
   }
 
   // Получить заказ со всеми связями
-  static async getById(id) {
+  static async getById(id, userId) {
     const order = await Order.findByPk(id, {
       include: [
-        { model: OrderItem, as: 'items', include: ['material', 'room', 'customRoom'] },
-        { model: CastomRoom, as: 'customRooms' },
+        {
+          model: OrderItem,
+          as: 'items',
+          include: ['material', 'room', 'customRoom'],
+        },
+        {
+          model: CastomRoom,
+          as: 'customRooms',
+        },
       ],
     });
-    if (!order) throw new Error('Заказ не найден');
+
+    if (!order) {
+      throw new Error('Заказ не найден');
+    }
+
+    // Ключевая проверка — заказ должен принадлежать пользователю
+    if (order.user_id !== userId) {
+      throw new Error('Доступ запрещён');
+    }
+
     return order;
   }
 
-  // Все заказы пользователя
+  // 2. Все заказы текущего пользователя
   static async getUserOrders(userId) {
     return Order.findAll({
       where: { user_id: userId },
       include: [
-        { model: OrderItem, as: 'items', include: ['material'] },
-        { model: CastomRoom, as: 'customRooms' },
+        {
+          model: OrderItem,
+          as: 'items',
+          include: ['material'],
+        },
+        {
+          model: CastomRoom,
+          as: 'customRooms',
+        },
       ],
       order: [['createdAt', 'DESC']],
     });
   }
 
-  // Изменить статус заказа
-  static async updateStatus(id, status) {
-    const order = await Order.findByPk(id);
-    if (!order) throw new Error('Заказ не найден');
+  // 3. Обновить статус (только своего заказа)
+  static async updateStatus(id, status, userId) {
+    // Сначала получаем с проверкой владельца
+    const order = await this.getById(id, userId);
+
     await order.update({ status });
-    return this.getById(id);
+
+    // Возвращаем свежие данные
+    return this.getById(id, userId);
   }
 
-  // Изменить комментарий
-  static async updateComment(id, comment) {
-    const order = await Order.findByPk(id);
-    if (!order) throw new Error('Заказ не найден');
-    await order.update({ comment });
-    return this.getById(id);
+  // 4. Обновить комментарий (только своего заказа)
+  static async updateComment(id, comment, userId) {
+    const order = await this.getById(id, userId);
+
+    await order.update({ comment: comment || '' });
+
+    return this.getById(id, userId);
   }
 
   // Полное удаление заказа (со всеми позициями и кастомными комнатами)
-  static async delete(id) {
-    return sequelize.transaction(async (t) => {
-      const order = await Order.findByPk(id);
-      if (!order) throw new Error('Заказ не найден');
+  static async delete(id, userId) {
+    const order = await this.getById(id, userId); // проверка существования + прав
 
-      await OrderItem.destroy({ where: { order_id: id }, transaction: t });
-      await CastomRoom.destroy({ where: { order_id: id }, transaction: t });
-      await order.destroy({ transaction: t });
+    // Просто удаляем всё по очереди — быстро и понятно
+    await OrderItem.destroy({ where: { order_id: id } });
+    await CastomRoom.destroy({ where: { order_id: id } });
+    await order.destroy();
 
-      return { message: 'Заказ полностью удалён' };
-    });
+    return { message: 'Заказ полностью удалён' };
   }
 }
 

@@ -8,15 +8,14 @@ const formatResponse = require('../utils/formatResponse');
 class UserController {
   // валидация регистрации
   static async registration(req, res) {
-    const { name, email, password, phone } = req.body; 
-    const { isValid, error } = await User.validateSignUpData({
+    const { name, email, password, phone } = req.body;
+    const { isValid, err } = await User.validateSignUpData({
       name,
       email,
       password,
-      phone,
     });
     if (!isValid)
-      return res.status(400).json(formatResponse(400, 'Ошибка валидации', null, error));
+      return res.status(400).json(formatResponse(400, 'Ошибка валидации', null, err));
     const emailLowerCase = email.toLowerCase();
     // регистрация
     try {
@@ -33,13 +32,13 @@ class UserController {
             ),
           );
       }
-
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = await UserService.createUser({
         name,
         email: emailLowerCase,
         password: hashedPassword,
         phone,
+        // is_admin: false,
       });
       if (!newUser) {
         return res
@@ -59,8 +58,8 @@ class UserController {
         .status(201)
         .cookie('refreshToken', refreshToken, cookieConfig)
         .json({ message: 'Пользователь успешно зарегистрирован', accessToken }); // тут возможно нужно переделать
-    } catch (err) {
-      console.log('===registration===', err);
+    } catch (error) {
+      console.log('===registration===', error);
       return res.status(500).json({ message: 'Ошибка сервера' });
     }
   }

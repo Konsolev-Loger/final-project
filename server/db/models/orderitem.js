@@ -5,9 +5,9 @@ module.exports = (sequelize, DataTypes) => {
       OrderItem.belongsTo(models.Order, { foreignKey: 'order_id', as: 'order' });
       OrderItem.belongsTo(models.Material, { foreignKey: 'material_id', as: 'material' });
       OrderItem.belongsTo(models.Room, { foreignKey: 'room_id', as: 'room' });
-      OrderItem.belongsTo(models.CustomRoom, {
-        foreignKey: 'custom_room_id',
-        as: 'customRoom',
+      OrderItem.belongsTo(models.CastomRoom, {
+        foreignKey: 'castom_room_id',
+        as: 'castomRoom',
       });
     }
   }
