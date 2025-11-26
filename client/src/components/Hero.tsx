@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import heroImage from '@/assets/hero-finishing.jpg';
 
 export default function Hero(): React.JSX.Element {
-  const scrollToCalculator = () => {
+  const scrollToCalculator = (): void => {
     document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -22,12 +22,6 @@ export default function Hero(): React.JSX.Element {
           <Button asChild size="sm" className="bg-white text-secondary hover:bg-white/95 h-10 px-4">
             <Link to="/login">Вход</Link>
           </Button>
-          <span className="text-xs text-white/90">
-            Если профиля нет,&nbsp;
-            <Link to="/register" className="underline font-medium">
-              регистрация
-            </Link>
-          </span>
         </div>
         <div className="max-w-4xl mx-auto text-center text-white">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
