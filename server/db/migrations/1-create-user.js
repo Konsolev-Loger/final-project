@@ -21,7 +21,7 @@ module.exports = {
       phone: {
         type: Sequelize.STRING,
       },
-      role: {
+      is_admin: {
         type: Sequelize.BOOLEAN,
       },
       createdAt: {
