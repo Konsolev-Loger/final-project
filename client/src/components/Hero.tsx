@@ -17,6 +17,19 @@ export default function Hero(): React.JSX.Element {
         <div className="absolute inset-0 bg-linear-to-r from-primary/90 to-primary/70" />
       </div>
       <div className="container mx-auto px-4 relative z-10">
+        <div className="absolute top-6 right-6 z-20 flex items-center gap-3">
+          <Button
+            asChild
+            size="sm"
+            variant="ghost"
+            className="text-white/95 hover:text-white/100 border-white/30"
+          >
+            <Link to="/login">Войти</Link>
+          </Button>
+          <Button asChild size="sm" className="bg-white text-secondary hover:bg-white/95 h-10 px-4">
+            <Link to="/register">Регистрация</Link>
+          </Button>
+        </div>
         <div className="max-w-4xl mx-auto text-center text-white">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
             Трендовые Отделочные Решения
