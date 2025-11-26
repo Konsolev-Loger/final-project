@@ -1,16 +1,22 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setMaterial, setArea, materials } from "@/store/calculatorSlice";
-import { Calculator as CalcIcon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { setMaterial, setArea, materials } from '@/store/calculatorSlice';
+import { Calculator as CalcIcon } from 'lucide-react';
 
-const Calculator = () => {
+export default function Calculator(): React.JSX.Element {
   const dispatch = useAppDispatch();
   const { selectedMaterial, area, totalPrice } = useAppSelector((state) => state.calculator);
-  
-  const currentMaterial = materials.find(m => m.id === selectedMaterial);
+
+  const currentMaterial = materials.find((m) => m.id === selectedMaterial);
 
   return (
     <section id="calculator" className="py-20 bg-muted">
@@ -40,9 +46,17 @@ const Calculator = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="material" className="text-foreground">Выберите материал</Label>
-              <Select value={selectedMaterial} onValueChange={(value) => dispatch(setMaterial(value))}>
-                <SelectTrigger id="material" className="border-border bg-background text-foreground">
+              <Label htmlFor="material" className="text-foreground">
+                Выберите материал
+              </Label>
+              <Select
+                value={selectedMaterial}
+                onValueChange={(value) => dispatch(setMaterial(value))}
+              >
+                <SelectTrigger
+                  id="material"
+                  className="border-border bg-background text-foreground"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -56,7 +70,9 @@ const Calculator = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="area" className="text-foreground">Площадь помещения (м²)</Label>
+              <Label htmlFor="area" className="text-foreground">
+                Площадь помещения (м²)
+              </Label>
               <Input
                 id="area"
                 type="number"
@@ -73,7 +89,9 @@ const Calculator = () => {
               <div className="p-6 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-muted-foreground">Цена за м²:</span>
-                  <span className="text-xl font-semibold text-foreground">{currentMaterial.pricePerSqm} ₽</span>
+                  <span className="text-xl font-semibold text-foreground">
+                    {currentMaterial.pricePerSqm} ₽
+                  </span>
                 </div>
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-muted-foreground">Площадь:</span>
@@ -98,6 +116,4 @@ const Calculator = () => {
       </div>
     </section>
   );
-};
-
-export default Calculator;
+}
