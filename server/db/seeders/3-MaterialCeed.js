@@ -316,7 +316,7 @@ const Category = [
     price: '4800 руб./м2',
     // unit_m2: 0,
     is_popular: true,
-    img: 'потолок 7.jpg',
+    img: 'потолок 8.jpg',
   },
 ];
 

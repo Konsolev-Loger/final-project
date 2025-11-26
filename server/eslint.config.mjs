@@ -25,6 +25,11 @@ export default defineConfig([
     },
     rules: {
       '@elbrus/prefer-for-of': 'error',
+      "camelcase": ["warn", { 
+        "ignoreDestructuring": true,
+        "ignoreImports": true,
+        "properties": "never"
+      }]
     },
   },
   {
@@ -34,4 +39,3 @@ export default defineConfig([
     extends: ['json/recommended'],
   },
 ]);
-

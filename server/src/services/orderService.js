@@ -3,52 +3,51 @@ const { Order, OrderItem, CastomRoom, sequelize } = require('../../db/models');
 
 class OrderService {
   // Создание полного заказа (как было раньше)
-  static async createFullOrder({ user_id, comment = '', customRooms = [], items = [] }) {
-    return sequelize.transaction(async (t) => {
-      const order = await Order.create(
-        {
-          user_id,
-          comment,
-          status: false,
-          total_price: 0,
-        },
-        { transaction: t },
-      );
 
-      let totalPrice = 0;
+  static async createFullOrder({
+    user_id,
+    comment = '',
+    total_price, // ← уже готовое число с фронта
+    customRooms = [],
+    items = [],
+  }) {
+    // 1. Создаём заказ (total_price берём как есть)
+    const order = await Order.create({
+      user_id,
+      comment,
+      status: false,
+      total_price, // просто сохраняем то, что прислал клиент
+    });
 
-      // Кастомные комнаты
-      if (customRooms.length > 0) {
-        const rooms = customRooms.map((r) => ({
-          ...r,
-          order_id: order.id,
-          area: r.length && r.width ? (r.length * r.width).toFixed(2) : null,
-        }));
-        await CastomRoom.bulkCreate(rooms, { transaction: t });
-      }
+    // 2. Кастомные комнаты (если есть)
+    if (customRooms.length > 0) {
+      const rooms = customRooms.map((r) => ({
+        ...r,
+        order_id: order.id,
+        area: r.length && r.width ? Math.round(r.length * r.width * 100) / 100 : null,
+      }));
+      await CastomRoom.bulkCreate(rooms);
+    }
 
-      // Позиции заказа
-      if (items.length > 0) {
-        const orderItems = items.map((item) => {
-          const price = item.price_at || item.material_price || 0;
-          const qty = item.quantity || 1;
-          totalPrice += price * qty;
+    // 3. Позиции заказа (если есть)
+    if (items.length > 0) {
+      const orderItems = items.map((item) => ({
+        order_id: order.id,
+        material_id: item.material_id,
+        room_id: item.room_id || null,
+        custom_room_id: item.custom_room_id || null,
+        quantity: item.quantity || 1,
+        price_at: item.price_at || item.material_price || 0,
+      }));
+      await OrderItem.bulkCreate(orderItems);
+    }
 
-          return {
-            order_id: order.id,
-            material_id: item.material_id,
-            room_id: item.room_id || null,
-            custom_room_id: item.custom_room_id || null,
-            quantity: qty,
-            price_at: price,
-          };
-        });
-        await OrderItem.bulkCreate(orderItems, { transaction: t });
-      }
-
-      await order.update({ total_price: totalPrice }, { transaction: t });
-
-      return this.getById(order.id);
+    // 4. Возвращаем полный заказ
+    return  Order.findByPk(order.id, {
+      include: [
+        { model: OrderItem, as: 'items', include: ['material', 'room', 'customRoom'] },
+        { model: CastomRoom, as: 'customRooms' },
+      ],
     });
   }
 
@@ -107,4 +106,4 @@ class OrderService {
   }
 }
 
-module.exports = new OrderService();
+module.exports = OrderService;
