@@ -1,29 +1,29 @@
-import { Shield, Clock, Award, Users } from "lucide-react";
+import { Shield, Clock, Award, Users } from 'lucide-react';
 
 const features = [
   {
     icon: Shield,
-    title: "Гарантия качества",
-    description: "Даем гарантию на все виды работ до 3 лет"
+    title: 'Гарантия качества',
+    description: 'Даем гарантию на все виды работ до 3 лет',
   },
   {
     icon: Clock,
-    title: "Точные сроки",
-    description: "Соблюдаем договорные сроки выполнения работ"
+    title: 'Точные сроки',
+    description: 'Соблюдаем договорные сроки выполнения работ',
   },
   {
     icon: Award,
-    title: "Премиум материалы",
-    description: "Работаем только с проверенными брендами"
+    title: 'Премиум материалы',
+    description: 'Работаем только с проверенными брендами',
   },
   {
     icon: Users,
-    title: "Опытная команда",
-    description: "Профессионалы с опытом работы от 10 лет"
-  }
+    title: 'Опытная команда',
+    description: 'Профессионалы с опытом работы от 10 лет',
+  },
 ];
 
-const Features = () => {
+export default function Features(): React.JSX.Element {
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -38,7 +38,7 @@ const Features = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
-            <div 
+            <div
               key={index}
               className="text-center p-6 rounded-xl hover:shadow-soft transition-all duration-300"
             >
@@ -53,6 +53,4 @@ const Features = () => {
       </div>
     </section>
   );
-};
-
-export default Features;
+}
