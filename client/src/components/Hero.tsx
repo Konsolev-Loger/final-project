@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import heroImage from '@/assets/hero-finishing.jpg';
+import { LogIn } from 'lucide-react';
 
 export default function Hero(): React.JSX.Element {
   const scrollToCalculator = (): void => {
@@ -10,7 +11,18 @@ export default function Hero(): React.JSX.Element {
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* <div className="absolute inset-0 opacity-95" style={{ background: `url(${heroImage})` }} /> */}
+      <div className="absolute top-4 right-6 z-20 flex flex-col items-end gap-7">
+        <Button
+          asChild
+          size="sm"
+          variant="outline"
+          className="border-none text-white hover:bg-white hover:text-secondary bg-transparent text-lg px-8 h-14"
+        >
+          <Link to="/login">
+            <LogIn />
+          </Link>
+        </Button>
+      </div>
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${heroImage})` }}
@@ -18,11 +30,6 @@ export default function Hero(): React.JSX.Element {
         <div className="absolute inset-0 bg-linear-to-r from-primary/90 to-primary/70" />
       </div>
       <div className="container mx-auto px-4 relative z-10">
-        <div className="absolute top-4 right-6 z-20 flex flex-col items-end gap-7">
-          <Button asChild size="sm" className="bg-white text-secondary hover:bg-white/95 h-10 px-4">
-            <Link to="/login">Вход</Link>
-          </Button>
-        </div>
         <div className="max-w-4xl mx-auto text-center text-white">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
             Трендовые Отделочные Решения
