@@ -24,9 +24,9 @@ module.exports = {
       price: {
         type: Sequelize.INTEGER,
       },
-      unit_m2: {
-        type: Sequelize.DECIMAL,
-      },
+      // unit_m2: {
+      //   type: Sequelize.DECIMAL,
+      // },
       is_popular: {
         type: Sequelize.BOOLEAN,
       },
