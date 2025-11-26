@@ -1,16 +1,21 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import heroImage from '@/assets/hero-finishing.jpg';
 
-const Hero = () => {
+export default function Hero(): React.JSX.Element {
   const scrollToCalculator = () => {
     document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 opacity-95" style={{ background: 'var(--gradient-hero)' }} />
-
+      {/* <div className="absolute inset-0 opacity-95" style={{ background: `url(${heroImage})` }} /> */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
+        <div className="absolute inset-0 bg-linear-to-r from-primary/90 to-primary/70" />
+      </div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="absolute top-6 right-6 z-20 flex items-center gap-3">
           <Button
@@ -55,6 +60,4 @@ const Hero = () => {
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
-};
-
-export default Hero;
+}

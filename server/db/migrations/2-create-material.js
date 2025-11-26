@@ -10,6 +10,10 @@ module.exports = {
       },
       category_id: {
         type: Sequelize.INTEGER,
+        references: {
+          model: 'Categories',
+          key: 'id',
+        },
       },
       name: {
         type: Sequelize.STRING,
@@ -20,9 +24,9 @@ module.exports = {
       price: {
         type: Sequelize.INTEGER,
       },
-      unit_m2: {
-        type: Sequelize.DECIMAL,
-      },
+      // unit_m2: {
+      //   type: Sequelize.DECIMAL,
+      // },
       is_popular: {
         type: Sequelize.BOOLEAN,
       },
@@ -32,10 +36,14 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('NOW'),
+
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('NOW'),
+
       },
     });
   },
