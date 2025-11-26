@@ -44,9 +44,9 @@ export default function Calculator(): React.JSX.Element {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className=" space-y-6 ">
             <div className="space-y-2">
-              <Label htmlFor="material" className="text-foreground">
+              <Label htmlFor="material" className="flex gap-5 text-foreground">
                 Выберите материал
               </Label>
               <Select
@@ -70,7 +70,7 @@ export default function Calculator(): React.JSX.Element {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="area" className="text-foreground">
+              <Label htmlFor="area" className="flex gap-5 text-foreground">
                 Площадь помещения (м²)
               </Label>
               <Input
@@ -86,7 +86,7 @@ export default function Calculator(): React.JSX.Element {
             </div>
 
             {currentMaterial && (
-              <div className="p-6 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
+              <div className="p-6 rounded-lg bg-linear-to-br from-primary/10 to-accent/10 border border-primary/20">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-muted-foreground">Цена за м²:</span>
                   <span className="text-xl font-semibold text-foreground">

@@ -2,7 +2,7 @@ import { Phone, Mail, MapPin } from 'lucide-react';
 
 export default function Footer(): React.JSX.Element {
   return (
-    <footer className="bg-primary text-white py-12">
+    <footer className="bg-primary text-white py-6">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
@@ -13,7 +13,7 @@ export default function Footer(): React.JSX.Element {
           </div>
 
           <div>
-            <h4 className="text-xl font-semibold mb-4">Контакты</h4>
+            <h4 className="text-xl font-semibold mb-4 ml-6">Контакты</h4>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Phone className="w-5 h-5 text-primary" />
@@ -35,12 +35,12 @@ export default function Footer(): React.JSX.Element {
             <div className="space-y-2 text-white/80">
               <p>Пн-Пт: 9:00 - 20:00</p>
               <p>Сб-Вс: 10:00 - 18:00</p>
-              <p className="mt-4 text-primary font-semibold">Консультация бесплатно!</p>
+              <p className="mt-2 text-secondary font-semibold">Консультация бесплатно!</p>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-white/20 mt-8 pt-8 text-center text-white/60">
+        <div className="border-t border-white/20 mt-4 pt-4 text-center text-white/60">
           <p>&copy; 2024 Трендовые Отделочные Решения. Все права защищены.</p>
         </div>
       </div>
