@@ -5,7 +5,7 @@ const { verifyRefreshToken } = require('../middlewares/veryfyToken');
 userRouter.post('/registration', userController.registration);
 userRouter.post('/login', userController.login);
 userRouter.get('/logout', userController.logout);
-userRouter.get('/refreshTokens', verifyRefreshToken, userController.refreshTokens); // ТУТ РЕФРЕШТОКЕН
+userRouter.get('/refreshTokens', verifyRefreshToken, userController.refreshTokens); // ТУТ РЕФРЕШТОКЕН ----
 
 
 
