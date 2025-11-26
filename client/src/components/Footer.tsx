@@ -1,6 +1,6 @@
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin } from 'lucide-react';
 
-const Footer = () => {
+export default function Footer(): React.JSX.Element {
   return (
     <footer className="bg-secondary text-white py-12">
       <div className="container mx-auto px-4">
@@ -11,7 +11,7 @@ const Footer = () => {
               Создаем современные и стильные пространства для комфортной жизни
             </p>
           </div>
-          
+
           <div>
             <h4 className="text-xl font-semibold mb-4">Контакты</h4>
             <div className="space-y-3">
@@ -29,7 +29,7 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          
+
           <div>
             <h4 className="text-xl font-semibold mb-4">Режим работы</h4>
             <div className="space-y-2 text-white/80">
@@ -39,13 +39,11 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="border-t border-white/20 mt-8 pt-8 text-center text-white/60">
           <p>&copy; 2024 Трендовые Отделочные Решения. Все права защищены.</p>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
