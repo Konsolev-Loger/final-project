@@ -27,32 +27,33 @@ class OrderController {
   //       return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
   //     }
   //   }
-  static async create(req, res) {
+  static async createOrder(req, res) {
     const { user } = res.locals;
-    const { items, customRooms, comment } = req.body;
+    const { comment, total_price, customRooms, items } = req.body;
+    // Если есть авторизация — берём из токена, иначе (админ) — из тела
 
-    if (!items?.length) {
-      return res.status(400).json(formatResponse(400, 'Корзина пуста'));
-    }
+    const finalUserId = user?.id;
+    if (!finalUserId)
+      return res
+        .status(400)
+        .json(formatResponse(400, 'Неверные данные', null, 'user_id обязательны'));
+    const order = await OrderService.createFullOrder({
+      user_id: finalUserId, // ← сюда можно пихать что угодно
+      comment: comment || '',
+      total_price,
+      customRooms: customRooms || [],
+      items: items || [],
+    });
 
-    const order = await OrderService.createOrder(
-      user.id,
-      items,
-      customRooms || [],
-      comment || '',
-    );
-
-    return res
-      .status(201)
-      .json(formatResponse(201, 'Заказ создан', { orderId: order.id }));
+    return res.status(201).json(formatResponse(201, 'Заказ создан', order));
   }
 
   // 2. Получить один заказ по ID
   static async getById(req, res) {
+    const { user } = res.locals;
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-      const order = await OrderService.getById(id);
-
+      const order = await OrderService.getById(id, user.id);
       return res.status(200).json(formatResponse(200, 'Заказ найден', order, null));
     } catch (error) {
       if (error.message === 'Заказ не найден') {
@@ -66,15 +67,13 @@ class OrderController {
     }
   }
 
-  // 3. Получить все заказы пользователя
+  // 2. Получить все заказы текущего пользователя
   static async getUserOrders(req, res) {
+    const { user } = res.locals;
     try {
-      const { userId } = req.params; // или req.user.id, если есть авторизация
-      const orders = await OrderService.getUserOrders(userId);
+      const orders = await OrderService.getUserOrders(user.id);
 
-      return res
-        .status(200)
-        .json(formatResponse(200, 'Заказы пользователя получены', orders, null));
+      return res.status(200).json(formatResponse(200, 'Заказы получены', orders, null));
     } catch (error) {
       return res
         .status(500)
@@ -82,22 +81,32 @@ class OrderController {
     }
   }
 
-  // 4. Обновить статус заказа (например, подтвердить/отклонить)
+  // 3. Обновить статус заказа (пользователь может только подтвердить/отменить свой заказ)
   static async updateStatus(req, res) {
-    try {
-      const { id } = req.params;
-      const { status } = req.body; // true / false
+    const { user } = res.locals;
+    const { id } = req.params;
+    const { status } = req.body;
 
+    try {
       if (typeof status !== 'boolean') {
         return res
           .status(400)
-          .json(formatResponse(400, 'Статус должен быть true или false', null));
+          .json(formatResponse(400, 'Поле status должно быть true или false', null));
       }
 
-      const order = await OrderService.updateStatus(id, status);
+      const order = await OrderService.getById(id, user.id); // проверка принадлежности внутри
+
+      if (order.user_id !== user.id) {
+        return res
+          .status(403)
+          .json(formatResponse(403, 'Вы не можете изменить статус чужого заказа', null));
+      }
+
+      const updatedOrder = await OrderService.updateStatus(id, status);
+
       return res
         .status(200)
-        .json(formatResponse(200, 'Статус заказа обновлён', order, null));
+        .json(formatResponse(200, 'Статус заказа обновлён', updatedOrder, null));
     } catch (error) {
       if (error.message === 'Заказ не найден') {
         return res.status(404).json(formatResponse(404, 'Заказ не найден', null));
@@ -108,16 +117,26 @@ class OrderController {
     }
   }
 
-  // 5. Обновить комментарий
+  // 4. Обновить комментарий к заказу
   static async updateComment(req, res) {
-    try {
-      const { id } = req.params;
-      const { comment } = req.body;
+    const { user } = res.locals;
+    const { id } = req.params;
+    const { comment } = req.body;
 
-      const order = await OrderService.updateComment(id, comment || '');
+    try {
+      const order = await OrderService.getById(id, user.id);
+
+      if (order.user_id !== user.id) {
+        return res
+          .status(403)
+          .json(formatResponse(403, 'Вы не можете редактировать чужой заказ', null));
+      }
+
+      const updatedOrder = await OrderService.updateComment(id, comment || '');
+
       return res
         .status(200)
-        .json(formatResponse(200, 'Комментарий обновлён', order, null));
+        .json(formatResponse(200, 'Комментарий обновлён', updatedOrder, null));
     } catch (error) {
       if (error.message === 'Заказ не найден') {
         return res.status(404).json(formatResponse(404, 'Заказ не найден', null));
@@ -128,10 +147,20 @@ class OrderController {
     }
   }
 
-  // 6. Удалить заказ полностью
+  // 5. Удалить свой заказ полностью
   static async delete(req, res) {
+    const { user } = res.locals;
+    const { id } = req.params;
+
     try {
-      const { id } = req.params;
+      const order = await OrderService.getById(id, user.id);
+
+      if (order.user_id !== user.id) {
+        return res
+          .status(403)
+          .json(formatResponse(403, 'Вы не можете удалить чужой заказ', null));
+      }
+
       const result = await OrderService.delete(id);
 
       return res.status(200).json(formatResponse(200, result.message, null, null));

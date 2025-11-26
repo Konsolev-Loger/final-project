@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'order',
       });
       CastomRoom.hasMany(models.OrderItem, {
-        foreignKey: 'custom_room_id',
+        foreignKey: 'castom_room_id',
         as: 'orderItems',
       });
     }
