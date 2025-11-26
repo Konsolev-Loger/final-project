@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import heroImage from '@/assets/hero-finishing.jpg';
 
 export default function Hero(): React.JSX.Element {
   const scrollToCalculator = () => {
@@ -8,8 +9,13 @@ export default function Hero(): React.JSX.Element {
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 opacity-95" style={{ background: 'var(--gradient-hero)' }} />
-
+      {/* <div className="absolute inset-0 opacity-95" style={{ background: `url(${heroImage})` }} /> */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
+        <div className="absolute inset-0 bg-linear-to-r from-primary/90 to-primary/70" />
+      </div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
