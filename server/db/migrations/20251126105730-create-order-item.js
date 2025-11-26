@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      order_id: {
+        type: Sequelize.INTEGER,
+      },
       material_id: {
         type: Sequelize.INTEGER,
       },
@@ -20,7 +23,7 @@ module.exports = {
       quantity: {
         type: Sequelize.INTEGER,
       },
-      price: {
+      price_at: {
         type: Sequelize.INTEGER,
       },
       createdAt: {

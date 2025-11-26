@@ -6,37 +6,37 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
-      total_price: {
-        type: Sequelize.DECIMAL
-      },
+      // total_price: {
+      //   type: Sequelize.DECIMAL
+      // },
       length: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
       },
       width: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
       },
       height: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
       },
       area: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
-  async down(queryInterface, ) {
+  async down(queryInterface) {
     await queryInterface.dropTable('CastomRooms');
-  }
+  },
 };
