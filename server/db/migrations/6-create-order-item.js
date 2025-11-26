@@ -10,15 +10,31 @@ module.exports = {
       },
       order_id: {
         type: Sequelize.INTEGER,
+        references: {
+          model: 'Orders',
+          key: 'id',
+        },
       },
       material_id: {
         type: Sequelize.INTEGER,
+        references: {
+          model: 'Materials',
+          key: 'id',
+        },
       },
       room_id: {
         type: Sequelize.INTEGER,
+        references: {
+          model: 'Rooms',
+          key: 'id',
+        },
       },
       castom_room_id: {
         type: Sequelize.INTEGER,
+        references: {
+          model: 'CastomRooms',
+          key: 'id',
+        },
       },
       quantity: {
         type: Sequelize.INTEGER,
@@ -29,10 +45,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('NOW'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('NOW'),
       },
     });
   },
