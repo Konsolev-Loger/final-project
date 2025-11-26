@@ -1,7 +1,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('CastomRooms', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,32 +11,32 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      email: {
-        type: Sequelize.STRING,
-        unique: true,
+      // total_price: {
+      //   type: Sequelize.DECIMAL
+      // },
+      length: {
+        type: Sequelize.DECIMAL,
       },
-      password: {
-        type: Sequelize.STRING,
+      width: {
+        type: Sequelize.DECIMAL,
       },
-      phone: {
-        type: Sequelize.STRING,
+      height: {
+        type: Sequelize.DECIMAL,
       },
-      role: {
-        type: Sequelize.BOOLEAN,
+      area: {
+        type: Sequelize.DECIMAL,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('now'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('now'),
       },
     });
   },
   async down(queryInterface) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('CastomRooms');
   },
 };
