@@ -12,16 +12,9 @@ export default function Hero(): React.JSX.Element {
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       <div className="absolute top-4 right-6 z-20 flex flex-col items-end gap-7">
-        <Button
-          asChild
-          size="sm"
-          variant="outline"
-          className="border-none text-white hover:bg-white hover:text-secondary bg-transparent text-lg px-8 h-14"
-        >
-          <Link to="/login">
-            <LogIn />
-          </Link>
-        </Button>
+        <Link className="text-white" to="/login">
+          {<LogIn />}
+        </Link>
       </div>
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -41,7 +34,7 @@ export default function Hero(): React.JSX.Element {
             <Button
               size="lg"
               onClick={scrollToCalculator}
-              className="bg-white text-secondary hover:bg-white/90 shadow-strong text-lg px-8 h-14"
+              className="bg-white text-primary hover:bg-white/90 shadow-strong text-lg px-8 h-14"
             >
               Рассчитать стоимость
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -49,7 +42,11 @@ export default function Hero(): React.JSX.Element {
             <Button
               size="lg"
               variant="outline"
-              className="border-2 border-white text-white hover:bg-white hover:text-secondary bg-transparent text-lg px-8 h-14"
+              onClick={() => {
+                const element = document.getElementById('portfolio');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="border-1 border-white text-white hover:bg-white hover:text-primary bg-transparent text-lg px-8 h-14"
             >
               Наши работы
             </Button>
@@ -57,7 +54,7 @@ export default function Hero(): React.JSX.Element {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent" />
     </section>
   );
 }
