@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // =================================================
     static validateEmail(email) {
-      // const emailPattern = /^[A-z0-9!-_%.]+@[A-z0-9.-]+\.[A-z]{2,}$/;
+      // const emailPattern = /^[A-z0-9!-_%.]+@[A-z0-9.-]+\.[A-z]{2,}$/;aaa
       const emailPattern = /^\S+@\S+\.\S+$/;
       return emailPattern.test(email);
     }
