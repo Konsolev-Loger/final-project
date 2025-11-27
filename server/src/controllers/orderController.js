@@ -6,7 +6,7 @@ class OrderController {
   // 1. Создать полный заказ (с комнатами и позициями)
   //   static async create(req, res) {
   //     const {user} = res.locals
-  //       const { user_id, comment, total_price, customRooms, items } = req.body;
+  //       const { user_id, comment, total_price, castomRooms, items } = req.body;
   //     try {
   //       // eslint-disable-next-line camelcase
   //       if (!user_id || !total_price) {
@@ -18,7 +18,7 @@ class OrderController {
   //         user_id,
   //         comment: comment || '',
   //         total_price,
-  //         customRooms: customRooms || [],
+  //         castomRooms: castomRooms || [],
   //         items: items || [],
   //       });
 
@@ -29,23 +29,29 @@ class OrderController {
   //   }
   static async createOrder(req, res) {
     const { user } = res.locals;
-    const { comment, total_price, customRooms, items } = req.body;
+    const { comment, total_price, castomRooms, items } = req.body;
     // Если есть авторизация — берём из токена, иначе (админ) — из тела
+    try {
+      const finalUserId = user?.id;
+      if (!finalUserId)
+        return res
+          .status(400)
+          .json(formatResponse(400, 'Неверные данные', null, 'user_id обязательны'));
+      const order = await OrderService.createFullOrder({
+        user_id: finalUserId,
+        comment: comment || '',
+        total_price,
+        castomRooms: castomRooms || [],
+        items: items || [],
+      });
 
-    const finalUserId = user?.id;
-    if (!finalUserId)
+      return res.status(201).json(formatResponse(201, 'Заказ создан', order));
+    } catch (error) {
+      console.log('Ошибка CreateOrder', error);
       return res
-        .status(400)
-        .json(formatResponse(400, 'Неверные данные', null, 'user_id обязательны'));
-    const order = await OrderService.createFullOrder({
-      user_id: finalUserId, // ← сюда можно пихать что угодно
-      comment: comment || '',
-      total_price,
-      customRooms: customRooms || [],
-      items: items || [],
-    });
-
-    return res.status(201).json(formatResponse(201, 'Заказ создан', order));
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
+    }
   }
 
   // 2. Получить один заказ по ID
@@ -68,8 +74,10 @@ class OrderController {
   }
 
   // 2. Получить все заказы текущего пользователя
-  static async getUserOrders(req, res) {
+  static async getUserOrdersController(req, res) {
     const { user } = res.locals;
+    console.log(user, 'USERUSERUSER+++++++++++++++++++');
+
     try {
       const orders = await OrderService.getUserOrders(user.id);
 
@@ -86,8 +94,9 @@ class OrderController {
     const { user } = res.locals;
     const { id } = req.params;
     const { status } = req.body;
-
+    
     try {
+      console.log(id, status, user.id)
       if (typeof status !== 'boolean') {
         return res
           .status(400)
@@ -102,7 +111,7 @@ class OrderController {
           .json(formatResponse(403, 'Вы не можете изменить статус чужого заказа', null));
       }
 
-      const updatedOrder = await OrderService.updateStatus(id, status);
+      const updatedOrder = await OrderService.updateStatus(id, status, user.id);
 
       return res
         .status(200)
@@ -132,7 +141,7 @@ class OrderController {
           .json(formatResponse(403, 'Вы не можете редактировать чужой заказ', null));
       }
 
-      const updatedOrder = await OrderService.updateComment(id, comment || '');
+      const updatedOrder = await OrderService.updateComment(id, comment || '', user.id);
 
       return res
         .status(200)
@@ -161,7 +170,7 @@ class OrderController {
           .json(formatResponse(403, 'Вы не можете удалить чужой заказ', null));
       }
 
-      const result = await OrderService.delete(id);
+      const result = await OrderService.delete(id, user.id);
 
       return res.status(200).json(formatResponse(200, result.message, null, null));
     } catch (error) {

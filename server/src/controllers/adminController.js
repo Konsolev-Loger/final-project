@@ -3,14 +3,15 @@ const AdminService = require('../services/adminService');
 const formatResponse = require('../utils/formatResponse');
 
 class AdminController {
-  
   // === DASHBOARD ===
   static async getDashboard(req, res) {
     try {
       const stats = await AdminService.getDashboardStats();
       return res.status(200).json(formatResponse(200, 'Статистика получена', stats));
     } catch (error) {
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
@@ -20,7 +21,9 @@ class AdminController {
       const users = await AdminService.getAllUsers();
       return res.status(200).json(formatResponse(200, 'Пользователи получены', users));
     } catch (error) {
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
@@ -33,22 +36,27 @@ class AdminController {
       if (error.message === 'Пользователь не найден') {
         return res.status(404).json(formatResponse(404, error.message));
       }
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
   static async updateUser(req, res) {
+    const { id } = req.params;
+    const { user } = req.body;
     try {
-      const { id } = req.params;
-      const userData = req.body;
-      
-      const updatedUser = await AdminService.updateUser(id, userData);
-      return res.status(200).json(formatResponse(200, 'Пользователь обновлен', updatedUser));
+      const updatedUser = await AdminService.updateUser(id, user);
+      return res
+        .status(200)
+        .json(formatResponse(200, 'Пользователь обновлен', updatedUser));
     } catch (error) {
       if (error.message === 'Пользователь не найден') {
         return res.status(404).json(formatResponse(404, error.message));
       }
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
@@ -64,7 +72,9 @@ class AdminController {
       if (error.message.includes('нельзя удалить')) {
         return res.status(400).json(formatResponse(400, error.message));
       }
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
@@ -74,7 +84,9 @@ class AdminController {
       const orders = await AdminService.getAllOrders();
       return res.status(200).json(formatResponse(200, 'Заказы получены', orders));
     } catch (error) {
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
@@ -87,7 +99,9 @@ class AdminController {
       if (error.message === 'Заказ не найден') {
         return res.status(404).json(formatResponse(404, error.message));
       }
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
@@ -95,14 +109,16 @@ class AdminController {
     try {
       const { id } = req.params;
       const orderData = req.body;
-      
+
       const updatedOrder = await AdminService.updateOrder(id, orderData);
       return res.status(200).json(formatResponse(200, 'Заказ обновлен', updatedOrder));
     } catch (error) {
       if (error.message === 'Заказ не найден') {
         return res.status(404).json(formatResponse(404, error.message));
       }
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
@@ -110,18 +126,22 @@ class AdminController {
     try {
       const { id } = req.params;
       const { status } = req.body;
-      
+
       if (typeof status !== 'boolean') {
         return res.status(400).json(formatResponse(400, 'Статус должен быть boolean'));
       }
-      
+
       const updatedOrder = await AdminService.updateOrderStatus(id, status);
-      return res.status(200).json(formatResponse(200, 'Статус заказа обновлен', updatedOrder));
+      return res
+        .status(200)
+        .json(formatResponse(200, 'Статус заказа обновлен', updatedOrder));
     } catch (error) {
       if (error.message === 'Заказ не найден') {
         return res.status(404).json(formatResponse(404, error.message));
       }
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
@@ -134,7 +154,9 @@ class AdminController {
       if (error.message === 'Заказ не найден') {
         return res.status(404).json(formatResponse(404, error.message));
       }
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
@@ -143,14 +165,18 @@ class AdminController {
     try {
       const { orderId } = req.params;
       const itemData = req.body;
-      
+
       const newItem = await AdminService.addOrderItem(orderId, itemData);
-      return res.status(201).json(formatResponse(201, 'Элемент добавлен в заказ', newItem));
+      return res
+        .status(201)
+        .json(formatResponse(201, 'Элемент добавлен в заказ', newItem));
     } catch (error) {
       if (error.message === 'Заказ не найден') {
         return res.status(404).json(formatResponse(404, error.message));
       }
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 
@@ -163,7 +189,9 @@ class AdminController {
       if (error.message === 'Элемент заказа не найден') {
         return res.status(404).json(formatResponse(404, error.message));
       }
-      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
 }

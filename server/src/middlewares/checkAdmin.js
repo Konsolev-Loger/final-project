@@ -16,6 +16,7 @@ const checkAdmin = async (req, res, next) => {
     console.log('Admin check error:', error);
     return res.status(500).json({ message: 'Ошибка проверки прав доступа' });
   }
+  return next(); // вомзможно нужно удалить
 };
 
 module.exports = { checkAdmin };

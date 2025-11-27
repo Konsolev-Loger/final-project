@@ -17,8 +17,9 @@ class MaterialController {
 
   static async getOne(req,res) {
     const { id } = req.params;
+
     try {
-        const oneMaterial = MaterialService.getById(id)
+        const oneMaterial = await MaterialService.getById(id)
         if(!oneMaterial)
         return res
           .status(404)
