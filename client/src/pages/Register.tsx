@@ -73,6 +73,9 @@ const Register = () => {
             <Link to="/login" className="text-sm text-primary underline">
               Уже есть аккаунт?
             </Link>
+            <Link to="/" className="text-sm text-primary underline">
+              На главную
+            </Link>
             <Button type="submit" disabled={loading}>
               {loading ? 'Создание...' : 'Зарегистрироваться'}
             </Button>

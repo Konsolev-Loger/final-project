@@ -34,7 +34,7 @@ export default function Hero(): React.JSX.Element {
             <Button
               size="lg"
               onClick={scrollToCalculator}
-              className="bg-white text-primary hover:bg-white/90 shadow-strong text-lg px-8 h-14"
+              className="border-1 border-white text-white hover:bg-white hover:text-primary bg-transparent text-lg px-8 h-14"
             >
               Рассчитать стоимость
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -48,7 +48,7 @@ export default function Hero(): React.JSX.Element {
               }}
               className="border-1 border-white text-white hover:bg-white hover:text-primary bg-transparent text-lg px-8 h-14"
             >
-              Наши работы
+              Наши проекты
             </Button>
           </div>
         </div>
