@@ -2,38 +2,70 @@ import React, { useState } from 'react';
 import wallImage from '@/assets/wall-finishing.jpg';
 import floorImage from '@/assets/floor-finishing.jpg';
 import ceilingImage from '@/assets/ceiling-finishing.jpg';
+import house from '@/assets/house.jpeg';
+import house2 from '@/assets/house2.jpeg';
+import office from '@/assets/office.jpeg';
+import office2 from '@/assets/office2.jpeg';
+import studia from '@/assets/studia.jpeg';
+import living from '@/assets/living.jpeg';
+import living2 from '@/assets/living2.jpeg';
+import kitchen from '@/assets/kitchen.jpeg';
+import kitchen2 from '@/assets/kitchen2.jpeg';
+import bedroom from '@/assets/bedroom.jpeg';
+import bedroom2 from '@/assets/bedroom2.jpeg'
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 const projects = [
   {
-    title: 'Современная квартира',
-    category: 'Комплексная отделка',
     image: wallImage,
   },
   {
-    title: 'Офисное пространство',
-    category: 'Дизайнерские стены',
     image: floorImage,
   },
   {
-    title: 'Загородный дом',
-    category: 'Премиум материалы',
     image: ceilingImage,
   },
   {
-    title: 'Коммерческий объект',
-    category: 'Полный ремонт',
     image: wallImage,
   },
   {
-    title: 'Частный интерьер',
-    category: 'Авторский дизайн',
     image: floorImage,
   },
   {
-    title: 'Студия',
-    category: 'Минимализм',
     image: ceilingImage,
+  },
+  {
+    image: house,
+  },
+  {
+    image: house2,
+  },
+  {
+    image: office,
+  },
+  {
+    image: office2,
+  },
+  {
+    image: studia,
+  },
+  {
+    image: living,
+  },
+  {
+    image: living2,
+  },
+  {
+    image: kitchen,
+  },
+  {
+    image: kitchen2,
+  },
+  {
+    image: bedroom,
+  },
+  {
+    image: bedroom2,
   },
 ];
 
@@ -61,7 +93,6 @@ export default function Portfolio(): React.JSX.Element {
             <div className="aspect-[4/3] bg-black">
               <img
                 src={projects[index].image}
-                alt={projects[index].title}
                 className="w-full h-full object-cover transition-transform duration-500"
               />
             </div>
@@ -69,8 +100,6 @@ export default function Portfolio(): React.JSX.Element {
             {/* overlay text */}
             <div className="absolute bottom-4 left-4 right-4 p-4 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-md">
               <div className="text-primary-foreground">
-                <p className="text-sm font-medium mb-1">{projects[index].category}</p>
-                <h3 className="text-xl md:text-2xl font-bold">{projects[index].title}</h3>
               </div>
             </div>
 
@@ -99,7 +128,7 @@ export default function Portfolio(): React.JSX.Element {
           <div className="mt-4 flex items-center justify-center gap-3">
             {projects.map((project, i) => (
               <button
-                key={project.title}
+                key={project.image}
                 aria-label={`Перейти к ${(i + 1).toString()}`}
                 onClick={() => goTo(i)}
                 className={`h-2 w-8 rounded-full transition-all duration-200 ${
