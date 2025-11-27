@@ -1,6 +1,12 @@
 import { AxiosError } from 'axios';
-import { defaultAxiosError } from '../consts';
 import type { ServerResponseType } from '../types';
+
+const defaultAxiosError: ServerResponseType<null> = {
+  statusCode: 500,
+  message: 'Неизвестная ошибка',
+  data: null,
+  error: 'Неизвестная ошибка',
+};
 
 function handleAxiosError(error: unknown): ServerResponseType<null> {
   if (error instanceof AxiosError) {
