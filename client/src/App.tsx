@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import { useAppDispatch } from './store/hooks';
 import { refreshTokensThunk } from './entities/user/api/UserApi';
+import RoomsPage from './pages/RoomsPage';
 
 const queryClient = new QueryClient();
 

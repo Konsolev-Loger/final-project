@@ -2,7 +2,7 @@ const rooms = [
   {
     name: 'Гостиная 1',
     area: 15,
-    img: 'Гостиная 1.jpg',
+    img: 'livingRoom1.jpg',
   },
   {
     name: 'Гостиная 2',
@@ -52,7 +52,7 @@ const rooms = [
   {
     name: 'Студия 2',
     area: 40,
-    img: 'Студия.jpg',
+    img: 'Студия 1.jpg',
   },
 ];
 
