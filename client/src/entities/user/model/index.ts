@@ -1,7 +1,8 @@
 import type { ServerResponseType } from '../../../shared/types/index';
+import { createContext } from 'react';
 
 export type UserSignUpDataType = {
-  username: string;
+  name: string;
   email: string;
   password: string;
   phone: string; //! CHECK THIS PLACE
@@ -14,17 +15,23 @@ export type UserSignInDataType = {
 
 export type UserType = {
   id: number;
-  username: string;
+  name: string;
   email: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type NewUserType = {
+  name: string;
+  email: string;
+  phone: string;
 };
 
 export type UserResponseType = {
   accessToken: string;
   user: {
     id: number;
-    username: string;
+    name: string;
     email: string;
     createdAt: string;
     updatedAt: string;
@@ -34,6 +41,7 @@ export type UserResponseType = {
 export type UserServerResponseType = ServerResponseType<UserResponseType>;
 
 export type UserStateType = {
+  status: 'logged' | 'guest';
   user: UserType | null;
   isLoading: boolean;
   isInitialized: boolean;
@@ -41,8 +49,28 @@ export type UserStateType = {
 };
 
 export const initialUserState: UserStateType = {
+  status: 'guest',
   user: null,
   isLoading: false,
   isInitialized: false,
   error: null,
 };
+
+// export type UserAction =
+//   | {
+//       type: 'UPDATE_USER';
+//       payload: UserStateType;
+//     }
+//   | {
+//       type: 'LOGOUT_USER';
+//       payload: UserStateType;
+//     };
+
+export type UserContextType = {
+  state: UserStateType;
+  dispatch: React.Dispatch<any>;
+  getUser: () => Promise<void>;
+  updateUser: (data: NewUserType) => Promise<void>;
+};
+
+export const UserContextType = createContext<UserContextType | null>(null);
