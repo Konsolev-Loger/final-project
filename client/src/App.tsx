@@ -32,7 +32,7 @@ export default function App(): React.JSX.Element {
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/rooms" element={<RoomsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>
