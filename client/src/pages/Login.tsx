@@ -55,6 +55,9 @@ const Login = () => {
             <Link to="/register" className="text-sm text-primary underline">
               Регистрация
             </Link>
+            <Link to="/" className="text-sm text-primary underline">
+              На главную
+            </Link>
             <Button type="submit" disabled={loading}>
               {loading ? 'Вход...' : 'Войти'}
             </Button>
