@@ -17,11 +17,13 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.error = null;
       state.isInitialized = true;
+      state.status = 'logged';
       state.user = action.payload;
     });
     builder.addCase(refreshTokensThunk.rejected, (state) => {
       state.isLoading = false;
       state.isInitialized = true;
+      state.status = 'guest';
       state.user = null;
       state.error = null;
     });
@@ -34,10 +36,11 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.error = null;
       state.isInitialized = true;
-      state.user = action.payload;
+      state.status = 'logged';
     });
     builder.addCase(signUpThunk.rejected, (state, action) => {
       state.isLoading = false;
+      state.status = 'guest';
       state.user = null;
       state.error = action.payload?.error || null;
     });
@@ -50,10 +53,11 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.error = null;
       state.isInitialized = true;
-      state.user = action.payload;
+      state.status = 'logged';
     });
     builder.addCase(signInThunk.rejected, (state, action) => {
       state.isLoading = false;
+      state.status = 'guest';
       state.user = null;
       state.error = action.payload?.error || null;
     });
@@ -64,6 +68,7 @@ const userSlice = createSlice({
     });
     builder.addCase(signOutThunk.fulfilled, (state) => {
       state.isLoading = false;
+      state.status = 'logged';
       state.error = null;
       state.isInitialized = true;
       state.user = null;
@@ -71,6 +76,7 @@ const userSlice = createSlice({
     builder.addCase(signOutThunk.rejected, (state, action) => {
       state.isLoading = false;
       state.isInitialized = true;
+      state.status = 'guest';
       state.user = null;
       state.error = action.payload?.error || null;
     });
