@@ -1,13 +1,13 @@
 // services/adminService.js
-const { User, Order, Material, Category, Room, CastomRoom, OrderItem } = require('../../db/models');
+const { User, Order, Material, CastomRoom, OrderItem } = require('../../db/models');
+const bcrypt = require('bcrypt');
 
 class AdminService {
-  
   // === USERS ===
   static async getAllUsers() {
     return User.findAll({
       attributes: { exclude: ['password'] },
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     });
   }
 
@@ -20,10 +20,10 @@ class AdminService {
           as: 'orders',
           include: [
             { model: OrderItem, as: 'items' },
-            { model: CastomRoom, as: 'customRooms' }
-          ]
-        }
-      ]
+            { model: CastomRoom, as: 'castomRooms' },
+          ],
+        },
+      ],
     });
     if (!user) throw new Error('Пользователь не найден');
     return user;
@@ -32,26 +32,26 @@ class AdminService {
   static async updateUser(id, userData) {
     const user = await User.findByPk(id);
     if (!user) throw new Error('Пользователь не найден');
-    
+
     // Если обновляется пароль - хэшируем его
     if (userData.password) {
       const bcrypt = require('bcrypt');
       userData.password = await bcrypt.hash(userData.password, 10);
     }
-    
+
     return user.update(userData);
   }
 
   static async deleteUser(id) {
     const user = await User.findByPk(id);
     if (!user) throw new Error('Пользователь не найден');
-    
+
     // Проверяем есть ли заказы у пользователя
     const userOrders = await Order.count({ where: { user_id: id } });
     if (userOrders > 0) {
       throw new Error('Нельзя удалить пользователя с существующими заказами');
     }
-    
+
     await user.destroy();
     return { message: 'Пользователь удален' };
   }
@@ -63,19 +63,19 @@ class AdminService {
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'name', 'email', 'phone']
+          attributes: ['id', 'name', 'email', 'phone'],
         },
         {
           model: OrderItem,
           as: 'items',
-          include: ['material', 'room', 'customRoom']
+          include: ['material', 'room', 'castomRoom'],
         },
         {
           model: CastomRoom,
-          as: 'customRooms'
-        }
+          as: 'castomRooms',
+        },
       ],
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     });
   }
 
@@ -85,18 +85,18 @@ class AdminService {
         {
           model: User,
           as: 'user',
-          attributes: ['id', 'name', 'email', 'phone']
+          attributes: ['id', 'name', 'email', 'phone'],
         },
         {
           model: OrderItem,
           as: 'items',
-          include: ['material', 'room', 'customRoom']
+          include: ['material', 'room', 'castomRoom'],
         },
         {
           model: CastomRoom,
-          as: 'customRooms'
-        }
-      ]
+          as: 'castomRooms',
+        },
+      ],
     });
     if (!order) throw new Error('Заказ не найден');
     return order;
@@ -111,11 +111,11 @@ class AdminService {
   static async deleteOrder(id) {
     const order = await Order.findByPk(id);
     if (!order) throw new Error('Заказ не найден');
-    
+
     await OrderItem.destroy({ where: { order_id: id } });
     await CastomRoom.destroy({ where: { order_id: id } });
     await order.destroy();
-    
+
     return { message: 'Заказ полностью удален' };
   }
 
@@ -124,38 +124,42 @@ class AdminService {
     const totalUsers = await User.count();
     const totalOrders = await Order.count();
     const totalMaterials = await Material.count();
-    
+
     const recentOrders = await Order.findAll({
       limit: 5,
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['name', 'email']
-      }],
-      order: [['createdAt', 'DESC']]
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name', 'email'],
+        },
+      ],
+      order: [['createdAt', 'DESC']],
     });
-    
+
     const popularMaterials = await OrderItem.findAll({
       attributes: [
         'material_id',
-        [sequelize.fn('SUM', sequelize.col('quantity')), 'total_quantity']
+        [sequelize.fn('SUM', sequelize.col('quantity')), 'total_quantity'],
       ],
-      include: [{
-        model: Material,
-        as: 'material',
-        attributes: ['name']
-      }],
+      include: [
+        {
+          model: Material,
+          as: 'material',
+          attributes: ['name'],
+        },
+      ],
       group: ['material_id', 'material.id'],
       order: [[sequelize.literal('total_quantity'), 'DESC']],
-      limit: 5
+      limit: 5,
     });
-    
+
     return {
       totalUsers,
       totalOrders,
       totalMaterials,
       recentOrders,
-      popularMaterials
+      popularMaterials,
     };
   }
 
@@ -169,10 +173,10 @@ class AdminService {
   static async addOrderItem(orderId, itemData) {
     const order = await Order.findByPk(orderId);
     if (!order) throw new Error('Заказ не найден');
-    
+
     return OrderItem.create({
       ...itemData,
-      order_id: orderId
+      order_id: orderId,
     });
   }
 

@@ -7,7 +7,7 @@ class OrderService {
     user_id: userId,
     comment = '',
     total_price, // ← возможно нужно будет передалть что бы считалось на бэке
-    customRooms = [],
+    castomRooms = [],
     items = [],
   }) {
     // 1. Создаём заказ (total_price берём как есть)
@@ -19,8 +19,8 @@ class OrderService {
     });
 
     // 2. Кастомные комнаты (если есть)
-    if (customRooms.length > 0) {
-      const rooms = customRooms.map((r) => ({
+    if (castomRooms.length > 0) {
+      const rooms = castomRooms.map((r) => ({
         ...r,
         order_id: order.id,
         area: r.length && r.width ? Math.round(r.length * r.width * 100) / 100 : null,
@@ -44,8 +44,8 @@ class OrderService {
     // 4. Возвращаем полный заказ
     return Order.findByPk(order.id, {
       include: [
-        { model: OrderItem, as: 'items', include: ['material', 'room', 'customRoom'] },
-        { model: CastomRoom, as: 'customRooms' },
+        { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
+        { model: CastomRoom, as: 'castomRooms' },
       ],
     });
   }
@@ -57,11 +57,11 @@ class OrderService {
         {
           model: OrderItem,
           as: 'items',
-          include: ['material', 'room', 'customRoom'],
+          include: ['material', 'room', 'castomRooms'],
         },
         {
           model: CastomRoom,
-          as: 'customRooms',
+          as: 'castomRooms',
         },
       ],
     });
@@ -90,7 +90,7 @@ class OrderService {
         },
         {
           model: CastomRoom,
-          as: 'customRooms',
+          as: 'castomRooms',
         },
       ],
       order: [['createdAt', 'DESC']],

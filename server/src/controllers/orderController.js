@@ -6,7 +6,7 @@ class OrderController {
   // 1. Создать полный заказ (с комнатами и позициями)
   //   static async create(req, res) {
   //     const {user} = res.locals
-  //       const { user_id, comment, total_price, customRooms, items } = req.body;
+  //       const { user_id, comment, total_price, castomRooms, items } = req.body;
   //     try {
   //       // eslint-disable-next-line camelcase
   //       if (!user_id || !total_price) {
@@ -18,7 +18,7 @@ class OrderController {
   //         user_id,
   //         comment: comment || '',
   //         total_price,
-  //         customRooms: customRooms || [],
+  //         castomRooms: castomRooms || [],
   //         items: items || [],
   //       });
 
@@ -29,7 +29,7 @@ class OrderController {
   //   }
   static async createOrder(req, res) {
     const { user } = res.locals;
-    const { comment, total_price, customRooms, items } = req.body;
+    const { comment, total_price, castomRooms, items } = req.body;
     // Если есть авторизация — берём из токена, иначе (админ) — из тела
 
     const finalUserId = user?.id;
@@ -41,7 +41,7 @@ class OrderController {
       user_id: finalUserId, // ← сюда можно пихать что угодно
       comment: comment || '',
       total_price,
-      customRooms: customRooms || [],
+      castomRooms: castomRooms || [],
       items: items || [],
     });
 
