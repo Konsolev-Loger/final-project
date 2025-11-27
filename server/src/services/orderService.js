@@ -99,6 +99,7 @@ class OrderService {
 
   // 3. Обновить статус (только своего заказа)
   static async updateStatus(id, status, userId) {
+    
     // Сначала получаем с проверкой владельца
     const order = await this.getById(id, userId);
 
