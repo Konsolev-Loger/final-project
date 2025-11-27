@@ -30,6 +30,7 @@ export const refreshTokensThunk = createAsyncThunk<
   try {
     const response = await axiosInstance.get<ServerResponseType<UserResponseType>>(
       USER_API_ENDPOINTS.REFRESH,
+      { withCredentials: true },
     );
 
     if (!response.data.data?.user) {
@@ -57,6 +58,7 @@ export const signUpThunk = createAsyncThunk<
     const response = await axiosInstance.post<ServerResponseType<UserResponseType>>(
       USER_API_ENDPOINTS.SIGN_UP,
       signUpData,
+      { withCredentials: true },
     );
 
     if (!response.data.data?.user) {
@@ -84,6 +86,7 @@ export const signInThunk = createAsyncThunk<
     const response = await axiosInstance.post<ServerResponseType<UserResponseType>>(
       USER_API_ENDPOINTS.SIGN_IN,
       signInData,
+      { withCredentials: true },
     );
 
     if (!response.data.data?.user) {
@@ -106,7 +109,9 @@ export const signOutThunk = createAsyncThunk<void, void, { rejectValue: ServerRe
   USER_THUNK_TYPES.SIGN_OUT,
   async (_, { rejectWithValue }) => {
     try {
-      await axiosInstance.get<ServerResponseType<null>>(USER_API_ENDPOINTS.SIGN_OUT);
+      await axiosInstance.get<ServerResponseType<null>>(USER_API_ENDPOINTS.SIGN_OUT, {
+        withCredentials: true,
+      });
       setAccessToken('');
     } catch (error) {
       return rejectWithValue(handleAxiosError(error));
