@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks/useReduxHook';
+import { signInThunk } from '@/entities/user/api/UserApi';
 
-const Login = () => {
+export default function Login(): React.JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const { status } = useAppSelector((state) => state.user);
+
+  useEffect(() => {
+    if (status === 'logged') navigate('/');
+  }, [status, navigate]);
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setError('Пожалуйста, заполните все поля');
@@ -18,11 +27,19 @@ const Login = () => {
     }
     setError('');
     setLoading(true);
-    // Визуальная (фейковая) отправка — сервер вы доделаете сами
-    setTimeout(() => {
+
+    try {
+      await dispatch(
+        signInThunk({
+          email,
+          password,
+        }),
+      ).unwrap();
+    } catch (err: any) {
+      setError(err?.message || 'Ошибка входа');
+    } finally {
       setLoading(false);
-      navigate('/');
-    }, 700);
+    }
   };
 
   return (
@@ -66,6 +83,4 @@ const Login = () => {
       </div>
     </div>
   );
-};
-
-export default Login;
+}
