@@ -26,18 +26,7 @@ export default function RoomsPage() {
     getAllRooms();
   }, []);
 
-  // helper to build image URLs — if seeder stores filenames only, prefix with 'flats/'
-  // const buildImageUrl = (img?: string): string => {
-  //   if (!img) return '/placeholder-room.jpg';
-  //   if (/^https?:\/\//i.test(img)) return img;
-  //   const filename = img.startsWith('/') ? img.slice(1) : img;
-  //   const normalized = filename.includes('/') ? filename : `flats/${filename}`;
-  //   // prefer VITE_API_URL when available so assets load from backend
-  //   const apiUrl = (import.meta.env.VITE_API_URL as string | undefined) ?? '';
-  //   if (apiUrl) return `${apiUrl.replace(/\/$/, '')}/${normalized}`;
-  //   // fallback to absolute localhost path for local dev
-  //   return `http://localhost:3000/${normalized}`;
-  // };
+ 
 
   return (
     <section className="py-16 bg-background">
