@@ -19,10 +19,10 @@ module.exports = {
         type: Sequelize.STRING,
       },
       title: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       price: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       // unit_m2: {
       //   type: Sequelize.DECIMAL,

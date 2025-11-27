@@ -14,6 +14,9 @@ module.exports = {
       area: {
         type: Sequelize.DECIMAL,
       },
+      img: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

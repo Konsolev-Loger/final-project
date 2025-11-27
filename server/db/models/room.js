@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       area: DataTypes.DECIMAL,
+      img: DataTypes.STRING,
     },
     {
       sequelize,
