@@ -4,8 +4,6 @@ import handleAxiosError from '@/shared/utils/handleAxiosError';
 import type { ServerResponseType } from '@/shared/types';
 import type { UserResponseType, UserSignInDataType, UserSignUpDataType, UserType } from '../model';
 
-// перечисление названий thunk-ов
-
 enum USER_THUNK_TYPES {
   REFRESH = 'user/refresh',
   SIGN_UP = 'user/signUp',
@@ -13,13 +11,11 @@ enum USER_THUNK_TYPES {
   SIGN_OUT = 'user/signOut',
 }
 
-// перечисление endpoint-ов (ручек на сервере)
-
 enum USER_API_ENDPOINTS {
-  REFRESH = '/auth/refresh',
-  SIGN_UP = '/auth/signup',
-  SIGN_IN = '/auth/signin',
-  SIGN_OUT = '/auth/signout',
+  REFRESH = '/users/refreshTokens',
+  SIGN_UP = '/users/registration',
+  SIGN_IN = '/users/login',
+  SIGN_OUT = '/users/logout',
 }
 
 export const refreshTokensThunk = createAsyncThunk<
@@ -49,57 +45,83 @@ export const refreshTokensThunk = createAsyncThunk<
   }
 });
 
+// export const signUpThunk = createAsyncThunk<
+//   UserType,
+//   UserSignUpDataType,
+//   { rejectValue: ServerResponseType<null> }
+// >(USER_THUNK_TYPES.SIGN_UP, async (signUpData, { rejectWithValue }) => {
 export const signUpThunk = createAsyncThunk<
-  UserType,
+  void,
   UserSignUpDataType,
   { rejectValue: ServerResponseType<null> }
 >(USER_THUNK_TYPES.SIGN_UP, async (signUpData, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.post<ServerResponseType<UserResponseType>>(
-      USER_API_ENDPOINTS.SIGN_UP,
-      signUpData,
-      { withCredentials: true },
-    );
+    // const response = await axiosInstance.post<ServerResponseType<UserResponseType>>(
+    //   USER_API_ENDPOINTS.SIGN_UP,
+    //   signUpData,
+    //   { withCredentials: true },
+    // );
+    const response = await axiosInstance.post(USER_API_ENDPOINTS.SIGN_UP, signUpData, {
+      withCredentials: true,
+    });
 
-    if (!response.data.data?.user) {
-      return rejectWithValue({
-        statusCode: 500,
-        message: 'Не удалось зарегистриоваться',
-        data: null,
-        error: 'Не удалось зарегистриоваться',
-      });
-    }
+    // if (!response.data.data?.user) {
+    //   return rejectWithValue({
+    //     statusCode: 500,
+    //     message: 'Не удалось зарегистриоваться',
+    //     data: null,
+    //     error: 'Не удалось зарегистриоваться',
+    //   });
+    // }
 
-    setAccessToken(response.data.data.accessToken || '');
-    return response.data.data.user;
+    setAccessToken(response.data.accessToken || '');
+    // return response.data.data.user;
+    return;
   } catch (error) {
     return rejectWithValue(handleAxiosError(error));
   }
 });
 
+// export const signInThunk = createAsyncThunk<
+//   UserType,
+//   UserSignInDataType,
+//   { rejectValue: ServerResponseType<null> }
+// >(USER_THUNK_TYPES.SIGN_IN, async (signInData, { rejectWithValue }) => {
+//   try {
+//     const response = await axiosInstance.post<ServerResponseType<UserResponseType>>(
+//       USER_API_ENDPOINTS.SIGN_IN,
+//       signInData,
+//       { withCredentials: true },
+//     );
+
+//     if (!response.data.data?.user) {
+//       return rejectWithValue({
+//         statusCode: 500,
+//         message: 'Не удалось войти в аккаунт',
+//         data: null,
+//         error: 'Не удалось войти в аккаунт',
+//       });
+//     }
+
+//     setAccessToken(response.data.data.accessToken || '');
+//     return response.data.data.user;
+//   } catch (error) {
+//     return rejectWithValue(handleAxiosError(error));
+//   }
+// });
+
 export const signInThunk = createAsyncThunk<
-  UserType,
+  void,
   UserSignInDataType,
   { rejectValue: ServerResponseType<null> }
 >(USER_THUNK_TYPES.SIGN_IN, async (signInData, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.post<ServerResponseType<UserResponseType>>(
-      USER_API_ENDPOINTS.SIGN_IN,
-      signInData,
-      { withCredentials: true },
-    );
+    const response = await axiosInstance.post(USER_API_ENDPOINTS.SIGN_IN, signInData, {
+      withCredentials: true,
+    });
 
-    if (!response.data.data?.user) {
-      return rejectWithValue({
-        statusCode: 500,
-        message: 'Не удалось войти в аккаунт',
-        data: null,
-        error: 'Не удалось войти в аккаунт',
-      });
-    }
-
-    setAccessToken(response.data.data.accessToken || '');
-    return response.data.data.user;
+    setAccessToken(response.data.accessToken);
+    return;
   } catch (error) {
     return rejectWithValue(handleAxiosError(error));
   }
