@@ -3,6 +3,9 @@ import { createContext } from 'react';
 export type CategoryType = {
   id: number;
   name: string;
+  materials?: [];
+  createdAt?: string;
+  updatedAt?: string;
 };
 export type UpdateCategoryType = {
   id: number;
@@ -12,9 +15,11 @@ export type CategoryArrType = CategoryType[];
 
 export type CategoryAction =
   | { type: 'GET_CATEGORY'; payload: CategoryArrType }
-  | { type: 'GET_CATEGORY_BY_ID'; payload: CategoryType | null }
-  | { type: 'UPDATE_CATEGORY'; payload: CategoryType }
-  | { type: 'DELETE_CATEGORY'; payload: CategoryType | null };
+  | { type: 'GET_CATEGORY_BY_ID'; payload: CategoryType }
+  | { type: 'UPDATE_CATEGORY'; payload: CategoryType | null }
+  | { type: 'DELETE_CATEGORY'; payload: CategoryType | null }
+  | { type: 'SET_ERROR'; payload: { error: string } };
+
 
 export type CategoryStateType = {
   categories: CategoryArrType;

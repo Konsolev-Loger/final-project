@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import heroImage from '@/assets/hero-finishing.jpg';
 import { LogIn } from 'lucide-react';
 
 export default function Hero(): React.JSX.Element {
+  const navigate = useNavigate();
   const scrollToCalculator = (): void => {
     document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -49,6 +50,12 @@ export default function Hero(): React.JSX.Element {
               className="border-1 border-white text-white hover:bg-white hover:text-primary bg-transparent text-lg px-8 h-14"
             >
               Наши проекты
+            </Button>
+               <Button
+              onClick={() =>navigate('/category')}
+              className="border-1 border-white text-white hover:bg-white hover:text-primary bg-transparent text-lg px-8 h-14"
+            >
+              ДЛЯ ТЕСТА
             </Button>
           </div>
         </div>
