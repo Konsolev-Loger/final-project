@@ -1,131 +1,111 @@
-// 'use client';
+import { getAllOrdersThunk } from '@/app/api/OrderApi';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useEffect } from 'react';
 
-// import { getAllCategories } from '@/app/api/CategoryApi';
-// import { useAppDispatch, useAppSelector } from '@/store/hooks';
-// import { useEffect, useState } from 'react';
-// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-// import { Badge } from '@/components/ui/badge';
-// import { ChevronDown, Package } from 'lucide-react';
-// import { cn } from '@/lib/utils'; // если у тебя есть утилита cn, или просто замени на className
+export default function TestFunc() {
+  const dispatch = useAppDispatch();
+  const { orders } = useAppSelector((state) => state.order);
+  console.log(orders, 'orders');
 
-// export default function MaterialsAccordion() {
-//   const dispatch = useAppDispatch();
-//   const { categories } = useAppSelector((state) => state.category);
-//   const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
+  useEffect(() => {
+    dispatch(getAllOrdersThunk());
+  }, []);
 
-//   useEffect(() => {
-//     dispatch(getAllCategories());
-//   }, [dispatch]);
+  return (
+    <div style={{ padding: '20px' }}>
+      {orders.map((order) => (
+        <div key={order.id} style={{ border: '1px solid #ccc', padding: '15px', margin: '10px 0', borderRadius: '8px' }}>
+          {/* Основная информация о заказе */}
+          <h3>Заказ №{order.id}</h3>
+          <p><strong>Статус:</strong> {order.status ? 'Выполнен' : 'В обработке'}</p>
+          <p><strong>Общая цена:</strong> {order.total_price}</p>
+          <p><strong>Комментарий:</strong> {order.comment || '—'}</p>
+          <p><strong>Дата создания:</strong> {new Date(order.createdAt).toLocaleString()}</p>
 
-//   const toggleCategory = (id: number) => {
-//     setOpenCategoryId((prev) => (prev === id ? null : id));
-//   };
+          {/* Кастомные комнаты */}
+          {/* {order.castomRooms && order.castomRooms.length > 0 && (
+            <div style={{ marginTop: '15px' }}>
+              <h4>Кастомные комнаты:</h4>
+              {order.castomRooms.map((room, index) => (
+                <div key={index} style={{ marginLeft: '15px' }}>
+                  <pre>{JSON.stringify(room, null, 2)}</pre>
+                </div>
+              ))}
+            </div>
+          )} */}
 
-//   return (
-//     <section className="py-20 bg-background">
-//       <div className="container mx-auto px-4">
-//         <div className="text-center mb-16">
-//   <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
-//             Наши Материалы
-//           </h2>
-//           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-//             Выберите категорию и посмотрите доступные материалы премиум-качества
-//           </p>
-//         </div>
+          {/* Товары в заказе */}
+          {order.items && order.items.length > 0 && (
+            <div style={{ marginTop: '15px' }}>
+              <h4>Товары в заказе:</h4>
+              {order.items.map((item, index) => (
+                <div key={item.id || index} style={{ 
+                  border: '1px solid #eee', 
+                  padding: '10px', 
+                  margin: '5px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '15px'
+                }}>
+                  {/* Информация о материале */}
+                  {item.material && (
+                    <>
+                      {/* Изображение материала */}
+                      {item.material.img && (
+                        <img 
+                          src={`http://localhost:3000/material/${item.material.img}`} 
+                          alt={item.material.name}
+                          style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
+                          }}
+                        />
+                      )}
+                      
+                      <div style={{ flex: 1 }}>
+                        <p><strong>Название:</strong> {item.material.name}</p>
+                        <p><strong>Цена:</strong> {item.material.price}</p>
+                        <p><strong>Описание:</strong> {item.material.title}</p>
+                        <p><strong>ID материала:</strong> {item.material_id}</p>
+                        <p><strong>Количество:</strong> {item.quantity}</p>
+                        <p><strong>Цена на момент заказа:</strong> {item.price_at || 'Не указана'}</p>
+                        
+                        {/* Дополнительная информация о материале */}
+                        <p><strong>Популярный:</strong> {item.material.is_popular ? 'Да' : 'Нет'}</p>
+                        <p><strong>Категория:</strong> {item.material.category_id}</p>
+                        <p><strong>Создан:</strong> {new Date(item.material.createdAt).toLocaleString()}</p>
+                      </div>
+                    </>
+                  )}
 
-//         <div className="space-y-6">
-//           {categories.map((category) => {
-//             const isOpen = openCategoryId === category.id;
-//             const materials = category.materials?.filter((m) => m.img) || [];
+                  {/* Информация о комнате */}
+                  {item.room && (
+                    <div style={{ marginLeft: '15px' }}>
+                      <p><strong>Комната:</strong> {JSON.stringify(item.room)}</p>
+                    </div>
+                  )}
 
-//             return (
-//               <div
-//                 key={category.id}
-//                 className="border border-border rounded-xl overflow-hidden bg-card shadow-sm hover:shadow-md transition-all duration-300"
-//               >
-//                 {/* Заголовок категории */}
-//                 <button
-//                   onClick={() => toggleCategory(category.id)}
-//                   className="w-full px-8 py-6 flex items-center justify-between text-left hover:bg-accent/50 transition-colors"
-//                 >
-//                   <div className="flex items-center gap-4">
-//                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-//                       <Package className="w-6 h-6 text-primary" />
-//                     </div>
-//                     <h3 className="text-2xl font-semibold text-foreground">
-//                       {category.name}
-//                     </h3>
-//                     <Badge variant="secondary" className="ml-3">
-//                       {materials.length} материалов
-//                     </Badge>
-//                   </div>
+                  {/* Кастомная комната */}
+                  {item.castom_room_id && (
+                    <p><strong>ID кастомной комнаты:</strong> {item.castom_room_id}</p>
+                  )}
 
-//                   <ChevronDown
-//                     className={cn(
-//                       "w-6 h-6 text-muted-foreground transition-transform duration-300",
-//                       isOpen && "rotate-180"
-//                     )}
-//                   />
-//                 </button>
+                  {/* Если материала нет, показываем базовую информацию */}
+                  {!item.material && (
+                    <div>
+                      <p><strong>ID товара:</strong> {item.id}</p>
+                      <p><strong>Количество:</strong> {item.quantity}</p>
+                      <p><strong>Цена:</strong> {item.price_at}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
 
-//                 {/* Содержимое — карточки (с анимацией появления) */}
-//                 <div
-//                   className={cn(
-//                     "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-8 pb-8 pt-4 transition-all duration-500 ease-in-out",
-//                     isOpen
-//                       ? "max-h-screen opacity-100"
-//                       : "max-h-0 opacity-0 overflow-hidden"
-//                   )}
-//                   style={{
-//                     transition: "max-height 0.5s ease-in-out, opacity 0.4s ease-in-out, padding 0.4s ease-in-out",
-//                   }}
-//                 >
-//                   {materials.map((material) => (
-//                     <Card
-//                       key={material.id}
-//                       className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80"
-//                     >
-//                       <div className="relative overflow-hidden rounded-t-lg">
-//                         <img
-//                           src={`http://localhost:3000/material/${material.img}`}
-//                           alt={material.name}
-//                           className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
-//                         />
-//                         {material.is_popular && (
-//                           <Badge className="absolute top-3 right-3 bg-red-500 text-white">
-//                             Популярный
-//                           </Badge>
-//                         )}
-//                       </div>
-
-//                       <CardHeader className="pb-3">
-//                         <CardTitle className="text-lg text-foreground">
-//                           {material.name}
-//                         </CardTitle>
-//                       </CardHeader>
-
-//                       <CardContent>
-//                         <div className="text-2xl font-bold text-primary">
-//                           {material.price} ₽
-//                           <span className="text-sm font-normal text-muted-foreground ml-1">
-//                             / м²
-//                           </span>
-//                         </div>
-//                       </CardContent>
-//                     </Card>
-//                   ))}
-//                 </div>
-//               </div>
-//             );
-//           })}
-//         </div>
-
-//         {categories.length === 0 && (
-//           <div className="text-center py-16 text-muted-foreground">
-//             Загрузка категорий...
-//           </div>
-//         )}
-//       </div>
-//     </section>
-//   );
-// }
+          <hr style={{ margin: '20px 0' }} />
+        </div>
+      ))}
+    </div>
+  );
+}

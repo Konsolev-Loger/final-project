@@ -1,23 +1,12 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { getAllCategories } from '@/app/api/CategoryApi';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ChevronDown, Package, X, Calculator } from 'lucide-react';
+import { ChevronDown, Package, Calculator } from 'lucide-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import '@/components/css/Material.css';
-
-type MaterialType = {
-  id: number;
-  name: string;
-  title?: string;
-  description?: string;
-  price: string;
-  img: string;
-  is_popular: boolean;
-};
+import { CategoryType, MaterialType } from '@/app/type/CategoryType';
 
 export default function MaterialsAccordion() {
   const dispatch = useAppDispatch();
@@ -33,17 +22,10 @@ export default function MaterialsAccordion() {
     setOpenCategoryId((prev) => (prev === id ? null : id));
   };
 
-  // const openModal = (material: MaterialType) => {
-  //   setSelectedMaterial(material);
-  // };
   const openModal = (material: MaterialType) => {
     setSelectedMaterial(material);
     document.body.classList.add('modal-open'); // ← блокируем фон
   };
-
-  // const closeModal = () => {
-  //   setSelectedMaterial(null);
-  // };
   const closeModal = () => {
     setSelectedMaterial(null);
     document.body.classList.remove('modal-open'); // ← разблокируем фон
@@ -59,7 +41,7 @@ export default function MaterialsAccordion() {
           </p>
 
           <div>
-            {categories.map((category) => {
+            {categories.map((category: CategoryType) => {
               const isOpen = openCategoryId === category.id;
               const materials = category.materials?.filter((m) => m.img) || [];
 
