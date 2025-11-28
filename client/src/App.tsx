@@ -14,6 +14,7 @@ import TestFunc from './components/test';
 import RoomsPage from './pages/RoomsPage';
 // import ProfilePage from './pages/ProfilePage';
 import CalculatePage from './pages/CalculatePage';
+import ProfilePage from './pages/ProfilePage';
 
 const queryClient = new QueryClient();
 
@@ -34,7 +35,7 @@ export default function App(): React.JSX.Element {
           <Route path="/category" element={<TestFunc />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/rooms" element={<RoomsPage />} />
           <Route path="/calculate" element={<CalculatePage />} />
           <Route path="*" element={<NotFound />} />
