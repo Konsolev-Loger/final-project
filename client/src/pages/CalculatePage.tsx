@@ -46,3 +46,5 @@ export default function CalculatePage() {
     </section>
   );
 }
+
+// здесь был Вася
