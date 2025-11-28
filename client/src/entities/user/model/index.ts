@@ -17,6 +17,8 @@ export type UserType = {
   id: number;
   name: string;
   email: string;
+  phone?: string;
+  is_admin?: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -33,6 +35,8 @@ export type UserResponseType = {
     id: number;
     name: string;
     email: string;
+    phone?: string;
+    is_admin?: boolean;
     createdAt: string;
     updatedAt: string;
   };

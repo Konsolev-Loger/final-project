@@ -17,9 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       order_id: DataTypes.INTEGER,
       name: DataTypes.STRING,
       // total_price: DataTypes.DECIMAL,
-      length: DataTypes.DECIMAL,
-      width: DataTypes.DECIMAL,
-      height: DataTypes.DECIMAL,
       area: DataTypes.DECIMAL,
     },
     {
