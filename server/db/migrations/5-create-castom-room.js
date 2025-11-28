@@ -23,15 +23,6 @@ module.exports = {
       // total_price: {
       //   type: Sequelize.DECIMAL
       // },
-      length: {
-        type: Sequelize.DECIMAL,
-      },
-      width: {
-        type: Sequelize.DECIMAL,
-      },
-      height: {
-        type: Sequelize.DECIMAL,
-      },
       area: {
         type: Sequelize.DECIMAL,
       },
