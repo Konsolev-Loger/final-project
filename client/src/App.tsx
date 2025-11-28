@@ -3,9 +3,7 @@ import { Toaster as Sonner } from '@/components/ui/sonner';
 import { useEffect } from 'react';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from './store/store';
+import { Routes, Route } from 'react-router-dom';
 import Index from './pages/Index';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
@@ -13,6 +11,7 @@ import Register from './pages/Register';
 import { useAppDispatch } from './store/hooks';
 import { refreshTokensThunk } from './entities/user/api/UserApi';
 import RoomsPage from './pages/RoomsPage';
+import ProfilePage from './pages/ProfilePage';
 
 const queryClient = new QueryClient();
 
@@ -33,7 +32,8 @@ export default function App(): React.JSX.Element {
           {/* <Route path="/category" element={<Category />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/rooms" element={<RoomsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>

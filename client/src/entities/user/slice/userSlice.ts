@@ -1,6 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { initialUserState } from '../model/index';
-import { signUpThunk, signInThunk, signOutThunk, refreshTokensThunk } from '../api/UserApi';
+import {
+  signUpThunk,
+  signInThunk,
+  signOutThunk,
+  refreshTokensThunk,
+  updateUserThunk,
+} from '../api/UserApi';
 
 const userSlice = createSlice({
   name: 'user', // название слайса - сегмента глобального состояния, который хранит данные о пользователе
@@ -78,6 +84,20 @@ const userSlice = createSlice({
       state.isInitialized = true;
       state.status = 'guest';
       state.user = null;
+      state.error = action.payload?.error || null;
+    });
+    //!--------------------------------------------------------------------------------
+    builder.addCase(updateUserThunk.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(updateUserThunk.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null;
+      state.user = action.payload;
+    });
+    builder.addCase(updateUserThunk.rejected, (state, action) => {
+      state.isLoading = false;
       state.error = action.payload?.error || null;
     });
   },
