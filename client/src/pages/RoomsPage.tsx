@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Импортируем хук
 import { Button } from '@/components/ui/button';
 
 interface Room {
@@ -10,7 +11,8 @@ interface Room {
 
 export default function RoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
-  console.log(rooms);
+  const navigate = useNavigate(); // Инициализируем навигацию
+
   async function getAllRooms(): Promise<void> {
     try {
       const response = await fetch(import.meta.env.VITE_API_URL + '/rooms');
@@ -26,15 +28,13 @@ export default function RoomsPage() {
     getAllRooms();
   }, []);
 
- 
-
   return (
     <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground">Стандартные размеры комнат боже как я устала придумывать название тупым комнатам помогите</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground">Стандартные размеры комнат </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto mt-2">
-            Выберите тип комнаты — можно рассчитать материалы и стоимость на основании площади
+            Выберите тип комнаты — можно рассчитать материалы и стоимость на основании заданной площади.
           </p>
         </div>
 
@@ -63,7 +63,12 @@ export default function RoomsPage() {
                   <div className="font-semibold text-foreground">{el.name}</div>
                 </div>
                 <div>
-                  <Button size="sm" variant="default" className="whitespace-nowrap">
+                  <Button 
+                    size="sm" 
+                    variant="default" 
+                    className="whitespace-nowrap"
+                    onClick={() => navigate('/calculate')} // Добавляем обработчик
+                  >
                     Рассчитать
                   </Button>
                 </div>
