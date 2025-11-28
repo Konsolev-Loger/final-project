@@ -109,7 +109,7 @@ export default function Calculator(): React.JSX.Element {
             )}
 
             <p className="text-sm text-muted-foreground text-center">
-              * Окончательная стоимость определяется после осмотра объекта
+              * Рассчитывается с запасом в 10%
             </p>
           </CardContent>
         </Card>

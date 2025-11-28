@@ -7,6 +7,7 @@ import { ChevronDown, Package, Calculator } from 'lucide-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import '@/components/css/Material.css';
 import { CategoryType, MaterialType } from '@/app/type/CategoryType';
+import { useNavigate } from 'react-router-dom';
 
 export default function MaterialsAccordion() {
   const dispatch = useAppDispatch();
@@ -30,6 +31,8 @@ export default function MaterialsAccordion() {
     setSelectedMaterial(null);
     document.body.classList.remove('modal-open'); // ← разблокируем фон
   };
+
+  const navigate = useNavigate()
 
   return (
     <>
@@ -160,7 +163,7 @@ export default function MaterialsAccordion() {
 
               <div className="material-modal-price">{selectedMaterial.price} ₽ / м²</div>
 
-              <button className="material-modal-calculate-btn">
+              <button className="material-modal-calculate-btn" onClick={() => navigate('/calculate')}>
                 <Calculator size={28} />
                 Рассчитать стоимость
               </button>
