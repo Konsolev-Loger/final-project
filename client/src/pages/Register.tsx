@@ -16,8 +16,8 @@ export default function Register(): React.JSX.Element {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { status } = useAppSelector((state) => state.user);
-
+  const { status, user } = useAppSelector((state) => state.user);
+  console.log(user);
   useEffect(() => {
     if (status === 'logged') navigate('/');
   }, [status, navigate]);
