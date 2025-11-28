@@ -67,7 +67,7 @@ export default function RoomsPage() {
                     size="sm" 
                     variant="default" 
                     className="whitespace-nowrap"
-                    onClick={() => navigate('/calculate')} >
+                    onClick={() => navigate('/calculate', { state: { area: el.area } })} >
                     Рассчитать
                   </Button>
                 </div>
