@@ -28,13 +28,16 @@ export default function App(): React.JSX.Element {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/rooms" element={<RoomsPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            {/* <Route path="/category" element={<Category />} /> */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );

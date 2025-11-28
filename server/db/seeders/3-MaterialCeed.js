@@ -7,7 +7,7 @@ const Category = [
     price: '1600 руб./м2',
     // unit_m2: 0,
     is_popular: false,
-    img: 'Декоративный кирпич Дижон 787.jpg',
+    img: 'brick-1.jpg',
   },
   {
     category_id: 1,
@@ -77,7 +77,7 @@ const Category = [
   },
   // ==================================================================================
   {
-    category_id: 2,
+    category_id: 1,
     name: 'Коллекция AMBASSADOR',
     title:
       'Абстрактные рисунки, вдохновлённые текстурой камня и текучестью природных минералов, стали основой новой коллекции AMBASSADOR от Victoria Stenova.',
@@ -87,7 +87,7 @@ const Category = [
     img: 'обои 1.jpg',
   },
   {
-    category_id: 2,
+    category_id: 1,
     name: 'Коллекция ANDORRA',
     title:
       'Коллекция ANDORRA – это не просто обои, это шикарная фактура с плавными завораживающими формами, которая создаст в вашем доме неповторимую атмосферу уюта и элегантности.',
@@ -97,7 +97,7 @@ const Category = [
     img: 'обои 2.jpg',
   },
   {
-    category_id: 2,
+    category_id: 1,
     name: 'Коллекция APULIA',
     title:
       'Мрамор остаётся в числе главных трендов в дизайне, и в коллекции APULIA от Victoria Stenova он предстаёт в своём естественном, драматичном облике.',
@@ -107,7 +107,7 @@ const Category = [
     img: 'обои 3.jpg',
   },
   {
-    category_id: 2,
+    category_id: 1,
     name: 'Коллекция BELLAGIO',
     title:
       'Эти уникальные обои прекрасно передают текстуру и глубину классической итальянской штукатурки, создавая роскошный и, одновременно, теплый интерьер.',
@@ -117,7 +117,7 @@ const Category = [
     img: 'обои 4.jpg',
   },
   {
-    category_id: 2,
+    category_id: 1,
     name: 'Коллекция BIOTREND',
     title:
       'Коллекция обоев BIOTREND приносит природу в интерьер с лёгкостью и изяществом. Крупные листья, прорисованные тонкими линиями, с эффектом полупрозрачности наполняют пространство свежестью и гармонией.',
@@ -127,7 +127,7 @@ const Category = [
     img: 'обои 5.jpg',
   },
   {
-    category_id: 2,
+    category_id: 1,
     name: 'Коллекция BLESK',
     title:
       'BLESK вобрал в себя последние интерьерные тренды: металл, глянец, текстуру с «мятым» эффектом, дерзкие контрасты и игру света.',
@@ -137,7 +137,7 @@ const Category = [
     img: 'обои 6.jpg',
   },
   {
-    category_id: 2,
+    category_id: 1,
     name: 'Коллекция CONNECT',
     title:
       'Коллекция обоев CONNECT от Victoria Stenova Exclusive — это синтез модной палитры и точной геометрии.  Это графика, стиль и ритм современного интерьера.  Это гармония геометрии и текстиля.',
@@ -147,7 +147,7 @@ const Category = [
     img: 'обои 7.jpg',
   },
   {
-    category_id: 2,
+    category_id: 1,
     name: 'Коллекция LINKRUSTA',
     title:
       'Для смелых акцентов предлагаются три ярких дуэта: белые цветы на солнечном жёлтом фоне, серо-фиолетовое серебро на трендовом терракотовом цвете и контрастные белые цветы на темно-сером фоне.',
@@ -175,7 +175,7 @@ const Category = [
     price: '5900 руб./м2',
     // unit_m2: 0,
     is_popular: true,
-    img: 'обои 2.jpg',
+    img: 'плитка 2.jpg',
   },
   {
     category_id: 2,
@@ -185,7 +185,7 @@ const Category = [
     price: '5700 руб./м2',
     // unit_m2: 0,
     is_popular: true,
-    img: 'обои 3.jpg',
+    img: 'плитка 3.jpg',
   },
   {
     category_id: 2,
@@ -195,7 +195,7 @@ const Category = [
     price: '5750 руб./м2',
     // unit_m2: 0,
     is_popular: true,
-    img: 'обои 4.jpg',
+    img: 'плитка 4.jpg',
   },
   {
     category_id: 2,
@@ -205,7 +205,7 @@ const Category = [
     price: '5650 руб./м2',
     // unit_m2: 0,
     is_popular: true,
-    img: 'обои 5.jpg',
+    img: 'плитка 5.jpg',
   },
   {
     category_id: 2,
@@ -215,7 +215,7 @@ const Category = [
     price: '5600 руб./м2',
     // unit_m2: 0,
     is_popular: true,
-    img: 'обои 6.jpg',
+    img: 'плитка 6.jpg',
   },
   {
     category_id: 2,
@@ -225,7 +225,7 @@ const Category = [
     price: '5790 руб./м2',
     // unit_m2: 0,
     is_popular: true,
-    img: 'обои 7.jpg',
+    img: 'плитка 7.jpg',
   },
   {
     category_id: 2,
@@ -235,7 +235,7 @@ const Category = [
     price: '5790 руб./м2',
     // unit_m2: 0,
     is_popular: true,
-    img: 'обои 8.jpg',
+    img: 'плитка 8.jpg',
   },
   // =========================================================================
   {

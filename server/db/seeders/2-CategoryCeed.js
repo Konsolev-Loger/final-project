@@ -1,15 +1,15 @@
 const categories = [
   {
     id: 1,
-    name: 'wall',
+    name: 'Настенные покрытия',
   },
   {
     id: 2,
-    name: 'floor',
+    name: 'Напольные покрытия',
   },
   {
     id: 3,
-    name: 'roof',
+    name: 'Потолочная отделка',
   },
 ];
 

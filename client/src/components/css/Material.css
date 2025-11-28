@@ -1,0 +1,386 @@
+/* MaterialsAccordion.css */
+
+.materials-accordion-section {
+  padding: 5rem 0;
+  background-color: var(--background);
+}
+
+.materials-accordion-title {
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+@media (min-width: 768px) {
+  .materials-accordion-title {
+    font-size: 3.5rem;
+  }
+}
+
+.materials-accordion-subtitle {
+  font-size: 1.25rem;
+  text-align: center;
+  color: var(--muted-foreground);
+  max-width: 48rem;
+  margin: 0 auto 4rem;
+}
+
+/* Категории */
+.materials-category {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: var(--card);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  transition: all 0.5s ease;
+  margin-bottom: 1.5rem;
+}
+
+.materials-category:hover {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* Заголовок категории */
+.materials-category-header {
+  width: 100%;
+  padding: 2rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.materials-category-header:hover {
+  background-color: var(--accent);
+}
+
+.materials-category-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.materials-category-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 0.75rem;
+  background-color: var(--primary)/0.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.materials-category-name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.materials-category-count {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: 0.25rem 0 0;
+}
+
+.materials-chevron {
+  width: 28px;
+  height: 28px;
+  color: var(--muted-foreground);
+  transition: transform 0.5s ease;
+}
+
+.materials-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Контейнер с анимацией открытия/закрытия */
+.materials-content {
+  overflow: hidden;
+  transition: max-height 0.7s ease, opacity 0.6s ease, padding 0.4s ease;
+  max-height: 0;
+  opacity: 0;
+}
+
+.materials-content.open {
+  max-height: 500px;     /* больше, чем нужно — для плавности */
+  opacity: 1;
+}
+
+/* Обертка скролла */
+.materials-scroll-wrapper {
+  padding: 1rem 2rem 2rem;
+}
+
+.materials-scroll-container {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 1rem;
+  scrollbar-width: none;           /* Firefox */
+}
+
+.materials-scroll-container::-webkit-scrollbar {
+  display: none;                   /* Chrome, Safari, Edge */
+}
+
+/* Карточка материала */
+.materials-item {
+  flex: 0 0 320px;
+  scroll-snap-align: center;
+}
+
+.materials-card {
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: var(--card);
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+
+.materials-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.materials-image-wrapper {
+  position: relative;
+  height: 224px;
+  overflow: hidden;
+  background-color: var(--muted);
+}
+
+.materials-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.materials-card:hover .materials-image {
+  transform: scale(1.1);
+}
+
+.materials-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.materials-card:hover .materials-overlay {
+  opacity: 1;
+}
+
+.materials-popular-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #ef4444;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.materials-card-header {
+  padding: 1rem 1.5rem 0.5rem;
+}
+
+.materials-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.materials-card-content {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.materials-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+}
+
+.materials-price-label {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.materials-stock-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Подсказка скролла */
+.materials-scroll-hint {
+  text-align: center;
+  margin-top: 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.materials-scroll-wrapper {
+  position: relative;
+}
+
+.scroll-arrow {
+  position: absolute;
+  top: 35%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.35s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.scroll-arrow:hover {
+  transform: translateY(-50%) scale(1.12);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+}
+
+.scroll-arrow-left  { left: 20px; }
+.scroll-arrow-right { right: 20px; }
+
+/* Показываем стрелки при наведении на категорию */
+.materials-category:hover .scroll-arrow {
+  opacity: 1;
+  visibility: visible;
+}
+
+.materials-category:hover .scroll-arrow-left  { left: 30px; }
+.materials-category:hover .scroll-arrow-right { right: 30px; }
+
+/* На мобиле скрываем */
+@media (max-width: 768px) {
+  .scroll-arrow { display: none; }
+}
+
+/* =================================== */
+/* Модальное окно материала */
+.material-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  color: rgb(255, 255, 255);
+}
+
+.material-modal-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.material-modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  max-width: 800px;
+  width: 100%;
+  max-height: 100vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+.material-modal-overlay.open .material-modal {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.material-modal-header {
+  padding: 2rem 2rem 1rem;
+  position: relative;
+}
+
+.material-modal-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 1rem;
+}
+
+.material-modal-body {
+  padding: 0 2rem 2rem;
+}
+
+.material-modal-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 1.5rem 0 1rem;
+  color: var(--foreground);
+}
+
+.material-modal-description {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--foreground);
+  margin-bottom: 2rem;
+}
+
+.material-modal-price {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin: 1.5rem 0;
+}
+
+.material-modal-calculate-btn {
+  background: var(--primary);
+  color: white;
+  padding: 1rem 2.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.material-modal-calculate-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+/* ======================================== */
