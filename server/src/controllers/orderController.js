@@ -170,6 +170,100 @@ class OrderController {
         .json(formatResponse(500, 'Ошибка сервера', null, error.message));
     }
   }
+  // НОВЫЕ МЕТОДЫ ДЛЯ КОРЗИНЫ
+
+  // 1. Получить корзину текущего пользователя
+  static async getCart(req, res) {
+    try {
+      const { user } = res.locals;
+      const cart = await OrderService.getCart(user.id);
+
+      return res.status(200).json(formatResponse(200, 'Корзина получена', cart));
+    } catch (error) {
+      console.error('getCart error:', error);
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
+    }
+  }
+
+  // 2. Добавить товар в корзину
+  static async addToCart(req, res) {
+    try {
+      const { user } = res.locals;
+      const { material_id, room_id, castom_room_id, quantity = 1, price_at } = req.body;
+
+      const updatedCart = await OrderService.addToCart(user.id, {
+        material_id,
+        room_id: room_id || null,
+        castom_room_id: castom_room_id || null,
+        quantity,
+        price_at,
+      });
+
+      return res
+        .status(200)
+        .json(formatResponse(200, 'Товар добавлен в корзину', updatedCart));
+    } catch (error) {
+      console.error('addToCart error:', error);
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
+    }
+  }
+
+  // 3. Удалить позицию из корзины
+  static async removeFromCart(req, res) {
+    try {
+      const { user } = res.locals;
+      const { itemId } = req.params; // id позиции OrderItem
+
+      const updatedCart = await OrderService.removeFromCart(user.id, itemId);
+
+      return res
+        .status(200)
+        .json(formatResponse(200, 'Товар удалён из корзины', updatedCart));
+    } catch (error) {
+      console.error('removeFromCart error:', error);
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
+    }
+  }
+
+  // 4. Очистить корзину
+  static async clearCart(req, res) {
+    try {
+      const { user } = res.locals;
+      const clearedCart = await OrderService.clearCart(user.id);
+
+      return res.status(200).json(formatResponse(200, 'Корзина очищена', clearedCart));
+    } catch (error) {
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
+    }
+  }
+
+  // 5. ОФОРМИТЬ ЗАКАЗ (главная кнопка!)
+  static async checkout(req, res) {
+    try {
+      const { user } = res.locals;
+      const { comment = '' } = req.body;
+
+      const order = await OrderService.checkout(user.id, comment);
+
+      return res.status(201).json(formatResponse(201, 'Заказ успешно оформлен!', order));
+    } catch (error) {
+      if (error.message === 'Корзина пуста') {
+        return res.status(400).json(formatResponse(400, error.message));
+      }
+      console.error('checkout error:', error);
+      return res
+        .status(500)
+        .json(formatResponse(500, 'Ошибка при оформлении заказа', null, error.message));
+    }
+  }
 }
 
 module.exports = OrderController;

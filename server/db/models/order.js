@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       total_price: DataTypes.DECIMAL,
       comment: DataTypes.STRING,
       status: DataTypes.BOOLEAN,
+      is_cart: DataTypes.BOOLEAN,
     },
     {
       sequelize,

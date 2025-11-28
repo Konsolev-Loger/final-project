@@ -27,6 +27,10 @@ module.exports = {
       status: {
         type: Sequelize.BOOLEAN,
       },
+      is_cart: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

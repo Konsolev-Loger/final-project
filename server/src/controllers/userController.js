@@ -57,7 +57,14 @@ class UserController {
       return res
         .status(201)
         .cookie('refreshToken', refreshToken, cookieConfig)
-        .json({ message: 'Пользователь успешно зарегистрирован', accessToken }); // тут возможно нужно переделать
+        .json(
+          formatResponse(
+            201,
+            'Пользователь зарегистрирован',
+            { user: newUser, accessToken },
+            null,
+          ),
+        ); // тут возможно нужно переделать
     } catch (error) {
       console.log('===registration===', error);
       return res.status(500).json({ message: 'Ошибка сервера' });
@@ -144,10 +151,10 @@ class UserController {
     try {
       const { user } = res.locals;
       const { accessToken, refreshToken } = generateToken({ user });
-      res.status(200).cookie('refreshToken', refreshToken, cookieConfig.refresh).json({
-        user,
-        accessToken,
-      });
+      res
+        .status(200)
+        .cookie('refreshToken', refreshToken, cookieConfig.refresh)
+        .json(formatResponse(200, 'Токены обновлены', { accessToken, user }, null));
     } catch ({ message }) {
       console.error('Ошибка контроллера рефрештокена', message);
       res.status(500).json(formatResponse(500, 'Ошибка сервера', null, message));
