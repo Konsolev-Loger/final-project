@@ -2,6 +2,15 @@
 const { Order, OrderItem, CastomRoom } = require('../../db/models');
 
 class OrderService {
+  static async getAll() {
+    return Order.findAll({
+      include: [
+        { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
+        { model: CastomRoom, as: 'castomRooms' },
+      ],
+    });
+  }
+
   // Создание полного заказа (как было раньше)
   static async createFullOrder({
     user_id: userId,
@@ -23,7 +32,7 @@ class OrderService {
       const rooms = castomRooms.map((r) => ({
         ...r,
         order_id: order.id,
-        area: r.length && r.width ? Math.round(r.length * r.width * 100) / 100 : null,
+        // area: r.length && r.width ? Math.round(r.length * r.width * 100) / 100 : null,
       }));
       await CastomRoom.bulkCreate(rooms);
     }
@@ -99,7 +108,6 @@ class OrderService {
 
   // 3. Обновить статус (только своего заказа)
   static async updateStatus(id, status, userId) {
-    
     // Сначала получаем с проверкой владельца
     const order = await this.getById(id, userId);
 

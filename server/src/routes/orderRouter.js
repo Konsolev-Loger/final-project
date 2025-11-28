@@ -2,12 +2,13 @@ const orderRouter = require('express').Router();
 const orderController = require('../controllers/orderController');
 const { verifyAccessToken } = require('../middlewares/veryfyToken');
 
+orderRouter.get('/', orderController.getAll);
 orderRouter.post('/', verifyAccessToken, orderController.createOrder);
 orderRouter.get('/user', verifyAccessToken, orderController.getUserOrdersController);
-orderRouter.put('/comment/:id',verifyAccessToken, orderController.updateComment);
+orderRouter.put('/comment/:id', verifyAccessToken, orderController.updateComment);
 orderRouter.get('/:id', verifyAccessToken, orderController.getById);
 orderRouter.put('/:id', verifyAccessToken, orderController.updateStatus);
-orderRouter.delete('/:id',verifyAccessToken, orderController.delete);
+orderRouter.delete('/:id', verifyAccessToken, orderController.delete);
 
 module.exports = orderRouter;
 
@@ -22,7 +23,7 @@ module.exports = orderRouter;
 //   "comment": "Доставить до 18:00",
 //   "total_price": 2999,
 //   "items": [
-   
+
 //     {
 //       "material_id": 7,
 //       "quantity": 1,

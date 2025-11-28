@@ -17,7 +17,6 @@ export const getAllCategories = createAsyncThunk<
 >(CATEGORY_THINK_TYPES.GET_ALL_CATEGORY, async (_, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.get('/category');
-    console.log('response!!!@@@@', response);
     const { error, statusCode } = response.data;
     if (error || statusCode !== 200) {
       return rejectWithValue({

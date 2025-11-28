@@ -3,30 +3,18 @@ const OrderService = require('../services/orderService');
 const formatResponse = require('../utils/formatResponse');
 
 class OrderController {
-  // 1. Создать полный заказ (с комнатами и позициями)
-  //   static async create(req, res) {
-  //     const {user} = res.locals
-  //       const { user_id, comment, total_price, castomRooms, items } = req.body;
-  //     try {
-  //       // eslint-disable-next-line camelcase
-  //       if (!user_id || !total_price) {
-  //         return res
-  //           .status(400)
-  //           .json(formatResponse(400, 'Неверные данные', null, 'user_id и total_price обязательны'));
-  //       }
-  //       const order = await OrderService.createFullOrder({
-  //         user_id,
-  //         comment: comment || '',
-  //         total_price,
-  //         castomRooms: castomRooms || [],
-  //         items: items || [],
-  //       });
+  static async getAll(req, res) {
+    try {
+      const orders = await OrderService.getAll();
+      console.log(orders, 'fffffffffffffffffff');
 
-  //       return res.status(201).json(formatResponse(201, 'Заказ успешно создан', order, null));
-  //     } catch (error) {
-  //       return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error.message));
-  //     }
-  //   }
+      return res.status(200).json(formatResponse(200, 'Заказы получены', orders, null));
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, error));
+    }
+  }
+
   static async createOrder(req, res) {
     const { user } = res.locals;
     const { comment, total_price, castomRooms, items } = req.body;
@@ -94,9 +82,9 @@ class OrderController {
     const { user } = res.locals;
     const { id } = req.params;
     const { status } = req.body;
-    
+
     try {
-      console.log(id, status, user.id)
+      console.log(id, status, user.id);
       if (typeof status !== 'boolean') {
         return res
           .status(400)

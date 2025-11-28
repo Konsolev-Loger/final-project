@@ -3,9 +3,18 @@ import { createContext } from 'react';
 export type CategoryType = {
   id: number;
   name: string;
-  materials?: [];
+  materials?: MaterialType[];
   createdAt?: string;
   updatedAt?: string;
+};
+export type MaterialType = {
+  id: number;
+  name: string;
+  title?: string;
+  description?: string;
+  price: string;
+  img: string;
+  is_popular: boolean;
 };
 export type UpdateCategoryType = {
   id: number;
@@ -19,7 +28,6 @@ export type CategoryAction =
   | { type: 'UPDATE_CATEGORY'; payload: CategoryType | null }
   | { type: 'DELETE_CATEGORY'; payload: CategoryType | null }
   | { type: 'SET_ERROR'; payload: { error: string } };
-
 
 export type CategoryStateType = {
   categories: CategoryArrType;
