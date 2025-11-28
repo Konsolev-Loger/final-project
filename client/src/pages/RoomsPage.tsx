@@ -32,9 +32,9 @@ export default function RoomsPage() {
     <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground">Стандартные размеры комнат боже как я устала придумывать название тупым комнатам помогите</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground">Стандартные размеры комнат </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto mt-2">
-            Выберите тип комнаты — можно рассчитать материалы и стоимость на основании площади
+            Выберите тип комнаты — можно рассчитать материалы и стоимость на основании заданной площади.
           </p>
         </div>
 
