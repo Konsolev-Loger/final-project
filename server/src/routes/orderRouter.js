@@ -9,6 +9,12 @@ orderRouter.put('/comment/:id', verifyAccessToken, orderController.updateComment
 orderRouter.get('/:id', verifyAccessToken, orderController.getById);
 orderRouter.put('/:id', verifyAccessToken, orderController.updateStatus);
 orderRouter.delete('/:id', verifyAccessToken, orderController.delete);
+// ==================================================================
+orderRouter.get('/cart', verifyAccessToken, orderController.getCart);
+orderRouter.post('/cart', verifyAccessToken, orderController.addToCart);
+orderRouter.delete('/cart/:id', verifyAccessToken, orderController.removeFromCart);
+orderRouter.delete('/clearcart', verifyAccessToken, orderController.clearCart);
+orderRouter.post('/checkout', verifyAccessToken, orderController.checkout);
 
 module.exports = orderRouter;
 

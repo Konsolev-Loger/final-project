@@ -6,8 +6,9 @@ import {
   getAllOrdersThunk,
   getOrderByUserThunk,
   updateOrderCommentThunk,
-//   updateOrderStatusThunk,
+  //   updateOrderStatusThunk,
   deleteOrderThunk,
+  updateOrderStatusThunk,
 } from '../api/OrderApi';
 
 const OrderSlice = createSlice({
@@ -74,19 +75,19 @@ const OrderSlice = createSlice({
       });
     // ==========================================================
     // UPDATE ORDER STATUS
-    // builder
-    //   .addCase(updateOrderStatusThunk.pending, (state) => {
-    //     state.error = null;
-    //   })
-    //   .addCase(updateOrderStatusThunk.fulfilled, (state, action) => {
-    //     state.error = null;
-    //     state.orders = state.orders.map((order) =>
-    //       order.id === action.payload.id ? action.payload : order,
-    //     );
-    //   })
-    //   .addCase(updateOrderStatusThunk.rejected, (state, action) => {
-    //     state.error = action.payload?.message || 'Не удалось обновить статус';
-    //   });
+    builder
+      .addCase(updateOrderStatusThunk.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(updateOrderStatusThunk.fulfilled, (state, action) => {
+        state.error = null;
+        state.orders = state.orders.map((order) =>
+          order.id === action.payload.id ? action.payload : order,
+        );
+      })
+      .addCase(updateOrderStatusThunk.rejected, (state, action) => {
+        state.error = action.payload?.message || 'Не удалось обновить статус';
+      });
     // ==========================================================
     // DELETE ORDER
     builder

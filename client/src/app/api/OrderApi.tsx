@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { CreateOrderType, OrderArrType, OrderType, UpdateOrderType } from '../type/OrderType';
+import { AddToCartItem, CreateOrderType, OrderArrType, OrderType, UpdateOrderType } from '../type/OrderType';
 import { ServerResponseType } from '@/shared/types';
 import { axiosInstance } from '@/shared/lib/axiosInstance';
 
@@ -8,7 +8,14 @@ enum ORDER_THUNK_TYPES {
   GET_ORDERS = 'GET_ORDERS',
   GET_ORDER_BY_USER = 'GET_ORDER_BY_USER',
   UPDATE_ORDER = 'UPDATE_ORDER',
+  UPDATE_ORDER_STATUS = 'UPDATE_ORDER_STATUS',
   DELETE_ORDER = 'DELETE_ORDER',
+  // ======================================
+  GET_CART = 'GET_CART',
+  ADD_CART = 'ADD_CART',
+  DELETE_CART_ITEM = 'DELETE_CART_ITEM',
+  DELETE_ONE_ITEM = 'DELETE_ONE_ITEM',
+  CREATE_ORDER_CART = 'CREATE_ORDER_CART',
 }
 
 export const createOrderThunk = createAsyncThunk<
@@ -108,7 +115,7 @@ export const updateOrderStatusThunk = createAsyncThunk<
   OrderType,
   UpdateOrderType,
   { rejectValue: ServerResponseType<null> }
->(ORDER_THUNK_TYPES.UPDATE_ORDER, async ({ id, status }, { rejectWithValue }) => {
+>(ORDER_THUNK_TYPES.UPDATE_ORDER_STATUS, async ({ id, status }, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.put(`/orders/${id}`, { status });
     const { statusCode, error } = response.data;
@@ -141,6 +148,75 @@ export const deleteOrderThunk = createAsyncThunk<
         message: 'Не удалоось удалить заказ',
         data: null,
         error: 'Не удалоось удалить заказ',
+      });
+    }
+    return data;
+  } catch (error) {
+    return rejectWithValue(error as ServerResponseType<null>);
+  }
+});
+// ================================КОРЗИНА================================
+
+export const getCartThunk = createAsyncThunk<
+  OrderType,
+  void,
+  { rejectValue: ServerResponseType<null> }
+>(ORDER_THUNK_TYPES.GET_CART, async (_, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.get('/orders/cart');
+    const { statusCode, error } = response.data;
+    if (error || statusCode !== 200) {
+      return rejectWithValue({
+        statusCode: statusCode || 500,
+        message: 'Не удалоось получить корзину',
+        data: null,
+        error: 'Не удалоось получить корзину',
+      });
+    }
+    return response.data.data;
+  } catch (error) {
+    console.log(error);
+    return rejectWithValue(error as ServerResponseType<null>);
+  }
+});
+
+export const addCartItemThunk = createAsyncThunk<
+  OrderType,
+  AddToCartItem,
+  { rejectValue: ServerResponseType<null> }
+>(ORDER_THUNK_TYPES.ADD_CART, async (data, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.post('/orders/cart', { data });
+    const { statusCode, error } = response.data;
+    if (error || statusCode !== 200) {
+      return rejectWithValue({
+        statusCode: statusCode || 500,
+        message: 'Не удалоось добавить товар в корзину',
+        data: null,
+        error: 'Не удалоось добавить товар в корзину',
+      });
+    }
+    return response.data.data;
+  } catch (error) {
+    console.log(error);
+    return rejectWithValue(error as ServerResponseType<null>);
+  }
+});
+
+export const deleteCartItemThunk = createAsyncThunk<
+  OrderType,
+  void,
+  { rejectValue: ServerResponseType<null> }
+>(ORDER_THUNK_TYPES.DELETE_CART_ITEM, async ( { rejectWithValue }: any) => {
+  try {
+    const response = await axiosInstance.delete(`/orders/clearcart`);
+    const { data, statusCode, error } = response.data;
+    if (error || statusCode !== 200) {
+      return rejectWithValue({
+        statusCode: statusCode || 500,
+        message: 'Не удалоось удалить товар из корзины',
+        data: null,
+        error: 'Не удалоось удалить товар из корзины',
       });
     }
     return data;
