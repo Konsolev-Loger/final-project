@@ -43,7 +43,7 @@ class OrderService {
         order_id: order.id,
         material_id: item.material_id,
         room_id: item.room_id || null,
-        custom_room_id: item.custom_room_id || null,
+        castom_room_id: item.castom_room_id || null,
         quantity: item.quantity || 1,
         price_at: item.price_at || item.material_price || 0,
       }));
@@ -136,6 +136,114 @@ class OrderService {
     await order.destroy();
 
     return { message: 'Заказ полностью удалён' };
+  }
+
+  // ───────────────── НОВЫЕ МЕТОДЫ ДЛЯ КОРЗИНЫ ─────────────────
+
+  // 1. Получить или создать корзину пользователя
+  static async getCart(userId) {
+    let cart = await Order.findOne({
+      where: { user_id: userId, is_cart: true },
+      include: [
+        { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
+        { model: CastomRoom, as: 'castomRooms' },
+      ],
+    });
+
+    if (!cart) {
+      cart = await Order.create({
+        user_id: userId,
+        total_price: 0,
+        comment: '',
+        status: null,
+        is_cart: true,
+      });
+      // После создания — сразу подгружаем связи
+      await cart.reload({
+        include: [
+          { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
+          { model: CastomRoom, as: 'castomRooms' },
+        ],
+      });
+    }
+
+    return cart;
+  }
+
+  static async addToCart(userId, itemData) {
+    const cart = await this.getCart(userId);
+
+    const existing = await OrderItem.findOne({
+      where: {
+        order_id: cart.id,
+        material_id: itemData.material_id,
+        room_id: itemData.room_id || null,
+        castom_room_id: itemData.castom_room_id || null,
+      },
+    });
+
+    if (existing) {
+      await existing.increment('quantity', { by: itemData.quantity || 1 });
+    } else {
+      await OrderItem.create({
+        order_id: cart.id,
+        material_id: itemData.material_id,
+        room_id: itemData.room_id || null,
+        castom_room_id: itemData.castom_room_id || null,
+        quantity: itemData.quantity || 1,
+        price_at: itemData.price_at,
+      });
+    }
+
+    // ← Самый простой и правильный пересчёт
+    const total = cart.items.reduce(
+      (sum, item) => sum + item.quantity * item.price_at,
+      0,
+    );
+    await cart.update({ total_price: total });
+
+    return cart; // уже с актуальными items и total_price
+  }
+
+  static async removeFromCart(userId, itemId) {
+    const cart = await this.getCart(userId);
+
+    await OrderItem.destroy({ where: { id: itemId, order_id: cart.id } });
+
+    const total = cart.items.reduce(
+      (sum, item) => sum + item.quantity * item.price_at,
+      0,
+    );
+    await cart.update({ total_price: total });
+
+    return cart;
+  }
+
+  static async clearCart(userId) {
+    const cart = await this.getCart(userId);
+
+    await OrderItem.destroy({ where: { order_id: cart.id } });
+    await CastomRoom.destroy({ where: { order_id: cart.id } });
+
+    await cart.update({ total_price: 0 });
+
+    return cart;
+  }
+
+  static async checkout(userId, comment = '') {
+    const cart = await this.getCart(userId);
+
+    if (!cart.items?.length && !cart.castomRooms?.length) {
+      throw new Error('Корзина пуста');
+    }
+
+    await cart.update({
+      is_cart: false,
+      status: false,
+      comment: comment.trim(),
+    });
+
+    return cart;
   }
 }
 
