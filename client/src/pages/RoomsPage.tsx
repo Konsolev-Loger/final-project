@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Импортируем хук
+import { useNavigate } from 'react-router-dom'; 
 import { Button } from '@/components/ui/button';
 
 interface Room {
@@ -11,7 +11,7 @@ interface Room {
 
 export default function RoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
-  const navigate = useNavigate(); // Инициализируем навигацию
+  const navigate = useNavigate(); 
 
   async function getAllRooms(): Promise<void> {
     try {
@@ -67,8 +67,7 @@ export default function RoomsPage() {
                     size="sm" 
                     variant="default" 
                     className="whitespace-nowrap"
-                    onClick={() => navigate('/calculate')} // Добавляем обработчик
-                  >
+                    onClick={() => navigate('/calculate')} >
                     Рассчитать
                   </Button>
                 </div>
