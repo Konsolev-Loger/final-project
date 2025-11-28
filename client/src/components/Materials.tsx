@@ -1,56 +1,191 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Paintbrush, Wallpaper, Grid3x3, Package, Sparkles, Layers } from 'lucide-react';
-import { materials } from '@/store/calculatorSlice';
+'use client';
 
-const iconMap: Record<string, any> = {
-  //! Тут any ребятки, нужно проверить будет
-  paint: Paintbrush,
-  wallpaper: Wallpaper,
-  laminate: Grid3x3,
-  parquet: Layers,
-  tiles: Package,
-  decorative: Sparkles,
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { getAllCategories } from '@/app/api/CategoryApi';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ChevronDown, Package, X, Calculator } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import '@/components/css/Material.css';
+
+type MaterialType = {
+  id: number;
+  name: string;
+  title?: string;
+  description?: string;
+  price: string;
+  img: string;
+  is_popular: boolean;
 };
 
-export default function Materials(): React.JSX.Element {
-  return (
-    <section className="py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Наши Материалы</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Работаем только с проверенными материалами премиум качества
-          </p>
-        </div>
+export default function MaterialsAccordion() {
+  const dispatch = useAppDispatch();
+  const { categories } = useAppSelector((state) => state.category);
+  const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<MaterialType | null>(null);
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {materials.map((material) => {
-            const Icon = iconMap[material.id];
-            return (
-              <Card
-                key={material.id}
-                className="hover:shadow-strong transition-all duration-300 hover:-translate-y-1 border-border bg-card"
-              >
-                <CardHeader>
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-primary" />
+  useEffect(() => {
+    dispatch(getAllCategories());
+  }, [dispatch]);
+
+  const toggleCategory = (id: number) => {
+    setOpenCategoryId((prev) => (prev === id ? null : id));
+  };
+
+  // const openModal = (material: MaterialType) => {
+  //   setSelectedMaterial(material);
+  // };
+  const openModal = (material: MaterialType) => {
+    setSelectedMaterial(material);
+    document.body.classList.add('modal-open'); // ← блокируем фон
+  };
+
+  // const closeModal = () => {
+  //   setSelectedMaterial(null);
+  // };
+  const closeModal = () => {
+    setSelectedMaterial(null);
+    document.body.classList.remove('modal-open'); // ← разблокируем фон
+  };
+
+  return (
+    <>
+      <section className="materials-accordion-section">
+        <div className="container mx-auto px-4">
+          <h2 className="materials-accordion-title">Наши Материалы</h2>
+          <p className="materials-accordion-subtitle">
+            Выберите категорию и пролистайте премиум-материалы
+          </p>
+
+          <div>
+            {categories.map((category) => {
+              const isOpen = openCategoryId === category.id;
+              const materials = category.materials?.filter((m) => m.img) || [];
+
+              return (
+                <div key={category.id} className="materials-category">
+                  <button
+                    onClick={() => toggleCategory(category.id)}
+                    className="materials-category-header"
+                  >
+                    <div className="materials-category-info">
+                      <div className="materials-category-icon">
+                        <Package size={28} className="text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="materials-category-name">{category.name}</h3>
+                        <p className="materials-category-count">
+                          {materials.length} премиум материалов
+                        </p>
+                      </div>
+                    </div>
+                    <ChevronDown className={`materials-chevron ${isOpen ? 'open' : ''}`} />
+                  </button>
+
+                  <div className={`materials-content ${isOpen ? 'open' : ''}`}>
+                    <div className="materials-scroll-wrapper">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const container = document.getElementById(`scroll-${category.id}`);
+                          container?.scrollBy({ left: -380, behavior: 'smooth' });
+                        }}
+                        className="scroll-arrow scroll-arrow-left"
+                      >
+                        <ChevronLeft />
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const container = document.getElementById(`scroll-${category.id}`);
+                          container?.scrollBy({ left: 380, behavior: 'smooth' });
+                        }}
+                        className="scroll-arrow scroll-arrow-right"
+                      >
+                        <ChevronRight />
+                      </button>
+
+                      <div id={`scroll-${category.id}`} className="materials-scroll-container">
+                        {materials.map((material: MaterialType) => (
+                          <div
+                            key={material.id}
+                            className="materials-item"
+                            onClick={() => openModal(material)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <Card className="materials-card">
+                              <div className="materials-image-wrapper">
+                                <img
+                                  src={`http://localhost:3000/material/${material.img}`}
+                                  alt={material.name}
+                                  className="materials-image"
+                                />
+                                {material.is_popular && (
+                                  <div className="materials-popular-badge">Популярный</div>
+                                )}
+                                <div className="materials-overlay"></div>
+                              </div>
+
+                              <CardHeader className="materials-card-header">
+                                <CardTitle className="materials-card-title">
+                                  {material.name}
+                                </CardTitle>
+                              </CardHeader>
+
+                              <CardContent className="materials-card-content">
+                                <div className="flex justify-between items-end">
+                                  <div>
+                                    <div className="materials-price">{material.price} ₽</div>
+                                    <p className="materials-price-label">за м²</p>
+                                  </div>
+                                  <Badge variant="outline" className="materials-stock-badge">
+                                    В наличии
+                                  </Badge>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <CardTitle className="text-foreground">{material.name}</CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    {material.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-primary">
-                    {material.pricePerSqm} ₽
-                    <span className="text-sm font-normal text-muted-foreground ml-2">/ м²</span>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Модальное окно */}
+      {selectedMaterial && (
+        <div className="material-modal-overlay open" onClick={closeModal}>
+          <div className="material-modal" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={`http://localhost:3000/material/${selectedMaterial.img}`}
+              alt={selectedMaterial.name}
+              className="material-modal-image"
+            />
+
+            <div className="material-modal-body">
+              <h2 className="material-modal-title">{selectedMaterial.name}</h2>
+
+              <p className="material-modal-description">
+                {selectedMaterial.description ||
+                  'Высококачественный премиум-материал с отличными характеристиками. Идеально подходит для современных интерьеров. Прочный, стильный и долговечный выбор для вашего проекта.'}
+              </p>
+
+              <div className="material-modal-price">{selectedMaterial.price} ₽ / м²</div>
+
+              <button className="material-modal-calculate-btn">
+                <Calculator size={28} />
+                Рассчитать стоимость
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

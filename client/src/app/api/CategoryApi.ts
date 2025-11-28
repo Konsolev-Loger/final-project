@@ -16,17 +16,26 @@ export const getAllCategories = createAsyncThunk<
   { rejectValue: ServerResponseType<null> }
 >(CATEGORY_THINK_TYPES.GET_ALL_CATEGORY, async (_, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance('/category');
-    const { data, statusCode } = response.data;
-    if (statusCode !== 200) return rejectWithValue(data);
-    return data;
+    const response = await axiosInstance.get('/category');
+    console.log('response!!!@@@@', response);
+    const { error, statusCode } = response.data;
+    if (error || statusCode !== 200) {
+      return rejectWithValue({
+        statusCode: statusCode || 500,
+        message: 'Не удалоось получить категории',
+        data: null,
+        error: 'Не удалоось получить категории',
+      });
+    }
+
+    return response.data.data;
   } catch (error) {
     return rejectWithValue(error as ServerResponseType<null>);
   }
 });
 // ==================================================================================
 export const getCategoryById = createAsyncThunk<
-  CategoryArrType,
+  CategoryType,
   number,
   { rejectValue: ServerResponseType<null> }
 >(CATEGORY_THINK_TYPES.CET_CATEGORY_BY_ID, async (id, { rejectWithValue }) => {
