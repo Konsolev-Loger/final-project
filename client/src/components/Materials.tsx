@@ -9,7 +9,6 @@ import '@/components/css/Material.css';
 import { CategoryType, MaterialType } from '@/app/type/CategoryType';
 import { useNavigate } from 'react-router-dom';
 import { setCategory, setMaterial } from '@/store/calculatorSlice';
-import { useNavigate } from 'react-router-dom';
 
 export default function MaterialsAccordion() {
   const navigate = useNavigate();
