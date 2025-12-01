@@ -1,8 +1,14 @@
-const { User } = require('../../db/models');
+const { User } = require('../../db/models'); 
 
 const checkAdmin = async (req, res, next) => {
   try {
     const { user } = res.locals;
+    
+    if (!user || !user.id) {
+      return res.status(401).json({ 
+        message: 'Необходима авторизация' 
+      });
+    }
     
     const userFromDb = await User.findByPk(user.id);
     if (!userFromDb || !userFromDb.is_admin) {
@@ -16,7 +22,6 @@ const checkAdmin = async (req, res, next) => {
     console.log('Admin check error:', error);
     return res.status(500).json({ message: 'Ошибка проверки прав доступа' });
   }
-  return next(); // вомзможно нужно удалить
 };
 
 module.exports = { checkAdmin };
