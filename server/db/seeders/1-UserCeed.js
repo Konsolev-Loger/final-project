@@ -1,8 +1,19 @@
+"use strict";
+
+const bcrypt = require('bcrypt');
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    // ✅ Хешируем пароли для ВСЕХ пользователей
+    const hashedPasswordJojo = await bcrypt.hash("SermerLORD@@10", 10);
+    const hashedPasswordPutin = await bcrypt.hash("SermerLORD@@10", 10);
+
     const users = [
       {
         name: 'Jojo',
         email: 'jojo@test.com',
-    password: 'SermerLORD@@10',
+        password: hashedPasswordJojo,  
         phone: '1234567890',
         is_admin: false,
         createdAt: new Date(),
@@ -10,8 +21,8 @@
       },
       {
         name: 'Putin',
-    email: 'Putin@test.com',
-    password: 'SermerLORD@@10',
+        email: 'putin@krab.com',                  // Путин Краб
+        password: hashedPasswordPutin,  
         phone: '1234567890',
         is_admin: true,
         createdAt: new Date(),
@@ -23,7 +34,7 @@
   },
 
   async down(queryInterface, Sequelize) {
-    // ✅ Удаляем конкретных пользователей для безопасности
+
     await queryInterface.bulkDelete('Users', {
       email: ['jojo@test.com', 'Putin@test.com']
     }, {});
