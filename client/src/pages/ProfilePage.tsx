@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { EmailChangeModal } from '@/components/EmailChangeModal';
 import { useNavigate } from 'react-router-dom';
-import { Pencil } from 'lucide-react';
+import { Pencil } from 'lucide-react-dom';
 
 export default function ProfilePage() {
   const { user, isLoading: userLoading } = useAppSelector((state) => state.user);

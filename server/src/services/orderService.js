@@ -201,80 +201,73 @@ class OrderService {
   }
 
   static async addToCart(userId, itemData) {
-  // 1. Получаем свежую корзину
-  const cart = await this.getCart(userId);
+    // 1. Получаем свежую корзину
+    const cart = await this.getCart(userId);
 
-  // 2. Ищем, есть ли уже такой товар
-  const existing = await OrderItem.findOne({
-    where: {
-      order_id: cart.id,
-      material_id: itemData.material_id,
-      room_id: itemData.room_id || null,
-      castom_room_id: itemData.castom_room_id || null,
-    },
-  });
-
-  if (existing) {
-    await existing.increment('quantity', { by: itemData.quantity || 1 });
-  } else {
-    await OrderItem.create({
-      order_id: cart.id,
-      material_id: itemData.material_id,
-      room_id: itemData.room_id || null,
-      castom_room_id: itemData.castom_room_id || null,
-      quantity: itemData.quantity || 1,
-      price_at: itemData.price_at,
+    // 2. Ищем, есть ли уже такой товар
+    const existing = await OrderItem.findOne({
+      where: {
+        order_id: cart.id,
+        material_id: itemData.material_id,
+        room_id: itemData.room_id || null,
+        castom_room_id: itemData.castom_room_id || null,
+      },
     });
-  }
 
-  await cart.reload({
-    include: [
-      { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-      { model: CastomRoom, as: 'castomRooms' },
-    ],
-  });
-
-  const total = (cart.items || []).reduce(
-    (sum, item) => sum + item.quantity * item.price_at,
-    0
-  );
-
-  await cart.update({ total_price: total });
-
-  return cart; 
-}
-
-static async removeFromCart(userId, itemId) {
-  if (!itemId) {
-    throw new Error('ID товара не передан');
-  }
-
-  const cart = await this.getCart(userId);
-
-  const deleted = await OrderItem.destroy({
-    where: {
-      id: itemId,           // ← теперь точно число или строка
-      order_id: cart.id
+    if (existing) {
+      await existing.increment('quantity', { by: itemData.quantity || 1 });
+    } else {
+      await OrderItem.create({
+        order_id: cart.id,
+        material_id: itemData.material_id,
+        room_id: itemData.room_id || null,
+        castom_room_id: itemData.castom_room_id || null,
+        quantity: itemData.quantity || 1,
+        price_at: itemData.price_at,
+      });
     }
-  });
 
-  if (deleted === 0) {
-    throw new Error('Товар не найден в корзине');
+    await cart.reload({
+      include: [
+        { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
+        { model: CastomRoom, as: 'castomRooms' },
+      ],
+    });
+
+    const total = (cart.items || []).reduce(
+      (sum, item) => sum + item.quantity * item.price_at,
+      0,
+    );
+
+    await cart.update({ total_price: total });
+    return cart;
   }
 
-  // ПЕРЕЗАГРУЖАЕМ!
-  await cart.reload({
-    include: [
-      { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-      { model: CastomRoom, as: 'castomRooms' },
-    ],
-  });
-
-  const total = (cart.items || []).reduce((s, i) => s + i.quantity * i.price_at, 0);
-  await cart.update({ total_price: total });
-
-  return cart;
-}
+  static async removeFromCart(userId, itemId) {
+    if (!itemId) {
+      throw new Error('ID товара не передан');
+    }
+    const cart = await this.getCart(userId);
+    const deleted = await OrderItem.destroy({
+      where: {
+        id: itemId,
+        order_id: cart.id,
+      },
+    });
+    if (deleted === 0) {
+      throw new Error('Товар не найден в корзине');
+    }
+    // ПЕРЕЗАГРУЖАЕМ!
+    await cart.reload({
+      include: [
+        { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
+        { model: CastomRoom, as: 'castomRooms' },
+      ],
+    });
+    const total = (cart.items || []).reduce((s, i) => s + i.quantity * i.price_at, 0);
+    await cart.update({ total_price: total });
+    return cart;
+  }
 
   static async clearCart(userId) {
     const cart = await this.getCart(userId);

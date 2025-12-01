@@ -218,9 +218,9 @@ class OrderController {
   static async removeFromCart(req, res) {
     try {
       const { user } = res.locals;
-      const { itemId } = req.params;
+      const { id } = req.params;
 
-      const updatedCart = await OrderService.removeFromCart(user.id, itemId);
+      const updatedCart = await OrderService.removeFromCart(user.id, id);
 
       return res
         .status(200)
