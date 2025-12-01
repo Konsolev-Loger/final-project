@@ -38,7 +38,7 @@ export type UpdateOrderType = {
 };
 export type CreateOrderType = {
   total_price: number;
-  coment: string;
+  comment: string;
   status: boolean;
 };
 
@@ -77,7 +77,7 @@ export type OrderContextType = {
   dispatch: React.Dispatch<OredrAction>;
   createOrder: (data: OrderType) => Promise<void>;
   getAllOrders: () => Promise<void>;
-  getOrderByUserId: (id: number) => Promise<void>;
+  getOrderByUserId: (id: number) => Promise<void>;  // Возможно нужно будет изменить или удалить
   updateOrder: (id: number, data: UpdateOrderType) => Promise<void>;
   deleteOrder: (id: number) => Promise<void>;
   // ===========================================================

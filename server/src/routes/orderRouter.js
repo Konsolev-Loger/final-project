@@ -4,7 +4,7 @@ const { verifyAccessToken } = require('../middlewares/veryfyToken');
 
 orderRouter.get('/', orderController.getAll);
 orderRouter.post('/', verifyAccessToken, orderController.createOrder);
-orderRouter.get('/user', verifyAccessToken, orderController.getUserOrdersController);
+orderRouter.get('/user/:id', verifyAccessToken, orderController.getUserOrdersController);
 orderRouter.put('/comment/:id', verifyAccessToken, orderController.updateComment);
 orderRouter.get('/:id', verifyAccessToken, orderController.getById);
 orderRouter.put('/:id', verifyAccessToken, orderController.updateStatus);
