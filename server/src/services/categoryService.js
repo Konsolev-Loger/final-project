@@ -7,13 +7,13 @@ class CategoryService {
     });
   }
 
-  // static async getById(id) {
-  //   const category = await Category.findByPk(id, {
-  //     // include: [{ model: Material, as: 'materials' }],
-  //   });
-  //   if (!category) throw new Error('Категория не найдена');
-  //   return category;
-  // }
+  static async getById(id) {
+    const category = await Category.findByPk(id, {
+      // include: [{ model: Material, as: 'materials' }],
+    });
+    if (!category) throw new Error('Категория не найдена');
+    return category;
+  }
 
   static async create(data) {
     return Category.create(data);

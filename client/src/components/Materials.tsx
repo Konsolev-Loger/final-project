@@ -7,7 +7,7 @@ import { ChevronDown, Package, Calculator } from 'lucide-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import '@/components/css/Material.css';
 import { CategoryType, MaterialType } from '@/app/type/CategoryType';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { setCategory, setMaterial } from '@/store/calculatorSlice';
 
 export default function MaterialsAccordion() {
