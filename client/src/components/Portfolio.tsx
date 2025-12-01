@@ -128,7 +128,7 @@ export default function Portfolio(): React.JSX.Element {
           <div className="mt-4 flex items-center justify-center gap-3">
             {projects.map((project, i) => (
               <button
-                key={project.image}
+                key={i}
                 aria-label={`Перейти к ${(i + 1).toString()}`}
                 onClick={() => goTo(i)}
                 className={`h-2 w-8 rounded-full transition-all duration-200 ${
