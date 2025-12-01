@@ -43,7 +43,7 @@ class OrderController {
   }
 
   // 2. Получить один заказ по ID
-  static async getById(req, res) {
+  static async getByIdorder(req, res) {
     const { user } = res.locals;
     const { id } = req.params;
     try {
@@ -218,7 +218,7 @@ class OrderController {
   static async removeFromCart(req, res) {
     try {
       const { user } = res.locals;
-      const { itemId } = req.params; // id позиции OrderItem
+      const { itemId } = req.params;
 
       const updatedCart = await OrderService.removeFromCart(user.id, itemId);
 
@@ -226,7 +226,7 @@ class OrderController {
         .status(200)
         .json(formatResponse(200, 'Товар удалён из корзины', updatedCart));
     } catch (error) {
-      console.error('removeFromCart error:', error);
+      console.error( error);
       return res
         .status(500)
         .json(formatResponse(500, 'Ошибка сервера', null, error.message));
