@@ -80,6 +80,12 @@ export default function Hero(): React.JSX.Element {
             >
               ДЛЯ ТЕСТА
             </Button>
+              <Button
+              onClick={() => navigate('/cart')}
+              className="border-1 border-white text-white hover:bg-white hover:text-primary bg-transparent text-lg px-8 h-14"
+            >
+              КОРЗИНА
+            </Button>
           </div>
         </div>
       </div>
