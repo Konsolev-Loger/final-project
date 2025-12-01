@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import '@/components/css/Material.css';
 import { CategoryType, MaterialType } from '@/app/type/CategoryType';
 import { useNavigate } from 'react-router';
-import {  setCategory, setMaterial } from '@/store/calculatorSlice';
+import { setCategory, setMaterial } from '@/store/calculatorSlice';
 
 export default function MaterialsAccordion() {
   const navigate = useNavigate();
@@ -164,26 +164,26 @@ export default function MaterialsAccordion() {
 
               <div className="material-modal-price">{selectedMaterial.price} ₽ / м²</div>
 
-            <button
-            className="material-modal-calculate-btn"
-            onClick={() => {
-              // Находим категорию этого материала
-              const category = categories.find(cat =>
-                cat.materials?.some(m => m.id === selectedMaterial.id)
-              );
+              <button
+                className="material-modal-calculate-btn"
+                onClick={() => {
+                  // Находим категорию этого материала
+                  const category = categories.find((cat) =>
+                    cat.materials?.some((m) => m.id === selectedMaterial.id),
+                  );
 
-              if (category) {
-                dispatch(setCategory(category.id));
-                dispatch(setMaterial(selectedMaterial.id));
-              }
+                  if (category) {
+                    dispatch(setCategory(category.id));
+                    dispatch(setMaterial(selectedMaterial.id));
+                  }
 
-              navigate('/calculate');
-              closeModal();
-            }}
-          >
-            <Calculator size={28} />
-            Рассчитать стоимость
-          </button>
+                  navigate('/calculate');
+                  closeModal();
+                }}
+              >
+                <Calculator size={28} />
+                Рассчитать стоимость
+              </button>
             </div>
           </div>
         </div>

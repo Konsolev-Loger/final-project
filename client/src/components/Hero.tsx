@@ -1,21 +1,44 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import heroImage from '@/assets/hero-finishing.jpg';
 import { LogIn } from 'lucide-react';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { signOutThunk } from '@/entities/user/api/UserApi';
 
 export default function Hero(): React.JSX.Element {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { user, status } = useAppSelector((state) => state.user);
+
+  const isLoggedIn = status === 'logged' && user;
   const scrollToCalculator = (): void => {
     document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleLogout = async () => {
+    try {
+      await dispatch(signOutThunk()).unwrap();
+      navigate('/');
+    } catch (error) {
+      console.error('Ошибка выхода:', error);
+    }
+  };
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       <div className="absolute top-4 right-6 z-20 flex flex-col items-end gap-7">
-        <Link className="text-white" to="/login">
-          {<LogIn />}
-        </Link>
+        {isLoggedIn ? (
+          <button
+            onClick={handleLogout}
+            className="text-white hover:text-white/80 transition-colors bg-transparent border-none p-0 cursor-pointer"
+          >
+            <LogOut />
+          </button>
+        ) : (
+          <Link className="text-white hover:text-white/80 transition-colors" to="/login">
+            <LogIn />
+          </Link>
+        )}
       </div>
       <div
         className="absolute inset-0 bg-cover bg-center"
