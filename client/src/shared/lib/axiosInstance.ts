@@ -38,14 +38,17 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 403 && previousRequest && !previousRequest.sent) {
       previousRequest.sent = true;
       try {
-        const { data } = await axiosInstance.get('/auth/refresh');
+        // refresh endpoint on the server is /users/refreshTokens (see server/routes/userRouter.js)
+        const { data } = await axiosInstance.get('/users/refreshTokens');
         const newToken = data.data.accessToken;
         setAccessToken(newToken);
         previousRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axiosInstance(previousRequest);
       } catch (error) {
         setAccessToken('');
-        window.location.href = '/auth';
+        // redirect to the application's login page (route is /login)
+        // previously redirected to '/auth' which doesn't exist -> NotFound / 404
+        window.location.href = '/login';
         return Promise.reject(error);
       }
     }
