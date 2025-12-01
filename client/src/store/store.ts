@@ -3,10 +3,12 @@ import calculatorReducer from './calculatorSlice';
 import { userReducer } from '@/entities/user/slice/userSlice';
 import { CategoryReducer } from '@/app/slice/CategorySlice';
 import { OrderReducer } from '@/app/slice/OrderSlice';
+import { CartReducer } from '@/app/slice/CartSlice';
 export const store = configureStore({
   reducer: {
     calculator: calculatorReducer,
     category: CategoryReducer,
+    cart: CartReducer,
     order: OrderReducer,
     user: userReducer,
   },

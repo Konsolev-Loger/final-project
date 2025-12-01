@@ -79,11 +79,11 @@ export default function TestFunc() {
                   )}
 
                   {/* Информация о комнате */}
-                  {item.room && (
+                  {/* {item.room && (
                     <div style={{ marginLeft: '15px' }}>
                       <p><strong>Комната:</strong> {JSON.stringify(item.room)}</p>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Кастомная комната */}
                   {item.castom_room_id && (
