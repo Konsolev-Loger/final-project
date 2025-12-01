@@ -37,7 +37,6 @@ const cartSlice = createSlice({
       .addCase(addCartItemThunk.rejected, (state, action) => {
         state.error = action.payload?.message || 'Не удалось добавить в корзину';
       })
-
       // === DELETE ONE ITEM ===
       .addCase(deleteOneItemThink.fulfilled, (state, action) => {
         state.cart = action.payload
@@ -45,10 +44,6 @@ const cartSlice = createSlice({
           state.cart.items = state.cart.items?.filter((item) => item.id !== action.payload);
         }
       })
-      // .addCase(deleteOneItemThink.fulfilled, (state, action) => {
-      //   state.cart = action.payload;
-      // })
-
       // === CLEAR CART ===
       .addCase(deleteCartItemThunk.fulfilled, (state) => {
         state.cart = null;

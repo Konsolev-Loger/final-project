@@ -1,4 +1,4 @@
-// components/Calculator.tsx
+import { clearCalculator } from '@/store/calculatorSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setMaterial, setCategory, setArea } from '@/store/calculatorSlice';
 import { addCartItemThunk } from '@/app/api/CartApi';
@@ -14,7 +14,7 @@ import {
   SelectItem,
   SelectValue,
 } from '@/components/ui/select';
-import { Calculator as CalcIcon } from 'lucide-react';
+import { Calculator as CalcIcon, ShoppingCart, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -62,8 +62,17 @@ export default function Calculator() {
 
     try {
       await dispatch(addCartItemThunk(payload)).unwrap();
-      toast.success('Добавлено в корзину!');
-      // dispatch(resetCalculator());
+      toast.success(
+        <div className="flex flex-col gap-1">
+          <span className="font-semibold">✅ Материал добавлен в корзину</span>
+          <span className="text-sm">
+            {selectedMaterial.name} - {area} м²
+          </span>
+        </div>,
+        { duration: 4000 },
+      );
+      // Можно добавить сброс калькулятора после добавления
+      dispatch(clearCalculator());
     } catch (err: any) {
       toast.error(err.message || 'Не удалось добавить в корзину');
     } finally {
@@ -73,7 +82,7 @@ export default function Calculator() {
 
   return (
     <section className="py-12 bg-muted rounded-2xl">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-15">
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold mb-3">Калькулятор стоимости</h2>
           <p className="text-lg text-muted-foreground">Рассчитайте стоимость материалов</p>
@@ -83,7 +92,7 @@ export default function Calculator() {
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <CalcIcon className="w-5 h-5 text-primary" />
+                <CalcIcon className="w-8 h-8 text-primary" />
               </div>
               <div>
                 <CardTitle>Онлайн-калькулятор</CardTitle>
@@ -184,19 +193,46 @@ export default function Calculator() {
           </CardContent>
         </Card>
 
-        {/* Кнопка добавления в корзину */}
+        {/* Кнопки */}
         {selectedMaterial && area > 0 && (
-          <div className="text-center mt-8">
+          <div className="text-center mt-8 space-y-6">
+            {/* Основная кнопка */}
             <Button
               size="lg"
-              onClick={() => {
-                handleAddToCart(); 
-                navigate('/cart'); 
-              }}
+              onClick={handleAddToCart}
               disabled={isAdding}
-              className="px-10"
+              className="px-10 min-w-[220px]"
             >
+              <ShoppingCart className="w-5 h-5 mr-2" />
               Добавить в корзину
+            </Button>
+
+            {/* Аккуратная надпись и кнопка "Перейти в корзину" */}
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => navigate('/cart')}
+                className="px-8 hover:bg-primary/10 transition-colors"
+              >
+                <span className="flex items-center gap-2">
+                  <ShoppingCart className="w-4 h-4" />
+                  Перейти в корзину
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </span>
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Если ничего не выбрано, показываем только кнопку в корзину */}
+        {(!selectedMaterial || area <= 0) && (
+          <div className="text-center mt-8">
+            <Button variant="outline" size="lg" onClick={() => navigate('/cart')} className="px-8">
+              <span className="flex items-center gap-2">
+                <ShoppingCart className="w-4 h-4" />
+                Перейти в корзину
+              </span>
             </Button>
           </div>
         )}
