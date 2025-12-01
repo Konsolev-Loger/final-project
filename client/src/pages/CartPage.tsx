@@ -66,7 +66,7 @@ export default function CartPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => handleRemove(item.id)}
+                onClick={() => handleRemove(item.id!)}
               >
                 <Trash2 className="w-5 h-5" />
               </Button>
