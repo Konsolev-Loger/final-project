@@ -6,8 +6,7 @@ userRouter.post('/registration', userController.registration);
 userRouter.post('/login', userController.login);
 userRouter.get('/logout', userController.logout);
 userRouter.get('/refreshTokens', verifyRefreshToken, userController.refreshTokens); // ТУТ РЕФРЕШТОКЕН ----
-
-
+userRouter.put('/profile/:id', userController.updateProfile);
 
 module.exports = userRouter;
 

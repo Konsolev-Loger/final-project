@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/shared/hooks/useReduxHook';
 import {
   getOrderByUserThunk,
@@ -6,19 +6,21 @@ import {
   updateOrderCommentThunk,
   deleteOrderThunk,
 } from '@/app/api/OrderApi';
-import { updateUserThunk } from '@/entities/user/api/UserApi';
+import { signOutThunk, updateUserThunk } from '@/entities/user/api/UserApi';
 import type { OrderType } from '@/app/type/OrderType';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useNavigate } from 'react-router';
 
 export default function ProfilePage() {
   const { user, status, isLoading: userLoading } = useAppSelector((state) => state.user);
   const orders = useAppSelector((state) => state.order.orders);
-  // const isLoadingOrders = useAppSelector((state) => state.order.isLoading);
   const error = useAppSelector((state) => state.order.error);
+
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState({
@@ -46,33 +48,6 @@ export default function ProfilePage() {
     }
   }, [user, dispatch, isAdmin]);
 
-  console.log('ProfilePage debug:', {
-    user,
-    status,
-    isLoading: userLoading,
-    hasUser: !!user,
-  });
-
-  // if (status === 'guest') {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center bg-muted">
-  //       <div className="text-center">
-  //         <div className="text-lg">Пожалуйста, войдите в систему</div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // if (!user || userLoading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center bg-muted">
-  //       <div className="text-center">
-  //         <div className="text-lg">Загрузка...</div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   const handleProfileSave = async () => {
     if (!editData.name || !editData.email) {
       return;
@@ -89,6 +64,49 @@ export default function ProfilePage() {
     } catch (err) {
       console.error('Ошибка обновления профиля:', err);
     }
+  };
+
+  const formatPhoneNumber = (value: string) => {
+    const cleaned = value.replace(/\D/g, '');
+    const limited = cleaned.slice(0, 11);
+
+    if (limited.length === 0) return '';
+    if (limited.length <= 1) return `+7 (${limited.slice(1)}`;
+    if (limited.length <= 4) return `+7 (${limited.slice(1, 4)}`;
+    if (limited.length <= 7) return `+7 (${limited.slice(1, 4)}) ${limited.slice(4, 7)}`;
+    if (limited.length <= 9)
+      return `+7 (${limited.slice(1, 4)}) ${limited.slice(4, 7)}-${limited.slice(7, 9)}`;
+
+    return `+7 (${limited.slice(1, 4)}) ${limited.slice(4, 7)}-${limited.slice(
+      7,
+      9,
+    )}-${limited.slice(9, 11)}`;
+  };
+
+  const [formattedPhone, setFormattedPhone] = useState('');
+
+  useEffect(() => {
+    if (!user) return;
+
+    setEditData({
+      name: user.name || '',
+      email: user.email || '',
+      phone: user.phone || '',
+    });
+
+    if (user.phone) {
+      setFormattedPhone(formatPhoneNumber(user.phone));
+    }
+  }, [user]);
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const formatted = formatPhoneNumber(value);
+
+    setFormattedPhone(formatted);
+
+    const cleanPhone = value.replace(/\D/g, '');
+    setEditData({ ...editData, phone: cleanPhone });
   };
 
   const handleCommentChange = (orderId: number, comment: string) => {
@@ -135,6 +153,17 @@ export default function ProfilePage() {
                 Администратор
               </Badge>
             )}
+            <Button
+              onClick={() => {
+                dispatch(signOutThunk());
+                navigate('/', { replace: true });
+              }}
+              variant="outline"
+              size="sm"
+              className=""
+            >
+              Выйти
+            </Button>
           </CardHeader>
           <CardContent className="space-y-4">
             {!editMode ? (
@@ -181,8 +210,8 @@ export default function ProfilePage() {
                 <div>
                   <label className="block text-sm font-medium mb-1">Телефон</label>
                   <Input
-                    value={editData.phone}
-                    onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                    value={formattedPhone}
+                    onChange={handlePhoneChange}
                     placeholder="+7 (___) ___-__-__"
                   />
                 </div>
@@ -204,20 +233,6 @@ export default function ProfilePage() {
             <CardTitle>Заказы {isAdmin && '(все пользователи)'}</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* {isLoadingOrders && (
-              <div className="text-center text-muted-foreground py-8">Загрузка заказов...</div>
-            )}
-
-            {error && (
-              <div className="text-center text-destructive bg-destructive/10 p-3 rounded-lg">
-                {error}
-              </div>
-            )}
-
-            {!isLoadingOrders && !error && orders.length === 0 && (
-              <div className="text-center text-muted-foreground py-8">Нет заказов</div>
-            )} */}
-
             {!error && orders.length > 0 && (
               <div className="space-y-4">
                 {orders.map((order: OrderType) => (
