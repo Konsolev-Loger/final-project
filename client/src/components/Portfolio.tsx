@@ -12,7 +12,7 @@ import living2 from '@/assets/living2.jpeg';
 import kitchen from '@/assets/kitchen.jpeg';
 import kitchen2 from '@/assets/kitchen2.jpeg';
 import bedroom from '@/assets/bedroom.jpeg';
-import bedroom2 from '@/assets/bedroom2.jpeg'
+import bedroom2 from '@/assets/bedroom2.jpeg';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 const projects = [
@@ -99,8 +99,7 @@ export default function Portfolio(): React.JSX.Element {
 
             {/* overlay text */}
             <div className="absolute bottom-4 left-4 right-4 p-4 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-md">
-              <div className="text-primary-foreground">
-              </div>
+              <div className="text-primary-foreground"></div>
             </div>
 
             {/* left arrow */}

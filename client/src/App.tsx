@@ -25,7 +25,20 @@ export default function App(): React.JSX.Element {
 
   useEffect(() => {
     dispatch(refreshTokensThunk());
-  }, []);
+
+    const savedStatus = localStorage.getItem('authStatus');
+    const savedUser = localStorage.getItem('userData');
+
+    if (savedStatus === 'logged' && savedUser) {
+      dispatch({
+        type: 'user/initializeUser',
+        payload: {
+          status: 'logged',
+          user: JSON.parse(savedUser),
+        },
+      });
+    }
+  }, [dispatch]);
 
   return (
     <QueryClientProvider client={queryClient}>
