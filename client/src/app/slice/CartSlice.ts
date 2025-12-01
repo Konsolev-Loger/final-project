@@ -1,85 +1,62 @@
+// store/slices/cartSlice.ts
 import { createSlice } from '@reduxjs/toolkit';
-import { inititalOrderState } from '../type/OrderType';
 import {
-} from '../api/OrderApi';
-import { addCartItemThunk, createOrderCart, deleteCartItemThunk, deleteOneItemThink, getCartThunk } from '../api/CartApi';
+  getCartThunk,
+  addCartItemThunk,
+  deleteOneItemThink,
+  deleteCartItemThunk,
+  createOrderCart,
+} from '@/app/api/CartApi';
+import { inititalOrderState } from '../type/OrderType';
 
-const CartSlice = createSlice({
-  name: 'Cart',
+const cartSlice = createSlice({
+  name: 'cart',
   initialState: inititalOrderState,
-  reducers: {},
+  reducers: {
+    clearCartError: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
-    // ==================== GET CART ====================
     builder
+      // === GET CART ===
       .addCase(getCartThunk.pending, (state) => {
         state.error = null;
       })
       .addCase(getCartThunk.fulfilled, (state, action) => {
-        state.cart = action.payload; // OrderType с is_cart: true
+        state.cart = action.payload;
       })
       .addCase(getCartThunk.rejected, (state, action) => {
         state.error = action.payload?.message || 'Не удалось загрузить корзину';
-        state.cart = null;
-      });
-
-    // ==================== ADD TO CART ====================
-    builder
-      .addCase(addCartItemThunk.pending, (state) => {
-        state.error = null;
       })
+
+      // === ADD TO CART ===
       .addCase(addCartItemThunk.fulfilled, (state, action) => {
-        state.cart = action.payload; // бэкенд возвращает обновлённую корзину
+        state.cart = action.payload;
       })
       .addCase(addCartItemThunk.rejected, (state, action) => {
-        state.error = action.payload?.message || 'Не удалось добавить товар';
-      });
-
-    // ==================== DELETE ONE ITEM FROM CART ====================
-    builder
-      .addCase(deleteOneItemThink.pending, (state) => {
-        state.error = null;
+        state.error = action.payload?.message || 'Не удалось добавить в корзину';
       })
+
+      // === DELETE ONE ITEM ===
       .addCase(deleteOneItemThink.fulfilled, (state, action) => {
-        // Бэкенд возвращает, например, id удалённого item или обновлённую корзину
-        // Если возвращает обновлённую корзину — используй её:
-        if (typeof action.payload === 'object') {
-          state.cart = action.payload;
-        } else {
-          // Если возвращает только id — просто удаляем из items
-          if (state.cart) {
-            state.cart.items = state.cart.items?.filter((item) => item.id !== action.payload);
-            // // Пересчитываем total_price, если нужно
-            // if (state.cart.items?.length === 0) {
-            //   state.cart = null;
-            // }
-          }
+        state.cart = action.payload
+        if (state.cart) {
+          state.cart.items = state.cart.items?.filter((item) => item.id !== action.payload);
         }
       })
-      .addCase(deleteOneItemThink.rejected, (state, action) => {
-        state.error = action.payload?.message || 'Не удалось удалить товар';
-      });
+      // .addCase(deleteOneItemThink.fulfilled, (state, action) => {
+      //   state.cart = action.payload;
+      // })
 
-    // ==================== CLEAR CART (удалить всю корзину) ====================
-    builder
-      .addCase(deleteCartItemThunk.pending, (state) => {
-        state.error = null;
-      })
+      // === CLEAR CART ===
       .addCase(deleteCartItemThunk.fulfilled, (state) => {
         state.cart = null;
       })
-      .addCase(deleteCartItemThunk.rejected, (state, action) => {
-        state.error = action.payload?.message || 'Не удалось очистить корзину';
-      });
 
-    // ==================== CHECKOUT — создать заказ из корзины ====================
-    builder
-      .addCase(createOrderCart.pending, (state) => {
-        state.error = null;
-      })
+      // === CHECKOUT ===
       .addCase(createOrderCart.fulfilled, (state) => {
-        // После успешного оформления — корзина очищается!
-        state.cart = null;
-        // Если хочешь сохранить новый заказ где-то — лучше делать это в OrderSlice
+        state.cart = null; // корзина очищается после оформления
       })
       .addCase(createOrderCart.rejected, (state, action) => {
         state.error = action.payload?.message || 'Не удалось оформить заказ';
@@ -87,5 +64,7 @@ const CartSlice = createSlice({
   },
 });
 
-export const CartReducer = CartSlice.reducer;
+export const { clearCartError } = cartSlice.actions;
+export default cartSlice.reducer;
 
+export const CartReducer = cartSlice.reducer;

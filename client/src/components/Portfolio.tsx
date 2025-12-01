@@ -126,7 +126,7 @@ export default function Portfolio(): React.JSX.Element {
 
           {/* indicators */}
           <div className="mt-4 flex items-center justify-center gap-3">
-            {projects.map((project, i) => (
+            {projects.map((_project, i) => (
               <button
                 key={i}
                 aria-label={`Перейти к ${(i + 1).toString()}`}

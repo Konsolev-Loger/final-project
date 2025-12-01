@@ -15,6 +15,7 @@ import RoomsPage from './pages/RoomsPage';
 // import ProfilePage from './pages/ProfilePage';
 import CalculatePage from './pages/CalculatePage';
 import ProfilePage from './pages/ProfilePage';
+import CartPage from './pages/CartPage';
 import AdminPage from './pages/AdminPage';
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ export default function App(): React.JSX.Element {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/category" element={<TestFunc />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<ProfilePage />} />
