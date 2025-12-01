@@ -12,16 +12,19 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { EmailChangeModal } from '@/components/EmailChangeModal';
 import { useNavigate } from 'react-router-dom';
+import { Pencil } from 'lucide-react-dom';
 
 export default function ProfilePage() {
-  const { user, status, isLoading: userLoading } = useAppSelector((state) => state.user);
+  const { user, isLoading: userLoading } = useAppSelector((state) => state.user);
   const orders = useAppSelector((state) => state.order.orders);
   const error = useAppSelector((state) => state.order.error);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const [showEmailModal, setShowEmailModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState({
     name: user?.name,
@@ -160,7 +163,6 @@ export default function ProfilePage() {
               }}
               variant="outline"
               size="sm"
-              className=""
             >
               Выйти
             </Button>
@@ -175,6 +177,26 @@ export default function ProfilePage() {
                 <div className="flex justify-between items-center py-2 border-b">
                   <span className="font-medium">Email:</span>
                   <span>{user?.email}</span>
+                  <div>
+                    <Button
+                      onClick={() => setShowEmailModal(true)}
+                      variant="outline"
+                      size="sm"
+                      className="w-full flex items-center justify-center gap-2"
+                    >
+                      <Pencil className="h-3 w-3" />
+                      Сменить email
+                    </Button>
+
+                    <p className="text-xs text-gray-500 mt-1 text-center">
+                      Через привязанный Telegram
+                    </p>
+                  </div>
+
+                  <EmailChangeModal
+                    isOpen={showEmailModal}
+                    onClose={() => setShowEmailModal(false)}
+                  />
                 </div>
                 <div className="flex justify-between items-center py-2 border-b">
                   <span className="font-medium">Телефон:</span>
@@ -196,15 +218,6 @@ export default function ProfilePage() {
                     value={editData.name}
                     onChange={(e) => setEditData({ ...editData, name: e.target.value })}
                     placeholder="Ваше имя"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Email</label>
-                  <Input
-                    type="email"
-                    value={editData.email}
-                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                    placeholder="your@email.com"
                   />
                 </div>
                 <div>
