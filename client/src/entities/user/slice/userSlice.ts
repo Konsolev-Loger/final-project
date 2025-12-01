@@ -9,12 +9,10 @@ import {
 } from '../api/UserApi';
 
 const userSlice = createSlice({
-  name: 'user', // название слайса - сегмента глобального состояния, который хранит данные о пользователе
+  name: 'user',
   initialState: initialUserState, // начальное состояние слайса
-  reducers: {}, // reducers - функции, которые синхронно изменяют состояние слайса
+  reducers: {},
   extraReducers(builder) {
-    // extraReducers - функции, которые асинхронно изменяют состояние слайса (для thunks)
-    // для каждой санки описываем три сценария: pending, fulfilled, rejected и меняем состояние соответствующим образом
     builder.addCase(refreshTokensThunk.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -43,6 +41,7 @@ const userSlice = createSlice({
       state.error = null;
       state.isInitialized = true;
       state.status = 'logged';
+      state.user = action.payload?.user || null; //!CHECK THIS PLACE LATER
     });
     builder.addCase(signUpThunk.rejected, (state, action) => {
       state.isLoading = false;

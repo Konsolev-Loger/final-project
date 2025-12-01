@@ -34,6 +34,8 @@ export default function MaterialsAccordion() {
     document.body.classList.remove('modal-open'); // ← разблокируем фон
   };
 
+  const navigate = useNavigate()
+
   return (
     <>
       <section className="materials-accordion-section">
