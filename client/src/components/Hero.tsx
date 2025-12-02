@@ -22,9 +22,6 @@ export default function Hero(): React.JSX.Element {
           {/* Надписи вверху */}
           <div className="flex justify-between items-center px-2 mb-3">
             <div className="flex gap-8 text-white/90 text-sl font-light">
-              {/* <Link to="/services" className="hover:text-white transition-colors duration-200">
-                Услуги
-              </Link> */}
               <div
                 className="hover:text-white transition-colors duration-200"
                 style={{ cursor: 'pointer' }}

@@ -81,161 +81,180 @@ export default function Calculator() {
   };
 
   return (
-    <section className="py-12 bg-muted rounded-2xl" id="calculator">
-      <div className="container mx-auto px-15">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">Калькулятор стоимости</h2>
-          <p className="text-lg text-muted-foreground">Рассчитайте стоимость материалов</p>
+    <section className="py-16 lg:py-24" id="calculator">
+      <div className="container mx-auto px-6 max-w-7xl">
+        {/* Заголовок */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Калькулятор стоимости</h2>
+          <p
+            className="mt-3 text-lg text-muted-foreground"
+            style={{ color: '#000000b8' }}
+          >
+            Подберите материал и узнайте точную цену за вашу площадь
+          </p>
         </div>
 
-        <Card className="max-w-2xl mx-auto">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <CalcIcon className="w-8 h-8 text-primary" />
+        <Card className="max-w-7xl mx-auto shadow-2xl border-0 overflow-hidden bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+          <CardHeader className="pb-8 bg-gradient-to-r from-primary/5 via-primary/5 to-transparent">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <CalcIcon className="w-9 h-9 text-primary" />
               </div>
               <div>
-                <CardTitle>Онлайн-калькулятор</CardTitle>
-                <CardDescription>Выберите материал и укажите площадь</CardDescription>
+                <CardTitle className="text-2xl md:text-3xl font-bold">
+                  Онлайн-калькулятор материалов
+                </CardTitle>
+                <CardDescription className="text-base mt-1">
+                  Выберите категорию, материал и площадь — получите точную стоимость
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-6">
-            {/* Категория */}
-            <div className="space-y-2">
-              <Label>Категория</Label>
-              <Select
-                value={selectedCategoryId?.toString() || ''}
-                onValueChange={(v) => dispatch(setCategory(Number(v)))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Выберите категорию" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id.toString()}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Материал */}
-            <div className="space-y-2">
-              <Label>Материал</Label>
-              <Select
-                value={selectedMaterialId?.toString() || ''}
-                onValueChange={(v) => dispatch(setMaterial(Number(v)))}
-                disabled={!selectedCategoryId}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Выберите материал" />
-                </SelectTrigger>
-                <SelectContent>
-                  {materialsInCategory.map((m) => (
-                    <SelectItem key={m.id} value={m.id.toString()}>
-                      <div className="flex justify-between w-full">
-                        <span>{m.name}</span>
-                        <span className="text-muted-foreground ml-4">
-                          {parseFloat(m.price).toLocaleString('ru-RU')} ₽/м²
-                        </span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Площадь */}
-            <div className="space-y-2">
-              <Label>Площадь (м²)</Label>
-              <Input
-                type="number"
-                min="0.1"
-                step="0.1"
-                placeholder="Например: 25.5"
-                value={area || ''}
-                onChange={(e) => dispatch(setArea(parseFloat(e.target.value) || 0))}
-              />
-            </div>
-
-            {/* Итог */}
-            {selectedMaterial && area > 0 && (
-              <div className="p-5 rounded-lg bg-primary/5 border border-primary/20">
+          <CardContent className="pt-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+              {/* Левая часть — выбор (всегда занимает своё место) */}
+              <div className="lg:col-span-2 space-y-7">
+                {/* Категория */}
                 <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span>Материал:</span>
-                    <span className="font-medium">{selectedMaterial.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Цена за м²:</span>
-                    <span>{pricePerSqm.toLocaleString('ru-RU')} ₽</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Площадь:</span>
-                    <span>{area} м²</span>
-                  </div>
-                  <div className="pt-3 border-t border-primary/30">
-                    <div className="flex justify-between text-xl font-bold">
-                      <span>Итого:</span>
-                      <span className="text-primary">{totalPrice.toLocaleString('ru-RU')} ₽</span>
-                    </div>
+                  <Label className="text-base font-semibold">Категория</Label>
+                  <Select
+                    value={selectedCategoryId?.toString() || ''}
+                    onValueChange={(v) => dispatch(setCategory(Number(v)))}
+                  >
+                    <SelectTrigger className="h-12 text-base">
+                      <SelectValue placeholder="Выберите категорию" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id.toString()}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Материал */}
+                <div className="space-y-3">
+                  <Label className="text-base font-semibold">Материал</Label>
+                  <Select
+                    value={selectedMaterialId?.toString() || ''}
+                    onValueChange={(v) => dispatch(setMaterial(Number(v)))}
+                    disabled={!selectedCategoryId}
+                  >
+                    <SelectTrigger className="h-12 text-base">
+                      <SelectValue placeholder="Сначала выберите категорию" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {materialsInCategory.map((m) => (
+                        <SelectItem key={m.id} value={m.id.toString()}>
+                          <div className="flex justify-between items-center w-full pr-2">
+                            <span className="font-medium truncate max-w-[220px]">{m.name}</span>
+                            <span className="text-muted-foreground ml-3 shrink-0">
+                              {parseFloat(m.price).toLocaleString('ru-RU')} ₽/м²
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Площадь */}
+                <div className="space-y-3">
+                  <Label className="text-base font-semibold">Площадь (м²)</Label>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <Input
+                      type="number"
+                      min="0.1"
+                      step="0.1"
+                      placeholder="Например: 25.5"
+                      className="h-12 text-lg font-medium w-full sm:w-48"
+                      value={area || ''}
+                      onChange={(e) => dispatch(setArea(parseFloat(e.target.value) || 0))}
+                    />
+                    <button
+                      onClick={() => navigate('/rooms')}
+                      className="text-primary hover:underline font-medium flex items-center gap-1.5 transition-colors whitespace-nowrap"
+                    >
+                      Популярные размеры
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               </div>
-            )}
 
-            <p className="text-xs text-center text-muted-foreground">
-              * Цена ориентировочная. Точная — после замера
+              {/* Правая часть — всегда одинаковой высоты! */}
+              <div className="lg:border-l lg:pl-10 flex flex-col justify-between min-h-[420px]">
+                <div className="space-y-6">
+                  {/* Блок с итогом — всегда на месте, просто меняется содержимое */}
+                  <div className="rounded-2xl bg-primary/5 border border-primary/20 p-6 min-h-[260px] flex flex-col justify-center">
+                    {selectedMaterial && area > 0 ? (
+                      <div className="space-y-5 animate-in fade-in-0 duration-300">
+                        <h3 className="font-bold text-xl">Итоговая стоимость</h3>
+                        <div className="space-y-4 text-lg">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Цена за м²:</span>
+                            <span className="font-semibold">
+                              {pricePerSqm.toLocaleString('ru-RU')} ₽
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Площадь:</span>
+                            <span className="font-semibold">{area} м²</span>
+                          </div>
+                        </div>
+                        <div className="mt-6 pt-5 border-t border-primary/30">
+                          <div className="flex justify-between items-baseline">
+                            <span className="text-xl font-bold">Итого:</span>
+                            <span className="text-3xl md:text-4xl font-bold text-primary">
+                              {totalPrice.toLocaleString('ru-RU')} ₽
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center text-muted-foreground animate-in fade-in-0 duration-300">
+                        <CalcIcon className="w-20 h-20 mx-auto mb-5 opacity-20" />
+                        <p className="text-lg font-medium">Заполните форму слева</p>
+                        <p className="text-sm mt-2">Расчёт появится автоматически</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Кнопки — всегда внизу, всегда одинаково */}
+                <div className="mt-8 space-y-4">
+                  <Button
+                    size="lg"
+                    className="w-full h-14 text-lg font-semibold shadow-lg"
+                    onClick={handleAddToCart}
+                    disabled={!selectedMaterial || area <= 0 || isAdding}
+                  >
+                    <ShoppingCart className="w-6 h-6 mr-3" />
+                    {isAdding ? 'Добавляем...' : 'Добавить в корзину'}
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full h-12"
+                    onClick={() => navigate('/cart')}
+                  >
+                    <ShoppingCart className="w-5 h-5 mr-2" />
+                    Перейти в корзину
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-center text-xs text-muted-foreground mt-10">
+              * Цена ориентировочная. Точная стоимость рассчитывается после замера специалистом
             </p>
           </CardContent>
         </Card>
-
-        {/* Кнопки */}
-        {selectedMaterial && area > 0 && (
-          <div className="text-center mt-8 space-y-6">
-            {/* Основная кнопка */}
-            <Button
-              size="lg"
-              onClick={handleAddToCart}
-              disabled={isAdding}
-              className="px-10 min-w-[220px]"
-            >
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              Добавить в корзину
-            </Button>
-
-            {/* Аккуратная надпись и кнопка "Перейти в корзину" */}
-            <div className="space-y-3">
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => navigate('/cart')}
-                className="px-8 hover:bg-primary/10 transition-colors"
-              >
-                <span className="flex items-center gap-2">
-                  <ShoppingCart className="w-4 h-4" />
-                  Перейти в корзину
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </span>
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Если ничего не выбрано, показываем только кнопку в корзину */}
-        {(!selectedMaterial || area <= 0) && (
-          <div className="text-center mt-8">
-            <Button variant="outline" size="lg" onClick={() => navigate('/cart')} className="px-8">
-              <span className="flex items-center gap-2">
-                <ShoppingCart className="w-4 h-4" />
-                Перейти в корзину
-              </span>
-            </Button>
-          </div>
-        )}
       </div>
     </section>
   );
