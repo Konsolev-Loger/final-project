@@ -2,7 +2,7 @@ import { Phone, Mail, MapPin } from 'lucide-react';
 
 export default function Footer(): React.JSX.Element {
   return (
-    <footer className="bg-primary text-white py-6">
+    <footer className="bg-primary text-white py-6" id="footer">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
