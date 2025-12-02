@@ -1,0 +1,303 @@
+import { AdminTabs } from './AdminTab';
+import { MaterialsTab } from './MaterialTab';
+import { CategoriesTab } from './CategoryTab';
+import { OrdersTab } from './OrderTab';
+import { UsersTab } from './UserTab';
+import React, { useState, useEffect } from 'react';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { useToast } from '@/components/ui/use-toast';
+import { axiosInstance } from '@/shared/lib/axiosInstance';
+import { AdminLayout } from './Admin';
+
+interface Material {
+  id: number;
+  name: string;
+  price: number;
+  description?: string;
+  img?: string;
+  is_popular?: boolean;
+  category_id?: number;
+  category?: { id: number; name: string } | null;
+}
+
+interface Category {
+  id: number;
+  name: string;
+  materialsCount?: number;
+}
+
+const AdminPage: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'materials' | 'categories' | 'orders' | 'users'>(
+    'materials',
+  );
+
+   const getImageSrc = (img?: string): string => {
+    if (!img) return '/fallback.png';
+    if (img.startsWith('http://') || img.startsWith('https://')) return img;
+    const base = (import.meta.env.VITE_API_URL as string | undefined) ?? '';
+    const root = base ? base.replace(/\/api\/?$/, '') : 'http://localhost:3000';
+    return `${root}/material/${img}`;
+  };
+
+  const [materials, setMaterials] = useState<Material[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+
+  const fetchMaterials = async (page = 1) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      params.append('page', String(page));
+      params.append('limit', '50');
+
+      const { data } = await axiosInstance.get(`/material?${params.toString()}`);
+      if (data?.statusCode === 200) {
+        const mats = data.data?.materials ?? (Array.isArray(data.data) ? data.data : []);
+        setMaterials(mats);
+      } else {
+        throw new Error(data?.message || 'Ошибка загрузки материалов');
+      }
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: 'Ошибка',
+        description: err instanceof Error ? err.message : 'Не удалось загрузить материалы',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // fetchCategories без параметра поиска
+  const fetchCategories = async (page = 1) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      params.append('page', String(page));
+      params.append('limit', '50');
+
+      const { data } = await axiosInstance.get(`/category?${params.toString()}`);
+      if (data?.statusCode === 200) {
+        const cats = data.data?.categories ?? (Array.isArray(data.data) ? data.data : []);
+        setCategories(cats);
+      } else {
+        throw new Error(data?.message || 'Ошибка загрузки категорий');
+      }
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: 'Ошибка',
+        description: err instanceof Error ? err.message : 'Не удалось загрузить категории',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const { data } = await axiosInstance.get('/users?page=1&limit=20');
+      if (data?.statusCode === 200 && data.data?.users) setUsers(data.data.users);
+    } catch (err) {
+      console.warn('fetchUsers error', err);
+    }
+  };
+
+  const fetchOrders = async () => {
+    try {
+      const { data } = await axiosInstance.get('/orders?page=1&limit=20');
+      if (data?.statusCode === 200 && data.data?.orders) setOrders(data.data.orders);
+    } catch (err) {
+      console.warn('fetchOrders error', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    fetchMaterials();
+    fetchUsers();
+    fetchOrders();
+  }, []);
+
+  /* --- Materials CRUD --- */
+  const createMaterial = async (payload: Partial<Material>) => {
+    setLoading(true);
+    try {
+      const { data } = await axiosInstance.post('/material', payload);
+      if (data?.statusCode === 201 || data?.statusCode === 200) {
+        const newItem = data.data?.material ?? data.data;
+        setMaterials((s) => [newItem, ...s]);
+        toast({ title: 'Успех', description: 'Материал добавлен' });
+      } else throw new Error(data?.message || 'Ошибка создания материала');
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: 'Ошибка',
+        description: err instanceof Error ? err.message : 'Не удалось создать материал',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateMaterial = async (id: number, payload: Partial<Material>) => {
+    setLoading(true);
+    try {
+      const { data } = await axiosInstance.put(`/material/${id}`, payload);
+      if (data?.statusCode === 200) {
+        const updated = data.data?.material ?? data.data;
+        setMaterials((s) => s.map((m) => (m.id === id ? updated : m)));
+        toast({ title: 'Успех', description: 'Материал обновлён' });
+      } else throw new Error(data?.message || 'Ошибка обновления материала');
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: 'Ошибка',
+        description: err instanceof Error ? err.message : 'Не удалось обновить материал',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteMaterial = async (id: number) => {
+    if (!confirm('Вы уверены, что хотите удалить материал?')) return;
+    setLoading(true);
+    try {
+      const { data } = await axiosInstance.delete(`/material/${id}`);
+      if (data?.statusCode === 200) {
+        setMaterials((s) => s.filter((m) => m.id !== id));
+        toast({ title: 'Успех', description: 'Материал удалён' });
+      } else throw new Error(data?.message || 'Ошибка удаления материала');
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: 'Ошибка',
+        description: err instanceof Error ? err.message : 'Не удалось удалить материал',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* --- Categories CRUD --- */
+  const createCategory = async (name: string) => {
+    setLoading(true);
+    try {
+      const { data } = await axiosInstance.post('/category', { name });
+      if (data?.statusCode === 201 || data?.statusCode === 200) {
+        const newCat = data.data?.category ?? data.data;
+        setCategories((s) => [newCat, ...s]);
+        toast({ title: 'Успех', description: 'Категория добавлена' });
+      } else throw new Error(data?.message || 'Ошибка создания категории');
+    } catch (err: any) {
+      console.error(err);
+      const serverMsg =
+        err?.response?.data?.message || err?.message || 'Не удалось создать категорию';
+      toast({
+        title: 'Ошибка',
+        description: serverMsg,
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateCategory = async (id: number, name: string) => {
+    setLoading(true);
+    try {
+      const { data } = await axiosInstance.put(`/category/${id}`, { name });
+      if (data?.statusCode === 200) {
+        const updated = data.data?.category ?? data.data;
+        setCategories((s) => s.map((c) => (c.id === id ? updated : c)));
+        toast({ title: 'Успех', description: 'Категория обновлена' });
+      } else throw new Error(data?.message || 'Ошибка обновления категории');
+    } catch (err: any) {
+      console.error(err);
+      const serverMsg =
+        err?.response?.data?.message || err?.message || 'Не удалось обновить категорию';
+      toast({
+        title: 'Ошибка',
+        description: serverMsg,
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteCategory = async (id: number) => {
+    if (!confirm('Вы уверены, что хотите удалить категорию?')) return;
+    setLoading(true);
+    try {
+      const { data } = await axiosInstance.delete(`/category/${id}`);
+      if (data?.statusCode === 200) {
+        setCategories((s) => s.filter((c) => c.id !== id));
+        toast({ title: 'Успех', description: 'Категория удалена' });
+      } else throw new Error(data?.message || 'Ошибка удаления категории');
+    } catch (err: any) {
+      console.error(err);
+      const serverMsg =
+        err?.response?.data?.message || err?.message || 'Не удалось удалить категорию';
+      toast({
+        title: 'Ошибка',
+        description: serverMsg,
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+
+  return (
+    <AdminLayout loading={loading}>
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab as (value: string) => void}
+        className="w-full"
+      >
+        <AdminTabs activeTab={activeTab} onChange={setActiveTab as (value: string) => void} />
+
+        <TabsContent value="materials" className="mt-0">
+          <MaterialsTab
+            materials={materials}
+            categories={categories}
+            onCreate={createMaterial}
+            onUpdate={updateMaterial}
+            onDelete={deleteMaterial}
+          />
+        </TabsContent>
+
+        <TabsContent value="categories" className="mt-0">
+          <CategoriesTab
+            categories={categories}
+            onCreate={createCategory}
+            onUpdate={updateCategory}
+            onDelete={deleteCategory}
+          />
+        </TabsContent>
+
+        <TabsContent value="orders" className="mt-0">
+          <OrdersTab orders={orders} />
+        </TabsContent>
+
+        <TabsContent value="users" className="mt-0">
+          <UsersTab users={users} />
+        </TabsContent>
+      </Tabs>
+    </AdminLayout>
+  );
+};
+
+export default AdminPage;

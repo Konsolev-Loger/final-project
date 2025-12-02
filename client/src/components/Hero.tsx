@@ -15,16 +15,13 @@ export default function Hero(): React.JSX.Element {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden" id="hero">
       {/* Навигационная панель */}
       <div className="absolute top-0 left-0 right-0 z-30 py-4">
         <div className="container mx-auto px-4">
           {/* Надписи вверху */}
           <div className="flex justify-between items-center px-2 mb-3">
             <div className="flex gap-8 text-white/90 text-sl font-light">
-              {/* <Link to="/services" className="hover:text-white transition-colors duration-200">
-                Услуги
-              </Link> */}
               <div
                 className="hover:text-white transition-colors duration-200"
                 style={{ cursor: 'pointer' }}

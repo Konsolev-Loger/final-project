@@ -705,5 +705,4 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   );
 };
 
-
 // мы не знаем что это такое...

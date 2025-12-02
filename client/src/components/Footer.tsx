@@ -1,9 +1,10 @@
 import { Phone, Mail, MapPin } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 
 export default function Footer(): React.JSX.Element {
   return (
     <footer className="bg-primary text-white py-6" id="footer">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-2xl font-bold mb-4">Трендовые Отделочные Решения</h3>
@@ -43,6 +44,18 @@ export default function Footer(): React.JSX.Element {
         <div className="border-t border-white/20 mt-4 pt-4 text-center text-white/60">
           <p>&copy; 2024 Трендовые Отделочные Решения. Все права защищены.</p>
         </div>
+
+        {/* Анимированная стрелка */}
+        <button
+          className="absolute right-6 bottom-35 w-12 h-12 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/90 transition-colors duration-200 animate-bounce"
+          onClick={() => {
+            const element = document.getElementById('hero');
+            if (element) element.scrollIntoView({ behavior: 'smooth' });
+          }}
+          aria-label="Пролистать наверх"
+        >
+          <ArrowUp className="w-6 h-6 text-white" />
+        </button>
       </div>
     </footer>
   );
