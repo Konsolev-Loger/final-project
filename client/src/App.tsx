@@ -14,7 +14,7 @@ import TestFunc from './components/test';
 import RoomsPage from './pages/RoomsPage';
 // import ProfilePage from './pages/ProfilePage';
 import CalculatePage from './pages/CalculatePage';
-import ProfilePage from './pages/ProfilePage';
+import ProfilePage from './pages/Profile/ProfilePage';
 import CartPage from './pages/CartPage';
 import AdminPage from './pages/Admin/AdminePage2';
 // import AdminPage from './pages/AdminPage';

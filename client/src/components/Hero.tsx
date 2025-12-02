@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
 import { ShoppingCart } from 'lucide-react';
@@ -8,6 +8,7 @@ import heroImage from '@/assets/hero-finishing.jpg';
 
 export default function Hero(): React.JSX.Element {
   const { user, status } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const isLoggedIn = status === 'logged' && user;
   const scrollToCalculator = (): void => {
@@ -15,7 +16,10 @@ export default function Hero(): React.JSX.Element {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden" id="hero">
+    <section
+      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
+      id="hero"
+    >
       {/* Навигационная панель */}
       <div className="absolute top-0 left-0 right-0 z-30 py-4">
         <div className="container mx-auto px-4">
@@ -32,12 +36,15 @@ export default function Hero(): React.JSX.Element {
               >
                 Материалы
               </div>
-              {/* <Link 
-                to="/portfolio" 
+
+              <div
                 className="hover:text-white transition-colors duration-200"
+                style={{ cursor: 'pointer' }}
+                onClick={() => navigate('/admin')}
               >
-                Портфолио
-              </Link> */}
+                Админка
+              </div>
+
               <div
                 className="hover:text-white transition-colors duration-200"
                 style={{ cursor: 'pointer' }}
@@ -115,7 +122,7 @@ export default function Hero(): React.JSX.Element {
                 if (element) element.scrollIntoView({ behavior: 'smooth' });
               }}
               className="  text-white hover:bg-white hover:text-primary bg-transparent text-lg px-8 h-14"
-              style={{backgroundColor: "fff"}}
+              style={{ backgroundColor: 'fff' }}
             >
               Наши проекты
             </Button>

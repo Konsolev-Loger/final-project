@@ -84,30 +84,37 @@ class OrderController {
     const { status } = req.body;
 
     try {
-      console.log(id, status, user.id);
       if (typeof status !== 'boolean') {
         return res
           .status(400)
           .json(formatResponse(400, 'Поле status должно быть true или false', null));
       }
 
-      const order = await OrderService.getById(id, user.id); // проверка принадлежности внутри
+      // 1. Находим заказ БЕЗ проверки владельца (админ может видеть всё)
+      const order = await OrderService.getByIdorder(id); // ← убрали user.id!
 
-      if (order.user_id !== user.id) {
-        return res
-          .status(403)
-          .json(formatResponse(403, 'Вы не можете изменить статус чужого заказа', null));
+      if (!order) {
+        return res.status(404).json(formatResponse(404, 'Заказ не найден', null));
       }
 
-      const updatedOrder = await OrderService.updateStatus(id, status, user.id);
+      // 2. Проверяем права: только админ может менять статус
+      //    (если хочешь — можно разрешить и владельцу, но обычно статус меняет только админ)
+      if (!user.is_admin) {
+        return res
+          .status(403)
+          .json(
+            formatResponse(403, 'Только администратор может менять статус заказа', null),
+          );
+      }
+
+      // 3. Обновляем статус — передаём ВЕСЬ объект user
+      const updatedOrder = await OrderService.updateStatus(id, status, user);
 
       return res
         .status(200)
         .json(formatResponse(200, 'Статус заказа обновлён', updatedOrder, null));
     } catch (error) {
-      if (error.message === 'Заказ не найден') {
-        return res.status(404).json(formatResponse(404, 'Заказ не найден', null));
-      }
+      console.error('Update status error:', error);
       return res
         .status(500)
         .json(formatResponse(500, 'Ошибка сервера', null, error.message));
@@ -121,7 +128,7 @@ class OrderController {
     const { comment } = req.body;
 
     try {
-      const order = await OrderService.getById(id, user.id);
+      const order = await OrderService.getByIdorder(id, user.id);
 
       if (order.user_id !== user.id) {
         return res
@@ -150,21 +157,32 @@ class OrderController {
     const { id } = req.params;
 
     try {
-      const order = await OrderService.getById(id, user.id);
+      // Используем getByIdorder — он НЕ проверяет права, просто ищет заказ
+      const order = await OrderService.getByIdorder(id); // ← без user.id!
 
-      if (order.user_id !== user.id) {
+      if (!order) {
+        return res.status(404).json(formatResponse(404, 'Заказ не найден', null));
+      }
+      // Теперь проверяем права вручную
+      const isAdmin = user.is_admin === true;
+      if (!isAdmin && order.user_id !== user.id) {
         return res
           .status(403)
           .json(formatResponse(403, 'Вы не можете удалить чужой заказ', null));
       }
+      // Удаляем — передаём весь объект user
+      const result = await OrderService.delete(id, user);
 
-      const result = await OrderService.delete(id, user.id);
-
-      return res.status(200).json(formatResponse(200, result.message, null, null));
+      return res
+        .status(200)
+        .json(formatResponse(200, result.message, { deletedOrderId: id }));
     } catch (error) {
+      console.error('Delete order error:', error);
+
       if (error.message === 'Заказ не найден') {
         return res.status(404).json(formatResponse(404, 'Заказ не найден', null));
       }
+
       return res
         .status(500)
         .json(formatResponse(500, 'Ошибка сервера', null, error.message));
@@ -226,7 +244,7 @@ class OrderController {
         .status(200)
         .json(formatResponse(200, 'Товар удалён из корзины', updatedCart));
     } catch (error) {
-      console.error( error);
+      console.error(error);
       return res
         .status(500)
         .json(formatResponse(500, 'Ошибка сервера', null, error.message));
