@@ -19,6 +19,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({
   categories,
   onSubmit,
   onClose,
+  submitLabel,
 }) => {
   const [name, setName] = useState(initial?.name ?? '');
   const [price, setPrice] = useState<string>((initial?.price ?? '').toString());
@@ -31,7 +32,8 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({
 
     onSubmit({
       name: name.trim(),
-      price: Number(price),
+      // server stores price as string in DB — keep it consistent
+      price: price.toString(),
       description: description.trim() || undefined,
       img: img.trim() || undefined,
       category_id: categoryId || undefined,

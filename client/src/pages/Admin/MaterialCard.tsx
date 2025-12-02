@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Edit3, Trash2 } from 'lucide-react';
+import { Pencil, Trash } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { getImageSrc } from '@/pages/Admin/getImageSrc';
 import type { MaterialType } from '@/app/type/CategoryType';
@@ -46,10 +46,12 @@ export const MaterialCard: React.FC<Props> = ({ material, categories, onUpdate, 
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
-                    size="sm"
-                    className="h-12 px-4 bg-white/80 hover:bg-white border-white/50 shadow-lg text-primary"
+                    size="icon"
+                    variant="ghost"
+                    aria-label="Редактировать"
+                    className="text-muted-foreground hover:text-primary"
                   >
-                    <Edit3 className="h-4 w-4" />
+                    <Pencil className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
                 <MaterialFormDialog
@@ -59,8 +61,14 @@ export const MaterialCard: React.FC<Props> = ({ material, categories, onUpdate, 
                 />
               </Dialog>
 
-              <Button size="sm" variant="destructive" onClick={() => onDelete(material.id)}>
-                <Trash2 className="h-4 w-4" />
+              <Button
+                size="icon"
+                variant="ghost"
+                aria-label="Удалить"
+                onClick={() => onDelete(material.id)}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <Trash className="h-4 w-4" />
               </Button>
             </div>
           </div>
