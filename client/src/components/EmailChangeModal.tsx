@@ -4,7 +4,6 @@ import { updateUserThunk } from '@/entities/user/api/UserApi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CheckCircle, XCircle, MessageSquare } from 'lucide-react';
-import { X } from 'lucide-react';
 import axios from 'axios';
 
 interface EmailChangeModalProps {
@@ -115,18 +114,23 @@ export const EmailChangeModal: React.FC<EmailChangeModalProps> = ({ isOpen, onCl
     setLoading(false);
   };
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget && !loading) {
+      onClose();
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md relative">
-        <button
-          onClick={onClose}
-          className="absolute -top-0 -right-0 bg-white rounded-full p-1 shadow-lg hover:bg-gray-100 transition-colors z-10"
-          disabled={loading}
-        >
-          <X className="h-5 w-5 text-gray-500" />
-        </button>
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      onClick={handleBackdropClick}
+    >
+      <div
+        className="bg-white rounded-lg shadow-lg w-full max-w-md relative"
+        onClick={(e) => e.stopPropagation()} // Предотвращаем закрытие при клике внутри модалки
+      >
         <div className="p-6">
           <h3 className="text-xl font-semibold mb-4">
             {step === 'check'
@@ -167,15 +171,6 @@ export const EmailChangeModal: React.FC<EmailChangeModalProps> = ({ isOpen, onCl
                     </div>
 
                     <div className="space-y-3">
-                      {/* <div className="bg-white p-3 rounded border">
-                        <p className="text-sm font-medium mb-1">Ваш ID пользователя:</p>
-                        <div className="flex items-center justify-between">
-                          <code className="text-lg font-bold bg-gray-100 px-3 py-1 rounded">
-                            {user?.id}
-                          </code>
-                        </div>
-                      </div> */}
-
                       <div className="space-y-2">
                         <h5 className="font-medium">Инструкция:</h5>
                         <ol className="list-decimal pl-5 text-sm space-y-1">
@@ -183,14 +178,15 @@ export const EmailChangeModal: React.FC<EmailChangeModalProps> = ({ isOpen, onCl
                             Найдите бота в Telegram: <strong>@code_super_bot</strong>
                           </li>
                           <li>Напишите команду:</li>
-                          <div className="bg-gray-800 text-white p-2 rounded font-mono text-sm">
-                            /link {user?.id}{' '}
+                          <div className="bg-gray-800 text-white p-2 rounded font-mono text-sm flex items-center justify-between">
+                            <span>/link {user?.id}</span>
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() =>
                                 navigator.clipboard.writeText(String(`/link ${user?.id}`))
                               }
+                              className="text-black"
                             >
                               Копировать
                             </Button>

@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { EmailChangeModal } from '@/components/EmailChangeModal';
 import { useNavigate } from 'react-router-dom';
-import { Pencil } from 'lucide-react';
+import { Pencil, Home } from 'lucide-react';
 
 export default function ProfilePage() {
   const { user, isLoading: userLoading } = useAppSelector((state) => state.user);
@@ -148,65 +148,79 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-muted py-8 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
+        {/* Карточка профиля */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Профиль пользователя</CardTitle>
-            {isAdmin && (
-              <Badge variant="default" className="ml-2">
-                Администратор
-              </Badge>
-            )}
-            <Button
-              onClick={() => {
-                dispatch(signOutThunk());
-                navigate('/', { replace: true });
-              }}
-              variant="outline"
-              size="sm"
-            >
-              Выйти
-            </Button>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+              <CardTitle>Профиль пользователя</CardTitle>
+              {isAdmin && (
+                <Badge variant="default" className="w-fit">
+                  Администратор
+                </Badge>
+              )}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <Button
+                onClick={() => navigate('/', { replace: true })}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 justify-center"
+              >
+                <Home className="h-4 w-4" />
+                На главную
+              </Button>
+              <Button
+                onClick={() => {
+                  dispatch(signOutThunk());
+                  navigate('/', { replace: true });
+                }}
+                variant="outline"
+                size="sm"
+                className="justify-center"
+              >
+                Выйти
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             {!editMode ? (
-              <div className="space-y-3">
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">Имя:</span>
-                  <span>{user?.name}</span>
+              <div className="space-y-4">
+                {/* Имя */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-2 border-b gap-2">
+                  <span className="font-medium min-w-24">Имя:</span>
+                  <span className="text-right flex-1">{user?.name || 'Не указано'}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">Email:</span>
-                  <span>{user?.email}</span>
-                  <div>
-                    <Button
-                      onClick={() => setShowEmailModal(true)}
-                      variant="outline"
-                      size="sm"
-                      className="w-full flex items-center justify-center gap-2"
-                    >
-                      <Pencil className="h-3 w-3" />
-                      Сменить email
-                    </Button>
 
-                    <p className="text-xs text-gray-500 mt-1 text-center">
-                      Через привязанный Telegram
-                    </p>
+                {/* Email - исправленная версия */}
+                <div className="py-2 border-b">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <span className="font-medium min-w-24">Email:</span>
+                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto justify-end">
+                      <div className="order-2 sm:order-1 text-right flex-1 sm:flex-none">
+                        {user?.email || 'Не указан'}
+                      </div>
+                      <div className="order-1 sm:order-2">
+                        <Button
+                          onClick={() => setShowEmailModal(true)}
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2"
+                        >
+                          <Pencil className="h-3 w-3" />
+                          Сменить email
+                        </Button>
+                      </div>
+                    </div>
                   </div>
+                </div>
 
-                  <EmailChangeModal
-                    isOpen={showEmailModal}
-                    onClose={() => setShowEmailModal(false)}
-                  />
+                {/* Телефон */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-2 border-b gap-2">
+                  <span className="font-medium min-w-24">Телефон:</span>
+                  <span className="text-right flex-1">{user?.phone || 'Не указан'}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">Телефон:</span>
-                  <span>{user?.phone || 'Не указан'}</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">ID:</span>
-                  <span className="text-muted-foreground">#{user?.id}</span>
-                </div>
-                <Button onClick={() => setEditMode(true)} className="w-full">
+
+                <Button onClick={() => setEditMode(true)} className="w-full mt-4">
                   Редактировать профиль
                 </Button>
               </div>
@@ -228,7 +242,7 @@ export default function ProfilePage() {
                     placeholder="+7 (___) ___-__-__"
                   />
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Button onClick={handleProfileSave} className="flex-1">
                     Сохранить
                   </Button>
@@ -238,9 +252,12 @@ export default function ProfilePage() {
                 </div>
               </div>
             )}
+
+            <EmailChangeModal isOpen={showEmailModal} onClose={() => setShowEmailModal(false)} />
           </CardContent>
         </Card>
 
+        {/* Карточка заказов */}
         <Card>
           <CardHeader>
             <CardTitle>Заказы {isAdmin && '(все пользователи)'}</CardTitle>
@@ -251,9 +268,9 @@ export default function ProfilePage() {
                 {orders.map((order: OrderType) => (
                   <Card key={order.id} className="bg-background">
                     <CardContent className="p-4 space-y-3">
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
+                      <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
+                        <div className="space-y-2 flex-1">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                             <span className="font-medium">Заказ #{order.id}</span>
                             {getStatusBadge(order.status)}
                           </div>
@@ -261,11 +278,13 @@ export default function ProfilePage() {
                             Создан: {new Date(order.createdAt).toLocaleString('ru-RU')}
                           </div>
                         </div>
-                        <div className="text-lg font-bold">{order.total_price} ₽</div>
+                        <div className="text-lg font-bold self-end sm:self-center">
+                          {order.total_price} ₽
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">Комментарий:</span>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                        <span className="text-sm font-medium min-w-24">Комментарий:</span>
                         <Input
                           className="flex-1"
                           defaultValue={order.comment || ''}
