@@ -15,7 +15,7 @@ export default function Hero(): React.JSX.Element {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden" id="hero">
       {/* Навигационная панель */}
       <div className="absolute top-0 left-0 right-0 z-30 py-4">
         <div className="container mx-auto px-4">
