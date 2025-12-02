@@ -175,7 +175,12 @@ export const EmailChangeModal: React.FC<EmailChangeModalProps> = ({ isOpen, onCl
                         <h5 className="font-medium">Инструкция:</h5>
                         <ol className="list-decimal pl-5 text-sm space-y-1">
                           <li>
-                            Найдите бота в Telegram: <strong>@code_super_bot</strong>
+                            Найдите бота в Telegram:{' '}
+                            <strong>
+                              <a href="https://t.me/code_super_bot" target="_blank">
+                                перейти по ссылке
+                              </a>
+                            </strong>
                           </li>
                           <li>Напишите команду:</li>
                           <div className="bg-gray-800 text-white p-2 rounded font-mono text-sm flex items-center justify-between">
