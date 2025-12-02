@@ -110,12 +110,12 @@ export const createOrderCart = createAsyncThunk<
   try {
     const response = await axiosInstance.post(`/orders/checkout`, payload);
     const { statusCode, error } = response.data;
-    if (error || statusCode !== 200) {
+    if (error || (statusCode !== 200 && statusCode !== 201)) {
       return rejectWithValue({
         statusCode: statusCode || 500,
-        message: 'Не удалоось сделать заказ',
+        message: 'Не удалось оформить заказ',
         data: null,
-        error: 'Не удалоось сделать заказ',
+        error: 'Не удалось оформить заказ',
       });
     }
     return response.data.data;

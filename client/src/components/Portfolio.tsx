@@ -1,81 +1,116 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import wallImage from '@/assets/wall-finishing.jpg';
 import floorImage from '@/assets/floor-finishing.jpg';
 import ceilingImage from '@/assets/ceiling-finishing.jpg';
-import house from '@/assets/house.jpeg';
-import house2 from '@/assets/house2.jpeg';
-import office from '@/assets/office.jpeg';
-import office2 from '@/assets/office2.jpeg';
 import studia from '@/assets/studia.jpeg';
 import living from '@/assets/living.jpeg';
 import living2 from '@/assets/living2.jpeg';
 import kitchen from '@/assets/kitchen.jpeg';
 import kitchen2 from '@/assets/kitchen2.jpeg';
 import bedroom from '@/assets/bedroom.jpeg';
-import bedroom2 from '@/assets/bedroom2.jpeg'
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import bedroom2 from '@/assets/bedroom2.jpeg';
+
+import andreyImage from '@/assets/андрей.png';
+import asapImage from '@/assets/асап.jpg';
+import zoloImage from '@/assets/золо.jpg';
+import leonidImage from '@/assets/Леонид.jpg';
+import mortyImage from '@/assets/морти.jpg';
+import saraImage from '@/assets/сара.jpg';
+import tarasImage from '@/assets/тарас.png';
+import { ArrowLeft, ArrowRight, Quote } from 'lucide-react';
 
 const projects = [
+  { image: wallImage },
+  { image: floorImage },
+  { image: ceilingImage },
+  { image: studia },
+  { image: living },
+  { image: living2 },
+  { image: kitchen },
+  { image: kitchen2 },
+  { image: bedroom },
+  { image: bedroom2 },
+];
+
+const reviews = [
   {
-    image: wallImage,
+    text: 'Отличная работа! Всё сделали быстро и аккуратно.',
+    name: 'Какой то тип',
+    avatar: andreyImage,
   },
   {
-    image: floorImage,
+    text: 'Это мои братишки сделали просто супер, респект!',
+    name: 'Асап Роки',
+    avatar: asapImage,
+  },
+  { text: 'Это конечно не баобаб, но очень качественно.', name: 'Иван Золо', avatar: zoloImage },
+  { text: 'Это преступление такого рода.', name: 'Леонид Коневский', avatar: leonidImage },
+  {
+    text: 'Рик сказал что вы лучшие в нашей солнечной системе.',
+    name: 'Морти',
+    avatar: mortyImage,
   },
   {
-    image: ceilingImage,
+    text: 'Качество что даже выдержит падения моего старого металического друга.',
+    name: 'Сара Конор',
+    avatar: saraImage,
   },
   {
-    image: wallImage,
-  },
-  {
-    image: floorImage,
-  },
-  {
-    image: ceilingImage,
-  },
-  {
-    image: house,
-  },
-  {
-    image: house2,
-  },
-  {
-    image: office,
-  },
-  {
-    image: office2,
-  },
-  {
-    image: studia,
-  },
-  {
-    image: living,
-  },
-  {
-    image: living2,
-  },
-  {
-    image: kitchen,
-  },
-  {
-    image: kitchen2,
-  },
-  {
-    image: bedroom,
-  },
-  {
-    image: bedroom2,
+    text: 'Это мои братишки сделали просто супер, респект!',
+    name: 'Тарас Любимович',
+    avatar: tarasImage,
   },
 ];
 
 export default function Portfolio(): React.JSX.Element {
   const [index, setIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
-  const prev = (): void => setIndex((i) => (i - 1 + projects.length) % projects.length);
-  const next = (): void => setIndex((i) => (i + 1) % projects.length);
+  // Выбираем отзыв по порядку (с использованием индекса слайда)
+  const currentReview = reviews[index % reviews.length];
 
-  const goTo = (i: number): void => setIndex(i);
+  // Плавный переход при смене слайда
+  useEffect(() => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollTo({
+        left: index * carouselRef.current.clientWidth,
+        behavior: 'smooth',
+      });
+    }
+  }, [index]);
+
+  const prev = () => setIndex((i) => (i - 1 + projects.length) % projects.length);
+  const next = () => setIndex((i) => (i + 1) % projects.length);
+  const goTo = (i: number) => setIndex(i);
+
+  // Свайп для мыши и тача
+  const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    if (!carouselRef.current) return;
+    carouselRef.current.dataset.dragging = 'true';
+    carouselRef.current.dataset.startX = clientX.toString();
+    carouselRef.current.dataset.scrollLeft = carouselRef.current.scrollLeft.toString();
+  };
+
+  const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!carouselRef.current?.dataset.dragging) return;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const startX = Number(carouselRef.current.dataset.startX);
+    const walk = (clientX - startX) * 2;
+    carouselRef.current.scrollLeft = Number(carouselRef.current.dataset.scrollLeft) - walk;
+  };
+
+  const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!carouselRef.current?.dataset.dragging) return;
+    const clientX = 'touches' in e ? e.changedTouches[0].clientX : e.clientX;
+    const startX = Number(carouselRef.current.dataset.startX);
+    const walked = clientX - startX;
+
+    delete carouselRef.current.dataset.dragging;
+
+    if (walked < -80) next();
+    else if (walked > 80) prev();
+  };
 
   return (
     <section id="portfolio" className="py-20 bg-gradient-subtle">
@@ -87,55 +122,80 @@ export default function Portfolio(): React.JSX.Element {
           </p>
         </div>
 
-        <div className="relative max-w-3xl mx-auto">
-          {/* Image display */}
-          <div className="relative rounded-lg shadow-soft overflow-hidden">
-            <div className="aspect-[4/3] bg-black">
-              <img
-                src={projects[index].image}
-                className="w-full h-full object-cover transition-transform duration-500"
-              />
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 max-w-7xl mx-auto items-start">
+          {/* === КАРУСЕЛЬ БЕЗ СКРОЛЛБАРА === */}
+          <div className="relative">
+            <div
+              ref={carouselRef}
+              className="flex overflow-x-hidden scroll-smooth snap-x snap-mandatory"
+              onMouseDown={handleStart}
+              onMouseMove={handleMove}
+              onMouseUp={handleEnd}
+              onMouseLeave={handleEnd}
+              onTouchStart={handleStart}
+              onTouchMove={handleMove}
+              onTouchEnd={handleEnd}
+            >
+              {projects.map((project, i) => (
+                <div key={i} className="w-full flex-shrink-0 snap-center">
+                  <img
+                    src={project.image}
+                    alt={`Проект ${i + 1}`}
+                    className="w-full h-auto object-cover aspect-[4/3] md:aspect-[5/4] select-none pointer-events-none rounded-lg"
+                    draggable={false}
+                  />
+                </div>
+              ))}
             </div>
 
-            {/* overlay text */}
-            <div className="absolute bottom-4 left-4 right-4 p-4 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-md">
-              <div className="text-primary-foreground">
-              </div>
-            </div>
-
-            {/* left arrow */}
+            {/* Стрелки */}
             <button
-              type="button"
-              aria-label="Назад"
               onClick={prev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-background/70 hover:bg-background/90 text-foreground rounded-full p-2 shadow-md transition-colors"
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-black rounded-full p-3 shadow-lg transition-all z-10"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-6 w-6" />
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-black rounded-full p-3 shadow-lg transition-all z-10"
+            >
+              <ArrowRight className="h-6 w-6" />
             </button>
 
-            {/* right arrow */}
-            <button
-              type="button"
-              aria-label="Вперёд"
-              onClick={next}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-background/70 hover:bg-background/90 text-foreground rounded-full p-2 shadow-md transition-colors"
-            >
-              <ArrowRight className="h-5 w-5" />
-            </button>
+            {/* Простые белые точки без фона */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+              {projects.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goTo(i)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    i === index ? 'bg-white w-10' : 'bg-white/50 w-2'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
-          {/* indicators */}
-          <div className="mt-4 flex items-center justify-center gap-3">
-            {projects.map((_project, i) => (
-              <button
-                key={i}
-                aria-label={`Перейти к ${(i + 1).toString()}`}
-                onClick={() => goTo(i)}
-                className={`h-2 w-8 rounded-full transition-all duration-200 ${
-                  i === index ? 'bg-primary' : 'bg-muted'
-                }`}
-              />
-            ))}
+          {/* === Отзыв === */}
+          <div className="bg-background/95 rounded-2xl p-8 shadow-xl border border-border">
+            <Quote className="h-12 w-12 text-primary/20 mb-6" />
+            <p className="text-lg md:text-xl italic text-foreground/90 leading-relaxed mb-8">
+              "{currentReview.text}"
+            </p>
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-gray-200 border-2 border-dashed border-gray-400 overflow-hidden">
+                <img
+                  src={currentReview.avatar}
+                  alt={currentReview.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => (e.currentTarget.style.display = 'none')}
+                />
+              </div>
+              <div>
+                <p className="font-semibold text-lg">{currentReview.name}</p>
+                <p className="text-sm text-muted-foreground">Наш клиент</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

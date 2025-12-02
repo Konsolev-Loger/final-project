@@ -7,7 +7,7 @@ import { ChevronDown, Package, Calculator } from 'lucide-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import '@/components/css/Material.css';
 import { CategoryType, MaterialType } from '@/app/type/CategoryType';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { setCategory, setMaterial } from '@/store/calculatorSlice';
 
 export default function MaterialsAccordion() {
@@ -34,10 +34,9 @@ export default function MaterialsAccordion() {
     document.body.classList.remove('modal-open'); // ← разблокируем фон
   };
 
-
   return (
     <>
-      <section className="materials-accordion-section">
+      <section className="materials-accordion-section" id="materials">
         <div className="container mx-auto px-4">
           <h2 className="materials-accordion-title">Наши Материалы</h2>
           <p className="materials-accordion-subtitle">

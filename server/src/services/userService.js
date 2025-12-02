@@ -13,6 +13,19 @@ class UserService {
   static async getUserById(id) {
     return (await User.findByPk(id, {}))?.get();
   }
+
+  static async updateUser(id, data) {
+    try {
+      const user = await User.findByPk(id);
+      if (!user) return null;
+
+      await user.update(data);
+      return user;
+    } catch (error) {
+      console.log('===UserService.updateUser===', error);
+      throw error;
+    }
+  }
 }
 
 module.exports = UserService;

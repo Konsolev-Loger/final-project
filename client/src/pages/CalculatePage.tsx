@@ -1,4 +1,4 @@
-import { useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAppDispatch } from '@/store/hooks';
 import { setArea } from '@/store/calculatorSlice';
 import { useEffect } from 'react';
@@ -16,7 +16,7 @@ export default function CalculatePage() {
   }, [location, dispatch]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden border-radius">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden border-radius" >
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${heroImage})` }}
@@ -25,7 +25,7 @@ export default function CalculatePage() {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center" >
           <Calculator />
         </div>
       </div>

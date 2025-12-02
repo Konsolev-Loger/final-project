@@ -16,7 +16,8 @@ import RoomsPage from './pages/RoomsPage';
 import CalculatePage from './pages/CalculatePage';
 import ProfilePage from './pages/ProfilePage';
 import CartPage from './pages/CartPage';
-import AdminPage from './pages/AdminPage';
+import AdminPage from './pages/Admin/AdminePage2';
+// import AdminPage from './pages/AdminPage';
 
 const queryClient = new QueryClient();
 
@@ -25,7 +26,20 @@ export default function App(): React.JSX.Element {
 
   useEffect(() => {
     dispatch(refreshTokensThunk());
-  }, []);
+
+    const savedStatus = localStorage.getItem('authStatus');
+    const savedUser = localStorage.getItem('userData');
+
+    if (savedStatus === 'logged' && savedUser) {
+      dispatch({
+        type: 'user/initializeUser',
+        payload: {
+          status: 'logged',
+          user: JSON.parse(savedUser),
+        },
+      });
+    }
+  }, [dispatch]);
 
   return (
     <QueryClientProvider client={queryClient}>

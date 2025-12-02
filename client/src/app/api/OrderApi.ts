@@ -31,12 +31,12 @@ export const createOrderThunk = createAsyncThunk<
   try {
     const response = await axiosInstance.post('/orders', data);
     const { statusCode, error } = response.data;
-    if (error || statusCode !== 200) {
+   if (error || (statusCode !== 200 && statusCode !== 201)) {
       return rejectWithValue({
         statusCode: statusCode || 500,
-        message: 'Не удалоось создать заказ',
+        message: 'Не удалось оформить заказ',
         data: null,
-        error: 'Не удалоось создать заказ',
+        error: 'Не удалось оформить заказ',
       });
     }
     return response.data.data;

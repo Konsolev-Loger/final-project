@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/shared/hooks/useReduxHook';
 import {
   getOrderByUserThunk,
@@ -6,20 +6,25 @@ import {
   updateOrderCommentThunk,
   deleteOrderThunk,
 } from '@/app/api/OrderApi';
-import { updateUserThunk } from '@/entities/user/api/UserApi';
+import { signOutThunk, updateUserThunk } from '@/entities/user/api/UserApi';
 import type { OrderType } from '@/app/type/OrderType';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { EmailChangeModal } from '@/components/EmailChangeModal';
+import { useNavigate } from 'react-router-dom';
+import { Pencil, Home } from 'lucide-react';
 
 export default function ProfilePage() {
-  const { user, status, isLoading: userLoading } = useAppSelector((state) => state.user);
+  const { user, isLoading: userLoading } = useAppSelector((state) => state.user);
   const orders = useAppSelector((state) => state.order.orders);
-  // const isLoadingOrders = useAppSelector((state) => state.order.isLoading);
   const error = useAppSelector((state) => state.order.error);
-  const dispatch = useAppDispatch();
 
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const [showEmailModal, setShowEmailModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState({
     name: user?.name,
@@ -46,33 +51,6 @@ export default function ProfilePage() {
     }
   }, [user, dispatch, isAdmin]);
 
-  console.log('ProfilePage debug:', {
-    user,
-    status,
-    isLoading: userLoading,
-    hasUser: !!user,
-  });
-
-  // if (status === 'guest') {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center bg-muted">
-  //       <div className="text-center">
-  //         <div className="text-lg">Пожалуйста, войдите в систему</div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // if (!user || userLoading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center bg-muted">
-  //       <div className="text-center">
-  //         <div className="text-lg">Загрузка...</div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   const handleProfileSave = async () => {
     if (!editData.name || !editData.email) {
       return;
@@ -89,6 +67,49 @@ export default function ProfilePage() {
     } catch (err) {
       console.error('Ошибка обновления профиля:', err);
     }
+  };
+
+  const formatPhoneNumber = (value: string) => {
+    const cleaned = value.replace(/\D/g, '');
+    const limited = cleaned.slice(0, 11);
+
+    if (limited.length === 0) return '';
+    if (limited.length <= 1) return `+7 (${limited.slice(1)}`;
+    if (limited.length <= 4) return `+7 (${limited.slice(1, 4)}`;
+    if (limited.length <= 7) return `+7 (${limited.slice(1, 4)}) ${limited.slice(4, 7)}`;
+    if (limited.length <= 9)
+      return `+7 (${limited.slice(1, 4)}) ${limited.slice(4, 7)}-${limited.slice(7, 9)}`;
+
+    return `+7 (${limited.slice(1, 4)}) ${limited.slice(4, 7)}-${limited.slice(
+      7,
+      9,
+    )}-${limited.slice(9, 11)}`;
+  };
+
+  const [formattedPhone, setFormattedPhone] = useState('');
+
+  useEffect(() => {
+    if (!user) return;
+
+    setEditData({
+      name: user.name || '',
+      email: user.email || '',
+      phone: user.phone || '',
+    });
+
+    if (user.phone) {
+      setFormattedPhone(formatPhoneNumber(user.phone));
+    }
+  }, [user]);
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const formatted = formatPhoneNumber(value);
+
+    setFormattedPhone(formatted);
+
+    const cleanPhone = value.replace(/\D/g, '');
+    setEditData({ ...editData, phone: cleanPhone });
   };
 
   const handleCommentChange = (orderId: number, comment: string) => {
@@ -127,35 +148,79 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-muted py-8 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
+        {/* Карточка профиля */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Профиль пользователя</CardTitle>
-            {isAdmin && (
-              <Badge variant="default" className="ml-2">
-                Администратор
-              </Badge>
-            )}
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+              <CardTitle>Профиль пользователя</CardTitle>
+              {isAdmin && (
+                <Badge variant="default" className="w-fit">
+                  Администратор
+                </Badge>
+              )}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <Button
+                onClick={() => navigate('/', { replace: true })}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 justify-center"
+              >
+                <Home className="h-4 w-4" />
+                На главную
+              </Button>
+              <Button
+                onClick={() => {
+                  dispatch(signOutThunk());
+                  navigate('/', { replace: true });
+                }}
+                variant="outline"
+                size="sm"
+                className="justify-center"
+              >
+                Выйти
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             {!editMode ? (
-              <div className="space-y-3">
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">Имя:</span>
-                  <span>{user?.name}</span>
+              <div className="space-y-4">
+                {/* Имя */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-2 border-b gap-2">
+                  <span className="font-medium min-w-24">Имя:</span>
+                  <span className="text-right flex-1">{user?.name || 'Не указано'}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">Email:</span>
-                  <span>{user?.email}</span>
+
+                {/* Email - исправленная версия */}
+                <div className="py-2 border-b">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <span className="font-medium min-w-24">Email:</span>
+                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto justify-end">
+                      <div className="order-2 sm:order-1 text-right flex-1 sm:flex-none">
+                        {user?.email || 'Не указан'}
+                      </div>
+                      <div className="order-1 sm:order-2">
+                        <Button
+                          onClick={() => setShowEmailModal(true)}
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2"
+                        >
+                          <Pencil className="h-3 w-3" />
+                          Сменить email
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">Телефон:</span>
-                  <span>{user?.phone || 'Не указан'}</span>
+
+                {/* Телефон */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-2 border-b gap-2">
+                  <span className="font-medium min-w-24">Телефон:</span>
+                  <span className="text-right flex-1">{user?.phone || 'Не указан'}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">ID:</span>
-                  <span className="text-muted-foreground">#{user?.id}</span>
-                </div>
-                <Button onClick={() => setEditMode(true)} className="w-full">
+
+                <Button onClick={() => setEditMode(true)} className="w-full mt-4">
                   Редактировать профиль
                 </Button>
               </div>
@@ -170,23 +235,14 @@ export default function ProfilePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Email</label>
-                  <Input
-                    type="email"
-                    value={editData.email}
-                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                    placeholder="your@email.com"
-                  />
-                </div>
-                <div>
                   <label className="block text-sm font-medium mb-1">Телефон</label>
                   <Input
-                    value={editData.phone}
-                    onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                    value={formattedPhone}
+                    onChange={handlePhoneChange}
                     placeholder="+7 (___) ___-__-__"
                   />
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Button onClick={handleProfileSave} className="flex-1">
                     Сохранить
                   </Button>
@@ -196,36 +252,25 @@ export default function ProfilePage() {
                 </div>
               </div>
             )}
+
+            <EmailChangeModal isOpen={showEmailModal} onClose={() => setShowEmailModal(false)} />
           </CardContent>
         </Card>
 
+        {/* Карточка заказов */}
         <Card>
           <CardHeader>
             <CardTitle>Заказы {isAdmin && '(все пользователи)'}</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* {isLoadingOrders && (
-              <div className="text-center text-muted-foreground py-8">Загрузка заказов...</div>
-            )}
-
-            {error && (
-              <div className="text-center text-destructive bg-destructive/10 p-3 rounded-lg">
-                {error}
-              </div>
-            )}
-
-            {!isLoadingOrders && !error && orders.length === 0 && (
-              <div className="text-center text-muted-foreground py-8">Нет заказов</div>
-            )} */}
-
             {!error && orders.length > 0 && (
               <div className="space-y-4">
                 {orders.map((order: OrderType) => (
                   <Card key={order.id} className="bg-background">
                     <CardContent className="p-4 space-y-3">
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
+                      <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
+                        <div className="space-y-2 flex-1">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                             <span className="font-medium">Заказ #{order.id}</span>
                             {getStatusBadge(order.status)}
                           </div>
@@ -233,11 +278,13 @@ export default function ProfilePage() {
                             Создан: {new Date(order.createdAt).toLocaleString('ru-RU')}
                           </div>
                         </div>
-                        <div className="text-lg font-bold">{order.total_price} ₽</div>
+                        <div className="text-lg font-bold self-end sm:self-center">
+                          {order.total_price} ₽
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">Комментарий:</span>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                        <span className="text-sm font-medium min-w-24">Комментарий:</span>
                         <Input
                           className="flex-1"
                           defaultValue={order.comment || ''}
