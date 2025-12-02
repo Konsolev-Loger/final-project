@@ -36,7 +36,7 @@ export default function MaterialsAccordion() {
 
   return (
     <>
-      <section className="materials-accordion-section">
+      <section className="materials-accordion-section" id="materials">
         <div className="container mx-auto px-4">
           <h2 className="materials-accordion-title">Наши Материалы</h2>
           <p className="materials-accordion-subtitle">

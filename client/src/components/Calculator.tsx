@@ -81,7 +81,7 @@ export default function Calculator() {
   };
 
   return (
-    <section className="py-12 bg-muted rounded-2xl">
+    <section className="py-12 bg-muted rounded-2xl" id="calculator">
       <div className="container mx-auto px-15">
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold mb-3">Калькулятор стоимости</h2>
