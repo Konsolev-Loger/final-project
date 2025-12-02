@@ -78,7 +78,7 @@ export const signUpThunk = createAsyncThunk<
 });
 
 export const signInThunk = createAsyncThunk<
-  void,
+  UserType,
   UserSignInDataType,
   { rejectValue: ServerResponseType<null> }
 >(USER_THUNK_TYPES.SIGN_IN, async (signInData, { rejectWithValue }) => {
@@ -88,7 +88,7 @@ export const signInThunk = createAsyncThunk<
     });
 
     setAccessToken(response.data.accessToken);
-    return;
+    return response.data.data.user;
   } catch (error) {
     return rejectWithValue(handleAxiosError(error));
   }
