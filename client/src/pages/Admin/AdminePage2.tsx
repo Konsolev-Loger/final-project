@@ -2,12 +2,13 @@ import { AdminTabs } from './AdminTab';
 import { MaterialsTab } from './MaterialTab';
 import { CategoriesTab } from './CategoryTab';
 import { OrdersTab } from './OrderTab';
-import { UsersTab } from './UserTab';
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { axiosInstance } from '@/shared/lib/axiosInstance';
 import { AdminLayout } from './Admin';
+import { UsersTab } from './UserTab';
+// import {UserTab} from "./UserTab";
 
 interface Material {
   id: number;
@@ -31,7 +32,8 @@ const AdminPage: React.FC = () => {
     'materials',
   );
 
-   const getImageSrc = (img?: string): string => {
+  const getImageSrc = (img?: string): string => {
+    console.log(getImageSrc);
     if (!img) return '/fallback.png';
     if (img.startsWith('http://') || img.startsWith('https://')) return img;
     const base = (import.meta.env.VITE_API_URL as string | undefined) ?? '';
@@ -41,8 +43,6 @@ const AdminPage: React.FC = () => {
 
   const [materials, setMaterials] = useState<Material[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -99,29 +99,9 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const { data } = await axiosInstance.get('/users?page=1&limit=20');
-      if (data?.statusCode === 200 && data.data?.users) setUsers(data.data.users);
-    } catch (err) {
-      console.warn('fetchUsers error', err);
-    }
-  };
-
-  const fetchOrders = async () => {
-    try {
-      const { data } = await axiosInstance.get('/orders?page=1&limit=20');
-      if (data?.statusCode === 200 && data.data?.orders) setOrders(data.data.orders);
-    } catch (err) {
-      console.warn('fetchOrders error', err);
-    }
-  };
-
   useEffect(() => {
     fetchCategories();
     fetchMaterials();
-    fetchUsers();
-    fetchOrders();
   }, []);
 
   /* --- Materials CRUD --- */
@@ -265,6 +245,7 @@ const AdminPage: React.FC = () => {
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab as (value: string) => void}
+        defaultValue="materials"
         className="w-full"
       >
         <AdminTabs activeTab={activeTab} onChange={setActiveTab as (value: string) => void} />
@@ -289,11 +270,11 @@ const AdminPage: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="orders" className="mt-0">
-          <OrdersTab orders={orders} />
+          <OrdersTab />
         </TabsContent>
 
         <TabsContent value="users" className="mt-0">
-          <UsersTab users={users} />
+          <UsersTab />
         </TabsContent>
       </Tabs>
     </AdminLayout>
