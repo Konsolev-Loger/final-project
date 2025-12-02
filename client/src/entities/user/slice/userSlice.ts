@@ -52,7 +52,7 @@ const userSlice = createSlice({
       state.error = null;
       state.isInitialized = true;
       state.status = 'logged';
-      state.user = action.payload?.user || null; //!CHECK THIS PLACE LATER
+      state.user = action.payload; //!CHECK THIS PLACE LATER
     });
     builder.addCase(signUpThunk.rejected, (state, action) => {
       state.isLoading = false;
@@ -70,6 +70,7 @@ const userSlice = createSlice({
       state.error = null;
       state.isInitialized = true;
       state.status = 'logged';
+      state.user = action.payload;
     });
     builder.addCase(signInThunk.rejected, (state, action) => {
       state.isLoading = false;
@@ -84,12 +85,12 @@ const userSlice = createSlice({
     });
     builder.addCase(signOutThunk.fulfilled, (state) => {
       state.isLoading = false;
-      state.status = 'logged';
+      state.status = 'guest';
       state.error = null;
       state.isInitialized = true;
       state.user = null;
-      localStorage.removeItem('authStatus');
-      localStorage.removeItem('userData');
+      // localStorage.removeItem('authStatus');
+      // localStorage.removeItem('userData'); //!CHECK THIS
     });
     builder.addCase(signOutThunk.rejected, (state, action) => {
       state.isLoading = false;
