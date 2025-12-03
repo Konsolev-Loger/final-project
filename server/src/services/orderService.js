@@ -103,16 +103,6 @@ class OrderService {
     });
   }
 
-  // 3. Обновить статус (только своего заказа)
-  // static async updateStatus(id, status, userId) {
-  //   // Сначала получаем с проверкой владельца
-  //   const order = await this.getById(id, userId);
-
-  //   await order.update({ status });
-
-  //   // Возвращаем свежие данные
-  //   return this.getById(id, userId);
-  // }
   static async updateStatus(id, status, currentUser) {
     if (!currentUser?.is_admin) {
       throw new Error('Только администратор может менять статус заказа');
@@ -131,111 +121,35 @@ class OrderService {
   // 4. Обновить комментарий (только своего заказа)
   static async updateComment(id, comment, userId) {
     const order = await this.getByIdorder(id, userId);
-
     await order.update({ comment: comment || '' });
-
     return this.getById(id, userId);
   }
 
   // Полное удаление заказа (со всеми позициями и кастомными комнатами)
-  // static async delete(id, userId) {
-  //   const order = await this.getByIdorder(id, userId); // проверка существования + прав
 
-  //   // Просто удаляем всё по очереди — быстро и понятно
-  //   await OrderItem.destroy({ where: { order_id: id } });
-  //   await CastomRoom.destroy({ where: { order_id: id } });
-  //   await order.destroy();
-
-  //   return { message: 'Заказ полностью удалён' };
-  // }
   static async delete(id, currentUser) {
     if (!currentUser) {
       throw new Error('Пользователь не авторизован');
     }
-
     // Ищем заказ
     const order = await Order.findByPk(id);
-
     if (!order) {
       throw new Error('Заказ не найден');
     }
-
     // Если пользователь НЕ админ — проверяем, что заказ принадлежит ему
     if (!currentUser.is_admin && order.user_id !== currentUser.id) {
       throw new Error('Доступ запрещён: вы можете удалять только свои заказы');
     }
-
     // Удаляем связанные данные
     await OrderItem.destroy({ where: { order_id: id } }); // если нет ON DELETE CASCADE
     await CastomRoom.destroy({ where: { order_id: id } });
-
     // Удаляем сам заказ
     await order.destroy();
-
     return { message: 'Заказ полностью удалён', deletedOrderId: id };
   }
 
   // ───────────────── НОВЫЕ МЕТОДЫ ДЛЯ КОРЗИНЫ ─────────────────
 
-  // 1. Получить или создать корзину пользователя
-  // static async getCart(userId) {
-  //   let cart = await Order.findOne({
-  //     where: { user_id: userId, is_cart: true },
-  //     include: [
-  //       { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-  //       { model: CastomRoom, as: 'castomRooms' },
-  //     ],
-  //   });
-
-  //   if (!cart) {
-  //     cart = await Order.create({
-  //       user_id: userId,
-  //       total_price: 0,
-  //       comment: '',
-  //       status: null,
-  //       is_cart: true,
-  //     });
-  //     // После создания — сразу подгружаем связи
-  //     await cart.reload({
-  //       include: [
-  //         { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-  //         { model: CastomRoom, as: 'castomRooms' },
-  //       ],
-  //     });
-  //   }
-
-  //   return cart;
-  // }
-  // static async getCart(userId) {
-  //   let cart = await Order.findOne({
-  //     where: { user_id: userId, is_cart: true },
-  //     include: [
-  //       { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-  //       { model: CastomRoom, as: 'castomRooms' },
-  //     ],
-  //   });
-
-  //   if (!cart) {
-  //     // Создаём корзину
-  //     await Order.create({
-  //       user_id: userId,
-  //       total_price: 0,
-  //       comment: '',
-  //       status: null,
-  //       is_cart: true,
-  //     });
-
-  //     cart = await Order.findOne({
-  //       where: { user_id: userId, is_cart: true },
-  //       include: [
-  //         { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-  //         { model: CastomRoom, as: 'castomRooms' },
-  //       ],
-  //     });
-  //   }
-
-  //   return cart;
-  // }
   static async getCart(userId) {
     // Только находим существующую корзину, НЕ создаем новую!
     return Order.findOne({
@@ -345,21 +259,7 @@ class OrderService {
     return cart;
   }
 
-  // static async checkout(userId, comment = '') {
-  //   const cart = await this.getCart(userId);
 
-  //   if (!cart.items?.length && !cart.castomRooms?.length) {
-  //     throw new Error('Корзина пуста');
-  //   }
-
-  //   await cart.update({
-  //     is_cart: false,
-  //     status: false,
-  //     comment: comment.trim(),
-  //   });
-
-  //   return cart;
-  // }
   static async checkout(userId, comment = '') {
     // 1. Находим корзину
     const cart = await this.getCart(userId);
