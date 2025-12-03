@@ -28,7 +28,7 @@ const AdminPage: React.FC = () => {
     const root = base ? base.replace(/\/api\/?$/, '') : 'http://localhost:3000';
     return `${root}/material/${img}`;
   };
-
+  // const [dialogOpen, setDialogOpen] = useState(false);
   const [materials, setMaterials] = useState<MaterialType[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
@@ -158,7 +158,6 @@ const AdminPage: React.FC = () => {
 
   /* --- Categories CRUD --- */
   const createCategory = async (name: string) => {
-    setLoading(true);
     try {
       const { data } = await axiosInstance.post('/category', { name });
       if (data?.statusCode === 201 || data?.statusCode === 200) {
@@ -175,8 +174,6 @@ const AdminPage: React.FC = () => {
         description: serverMsg,
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
     }
   };
 

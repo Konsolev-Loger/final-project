@@ -3,7 +3,8 @@ import { ArrowUp } from 'lucide-react';
 
 export default function Footer(): React.JSX.Element {
   return (
-    <footer className="bg-primary text-white py-6" id="footer">
+    <footer className="text-white py-6" id="footer"
+    style={{backgroundColor: '#783e008e'}}>
       <div className="container mx-auto px-4 relative">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>

@@ -21,7 +21,9 @@ export default function CalculatePage() {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${heroImage})` }}
       >
-        <div className="absolute inset-0 bg-linear-to-r from-primary/90 to-primary/70" />
+        {/* <div className="absolute inset-0 bg-linear-to-r from-primary/90 to-primary/70" /> */}
+        <div className="absolute inset-0 bg-linear-to-r from-black/50 to-black/50" />
+
       </div>
 
       <div className="container mx-auto px-4 relative z-10">

@@ -27,17 +27,22 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({
   const [img, setImg] = useState(initial?.img ?? '');
   const [categoryId, setCategoryId] = useState<number | ''>(initial?.category_id ?? '');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name.trim() || !price) return;
 
-    onSubmit({
-      name: name.trim(),
-      // server stores price as string in DB — keep it consistent
-      price: price.toString(),
-      description: description.trim() || undefined,
-      img: img.trim() || undefined,
-      category_id: categoryId || undefined,
-    }).then(() => onClose?.());
+    try {
+      await onSubmit({
+        name: name.trim(),
+        price: price.toString(),
+        description: description.trim() || undefined,
+        img: img.trim() || undefined,
+        category_id: categoryId || undefined,
+      });
+
+      onClose?.();
+    } catch (error) {
+      console.error('Ошибка при отправке:', error);
+    }
   };
 
   return (
@@ -104,9 +109,9 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({
         <Button onClick={handleSubmit} className="flex-1">
           {submitLabel ? submitLabel : initial?.id ? 'Сохранить изменения' : 'Создать материал'}
         </Button>
-        <Button variant="outline" onClick={onClose}>
+        {/* <Button variant="outline" onClick={onClose}>
           Отмена
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

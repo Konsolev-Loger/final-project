@@ -39,7 +39,7 @@ export const MaterialCard: React.FC<Props> = ({ material, categories, onUpdate, 
 
           <div className="flex items-center justify-between pt-4 border-t border-white/30">
             <div className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              {material.price} ₽
+              {material.price} руб./м2 ₽
             </div>
 
             <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">

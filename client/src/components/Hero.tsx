@@ -39,13 +39,7 @@ export default function Hero(): React.JSX.Element {
                 Материалы
               </div>
 
-              {/* <div
-                className="hover:text-white transition-colors duration-200"
-                style={{ cursor: 'pointer' }}
-                onClick={() => navigate('/admin')}
-              >
-                Админка
-              </div> */}
+           
 
               <div
                 className="hover:text-white transition-colors duration-200"
@@ -106,7 +100,8 @@ export default function Hero(): React.JSX.Element {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${heroImage})` }}
       >
-        <div className="absolute inset-0 bg-linear-to-r from-primary/70 to-primary/70" />
+        {/* <div className="absolute inset-0 bg-linear-to-r from-primary/70 to-primary/70" />*/}
+        <div className="absolute inset-0 bg-linear-to-r from-black/50 to-black/50" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">

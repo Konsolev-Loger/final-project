@@ -71,7 +71,6 @@ export default function Calculator() {
         </div>,
         { duration: 4000 },
       );
-      // Можно добавить сброс калькулятора после добавления
       dispatch(clearCalculator());
     } catch (err: any) {
       toast.error(err.message || 'Не удалось добавить в корзину');
@@ -85,11 +84,13 @@ export default function Calculator() {
       <div className="container mx-auto px-6 max-w-7xl">
         {/* Заголовок */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Калькулятор стоимости</h2>
-          <p
-            className="mt-3 text-lg text-muted-foreground"
-            style={{ color: '#000000b8' }}
+          <h2
+            className="text-4xl md:text-5xl font-bold tracking-tight"
+            style={{ color: '#ffffffbd' }}
           >
+            Калькулятор стоимости
+          </h2>
+          <p className="mt-3 text-lg text-muted-foreground" style={{ color: '#ffffffb8' }}>
             Подберите материал и узнайте точную цену за вашу площадь
           </p>
         </div>
