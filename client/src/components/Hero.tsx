@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, User } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
 import { ShoppingCart } from 'lucide-react';
@@ -9,7 +9,6 @@ import heroImage from '@/assets/hero-finishing.jpg';
 
 export default function Hero(): React.JSX.Element {
   const { user, status } = useAppSelector((state) => state.user);
-  const navigate = useNavigate();
 
   const isLoggedIn = status === 'logged' && user;
   const scrollToCalculator = (): void => {

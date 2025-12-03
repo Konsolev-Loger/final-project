@@ -6,8 +6,8 @@ router.get('/check-link/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const isLinked = telegramBot.isUserLinked(parseInt(userId));
-    const userLink = telegramBot.getUserLink(parseInt(userId));
+    const isLinked = telegramBot.isUserLinked(parseInt(userId, 10));
+    const userLink = telegramBot.getUserLink(parseInt(userId, 10));
 
     res.json({
       success: true,
@@ -30,7 +30,7 @@ router.get('/check-link/:userId', async (req, res) => {
 
 router.get('/link-status/:userId', async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId);
+    const userId = parseInt(req.params.userId, 10);
     const userLink = telegramBot.getUserLink(userId);
 
     let chatLink = null;
@@ -51,6 +51,7 @@ router.get('/link-status/:userId', async (req, res) => {
   }
 });
 
+// eslint-disable-next-line consistent-return
 router.post('/send-code', async (req, res) => {
   try {
     const { userId, newEmail } = req.body;
@@ -72,7 +73,8 @@ router.post('/send-code', async (req, res) => {
       });
     }
 
-    const result = await telegramBot.sendCodeToLinkedUser(parseInt(userId), newEmail);
+    // eslint-disable-next-line no-unused-vars
+    const result = await telegramBot.sendCodeToLinkedUser(parseInt(userId, 10), newEmail);
 
     res.json({
       success: true,
@@ -88,12 +90,14 @@ router.post('/send-code', async (req, res) => {
   }
 });
 
+// eslint-disable-next-line consistent-return
 router.post('/verify-code', async (req, res) => {
   try {
     const { code } = req.body;
 
     console.log('Проверка кода:', code);
 
+    // eslint-disable-next-line no-restricted-globals
     if (!code || code.length !== 6 || isNaN(code)) {
       return res.status(400).json({
         success: false,
@@ -121,9 +125,10 @@ router.post('/verify-code', async (req, res) => {
   }
 });
 
+// eslint-disable-next-line consistent-return
 router.delete('/unlink/:userId', async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId);
+    const userId = parseInt(req.params.userId, 10);
 
     console.log('🔗 Запрос на отмену привязки:', userId);
     if (!telegramBot.userLinks || typeof telegramBot.userLinks !== 'object') {

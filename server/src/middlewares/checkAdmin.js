@@ -1,5 +1,6 @@
 const { User } = require('../../db/models'); 
 
+// eslint-disable-next-line consistent-return
 const checkAdmin = async (req, res, next) => {
   try {
     const { user } = res.locals;
