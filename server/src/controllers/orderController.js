@@ -44,10 +44,10 @@ class OrderController {
 
   // 2. Получить один заказ по ID
   static async getByIdorder(req, res) {
-    const { user } = res.locals;
+    // const { user } = res.locals;
     const { id } = req.params;
     try {
-      const order = await OrderService.getById(id, user.id);
+      const order = await OrderService.getById(id);
       return res.status(200).json(formatResponse(200, 'Заказ найден', order, null));
     } catch (error) {
       if (error.message === 'Заказ не найден') {
@@ -191,46 +191,63 @@ class OrderController {
   // НОВЫЕ МЕТОДЫ ДЛЯ КОРЗИНЫ
 
   // 1. Получить корзину текущего пользователя
-  static async getCart(req, res) {
-    try {
-      const { user } = res.locals;
-      const cart = await OrderService.getCart(user.id);
-
-      return res.status(200).json(formatResponse(200, 'Корзина получена', cart));
-    } catch (error) {
-      console.error('getCart error:', error);
-      return res
-        .status(500)
-        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
+ static async getCart(req, res) {
+  try {
+    const { user } = res.locals;
+    const cart = await OrderService.getCart(user.id);
+    
+    // Если корзины нет - возвращаем пустую, а не создаем
+    if (!cart) {
+      return res.status(200).json(formatResponse(200, 'Корзина пуста', {
+        id: null,
+        items: [],
+        castomRooms: [],
+        total_price: 0
+      }));
     }
+    
+    return res.status(200).json(formatResponse(200, 'Корзина получена', cart));
+  } catch (error) {
+    console.error('getCart error:', error);
+    return res
+      .status(500)
+      .json(formatResponse(500, 'Ошибка сервера', null, error.message));
   }
+}
+
 
   // 2. Добавить товар в корзину
   static async addToCart(req, res) {
-    try {
-      const { user } = res.locals;
-      const { material_id, room_id, castom_room_id, quantity = 1, price_at } = req.body;
+  try {
+    const { user } = res.locals;
+    const { material_id, room_id, castom_room_id, quantity = 1, price_at } = req.body;
 
-      const updatedCart = await OrderService.addToCart(user.id, {
-        material_id,
-        // eslint-disable-next-line camelcase
-        room_id: room_id || null,
-        // eslint-disable-next-line camelcase
-        castom_room_id: castom_room_id || null,
-        quantity,
-        price_at,
-      });
-
-      return res
-        .status(200)
-        .json(formatResponse(200, 'Товар добавлен в корзину', updatedCart));
-    } catch (error) {
-      console.error('addToCart error:', error);
-      return res
-        .status(500)
-        .json(formatResponse(500, 'Ошибка сервера', null, error.message));
+    // Сначала создаем/получаем корзину
+    let cart = await OrderService.getCart(user.id);
+    if (!cart) {
+      cart = await OrderService.createCart(user.id);
     }
+
+    const updatedCart = await OrderService.addToCart(user.id, {
+      material_id,
+      // eslint-disable-next-line camelcase
+      room_id: room_id || null,
+      // eslint-disable-next-line camelcase
+      castom_room_id: castom_room_id || null,
+      quantity,
+      price_at,
+    });
+
+    return res
+      .status(200)
+      .json(formatResponse(200, 'Товар добавлен в корзину', updatedCart));
+  } catch (error) {
+    console.error('addToCart error:', error);
+    return res
+      .status(500)
+      .json(formatResponse(500, 'Ошибка сервера', null, error.message));
   }
+}
 
   // 3. Удалить позицию из корзины
   static async removeFromCart(req, res) {

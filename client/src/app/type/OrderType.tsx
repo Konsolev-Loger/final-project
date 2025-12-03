@@ -68,18 +68,18 @@ export type OredrAction =
   | { type: 'CREATE_ORDER_CART'; payload: OrderType }; // Возможно нужно будет изменить или удалить
 
 export type OrderStateType = {
-  orders: OrderArrType;
-  order: OrderType | null;
-  cart: OrderType | null;
-  userOrders: OrderType[];   // ← ДОБАВЬ
+  orders: OrderType[]; // Все заказы (для админа)
+  userOrders: OrderType[]; // Заказы текущего пользователя
+  order: OrderType | null; // Текущий выбранный заказ
   error: string | null;
+  cart: OrderType | null;
 };
 export type OrderContextType = {
   state: OrderStateType;
   dispatch: React.Dispatch<OredrAction>;
   createOrder: (data: OrderType) => Promise<void>;
   getAllOrders: () => Promise<void>;
-  getOrderByUserId: (id: number) => Promise<void>;  // Возможно нужно будет изменить или удалить
+  getOrderByUserId: (id: number) => Promise<void>; // Возможно нужно будет изменить или удалить
   updateOrder: (id: number, data: UpdateOrderType) => Promise<void>;
   deleteOrder: (id: number) => Promise<void>;
   // ===========================================================

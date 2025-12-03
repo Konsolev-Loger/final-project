@@ -26,6 +26,7 @@ class OrderService {
       comment,
       status: false,
       total_price,
+      is_cart: false,
     });
 
     // 2. Кастомные комнаты (если есть)
@@ -55,7 +56,7 @@ class OrderService {
     return Order.findByPk(order.id, {
       include: [
         { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-        { model: CastomRoom, as: 'castomRooms' },
+        // { model: CastomRoom, as: 'castomRooms' },
       ],
     });
   }
@@ -91,7 +92,7 @@ class OrderService {
         {
           model: OrderItem,
           as: 'items',
-          include: ['material'],
+          include: ['material', 'room', 'castomRooms'],
         },
         {
           model: CastomRoom,
@@ -205,35 +206,63 @@ class OrderService {
 
   //   return cart;
   // }
+  // static async getCart(userId) {
+  //   let cart = await Order.findOne({
+  //     where: { user_id: userId, is_cart: true },
+  //     include: [
+  //       { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
+  //       { model: CastomRoom, as: 'castomRooms' },
+  //     ],
+  //   });
+
+  //   if (!cart) {
+  //     // Создаём корзину
+  //     await Order.create({
+  //       user_id: userId,
+  //       total_price: 0,
+  //       comment: '',
+  //       status: null,
+  //       is_cart: true,
+  //     });
+
+  //     cart = await Order.findOne({
+  //       where: { user_id: userId, is_cart: true },
+  //       include: [
+  //         { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
+  //         { model: CastomRoom, as: 'castomRooms' },
+  //       ],
+  //     });
+  //   }
+
+  //   return cart;
+  // }
   static async getCart(userId) {
-    let cart = await Order.findOne({
+    // Только находим существующую корзину, НЕ создаем новую!
+    return Order.findOne({
       where: { user_id: userId, is_cart: true },
       include: [
         { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
         { model: CastomRoom, as: 'castomRooms' },
       ],
     });
+  }
 
-    if (!cart) {
-      // Создаём корзину
-      await Order.create({
-        user_id: userId,
-        total_price: 0,
-        comment: '',
-        status: null,
-        is_cart: true,
-      });
+  static async createCart(userId) {
+    const existingCart = await Order.findOne({
+      where: { user_id: userId, is_cart: true },
+    });
 
-      cart = await Order.findOne({
-        where: { user_id: userId, is_cart: true },
-        include: [
-          { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-          { model: CastomRoom, as: 'castomRooms' },
-        ],
-      });
+    if (existingCart) {
+      return existingCart;
     }
 
-    return cart;
+    return Order.create({
+      user_id: userId,
+      total_price: 0,
+      comment: '',
+      status: null,
+      is_cart: true,
+    });
   }
 
   static async addToCart(userId, itemData) {
@@ -316,20 +345,47 @@ class OrderService {
     return cart;
   }
 
+  // static async checkout(userId, comment = '') {
+  //   const cart = await this.getCart(userId);
+
+  //   if (!cart.items?.length && !cart.castomRooms?.length) {
+  //     throw new Error('Корзина пуста');
+  //   }
+
+  //   await cart.update({
+  //     is_cart: false,
+  //     status: false,
+  //     comment: comment.trim(),
+  //   });
+
+  //   return cart;
+  // }
   static async checkout(userId, comment = '') {
+    // 1. Находим корзину
     const cart = await this.getCart(userId);
+
+    if (!cart) {
+      throw new Error('Корзина не найдена. Добавьте товары в корзину.');
+    }
 
     if (!cart.items?.length && !cart.castomRooms?.length) {
       throw new Error('Корзина пуста');
     }
 
+    // 2. Превращаем корзину в заказ
     await cart.update({
       is_cart: false,
       status: false,
       comment: comment.trim(),
     });
 
-    return cart;
+    // 3. Возвращаем обновленный заказ
+    return Order.findByPk(cart.id, {
+      include: [
+        { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
+        { model: CastomRoom, as: 'castomRooms' },
+      ],
+    });
   }
 }
 

@@ -5,13 +5,13 @@ interface AdminTabsProps {
   onChange: (value: string) => void;
 }
 
-export const AdminTabs: React.FC<AdminTabsProps> = ({ activeTab, onChange }) => (
+export const AdminTabs: React.FC<AdminTabsProps> = ({  onChange }) => (
   <TabsList className="bg-white/90 backdrop-blur-md border border-gray-300 rounded-2xl p-2 mb-12 shadow-xl inline-flex">
     {[
       { value: 'materials', label: 'Материалы' },
       { value: 'categories', label: 'Категории' },
       { value: 'orders', label: 'Заказы' },
-      { value: 'users', label: 'Пользователи' },
+      // { value: 'users', label: 'Пользователи' },
     ].map((tab) => (
       <TabsTrigger
         key={tab.value}
