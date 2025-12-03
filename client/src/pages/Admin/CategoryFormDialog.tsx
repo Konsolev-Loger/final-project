@@ -1,8 +1,4 @@
-import {
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { CategoryForm } from './CategoryForm';
 
 interface CategoryFormDialogProps {

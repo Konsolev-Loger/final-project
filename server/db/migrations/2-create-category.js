@@ -10,6 +10,7 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
+        unique: true,
       },
       createdAt: {
         allowNull: false,
@@ -22,6 +23,11 @@ module.exports = {
         defaultValue: Sequelize.fn('now'),
       },
     });
+    await queryInterface.sequelize.query(`
+      SELECT setval(pg_get_serial_sequence('"Categories"', 'id'), 
+             COALESCE((SELECT MAX(id) FROM "Categories"), 1), 
+             false);
+    `);
   },
   async down(queryInterface) {
     await queryInterface.dropTable('Categories');
