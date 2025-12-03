@@ -21,9 +21,8 @@ const OrderSlice = createSlice({
       .addCase(createOrderThunk.pending, (state) => {
         state.error = null;
       })
-      .addCase(createOrderThunk.fulfilled, (state, action) => {
+      .addCase(createOrderThunk.fulfilled, (state) => {
         state.error = null;
-        state.orders.push(action.payload);
       })
       .addCase(createOrderThunk.rejected, (state, action) => {
         state.error = action.payload?.message || 'Не удалось создать заказ';
@@ -48,7 +47,7 @@ const OrderSlice = createSlice({
         state.error = null;
       })
       .addCase(getOrderByUserThunk.fulfilled, (state, action) => {
-        state.userOrders = action.payload; 
+        state.userOrders = action.payload;
         state.error = null;
       })
       .addCase(getOrderByUserThunk.rejected, (state, action) => {

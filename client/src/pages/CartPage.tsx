@@ -7,11 +7,13 @@ import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Link, useNavigate } from 'react-router-dom';
 import { OrderCommentModal } from './ModalForCart/modal';
+import { getOrderByUserThunk } from '@/app/api/OrderApi';
 
 export default function CartPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { cart, error } = useAppSelector((state) => state.cart);
+  const { user } = useAppSelector((state) => state.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function CartPage() {
           </div>,
           {
             duration: 9000,
-            position: "top-right"
+            position: 'top-right',
           },
         );
 
@@ -57,12 +59,13 @@ export default function CartPage() {
             </div>,
             {
               duration: 9000,
-              position: "top-right"
+              position: 'top-right',
             },
           );
         }, 3000);
+        dispatch(getOrderByUserThunk(user!.id));
 
-        dispatch(getCartThunk()); 
+        dispatch(getCartThunk());
       })
       .catch(() => {
         toast.error(
@@ -113,7 +116,7 @@ export default function CartPage() {
               <div className="flex-1">
                 <h3 className="font-semibold text-lg">{item.material?.name}</h3>
                 <p className="text-muted-foreground">
-                  {item.quantity} м² × {item.price_at.toLocaleString('ru-RU')} ₽/м²
+                  {item.quantity} м² × {item.price_at} ₽/м²
                 </p>
               </div>
 
@@ -163,8 +166,8 @@ export default function CartPage() {
               >
                 ← Вернуться на главную
               </button>
-              <Button size="lg" onClick={handleOpenCheckout} >
-              Оформить заказ
+              <Button size="lg" onClick={handleOpenCheckout}>
+                Оформить заказ
               </Button>
             </div>
           </div>

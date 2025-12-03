@@ -7,7 +7,6 @@ import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { axiosInstance } from '@/shared/lib/axiosInstance';
 import { AdminLayout } from './Admin';
-import { UsersTab } from './UserTab';
 // import {UserTab} from "./UserTab";
 
 interface Material {
@@ -273,9 +272,9 @@ const AdminPage: React.FC = () => {
           <OrdersTab />
         </TabsContent>
 
-        <TabsContent value="users" className="mt-0">
+        {/* <TabsContent value="users" className="mt-0">
           <UsersTab />
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
     </AdminLayout>
   );
