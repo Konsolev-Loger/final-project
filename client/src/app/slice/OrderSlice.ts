@@ -21,9 +21,8 @@ const OrderSlice = createSlice({
       .addCase(createOrderThunk.pending, (state) => {
         state.error = null;
       })
-      .addCase(createOrderThunk.fulfilled, (state, action) => {
+      .addCase(createOrderThunk.fulfilled, (state) => {
         state.error = null;
-        state.orders.push(action.payload);
       })
       .addCase(createOrderThunk.rejected, (state, action) => {
         state.error = action.payload?.message || 'Не удалось создать заказ';
@@ -48,11 +47,11 @@ const OrderSlice = createSlice({
         state.error = null;
       })
       .addCase(getOrderByUserThunk.fulfilled, (state, action) => {
+        state.userOrders = action.payload;
         state.error = null;
-        state.order = action.payload;
       })
       .addCase(getOrderByUserThunk.rejected, (state, action) => {
-        state.error = action.payload?.message || 'Не удалось загрузить ваш заказ';
+        state.error = action.payload || 'Не удалось загрузить заказы пользователя';
       });
     // ==========================================================
     // UPDATE ORDER COMMENT
@@ -81,9 +80,22 @@ const OrderSlice = createSlice({
       })
       .addCase(updateOrderStatusThunk.fulfilled, (state, action) => {
         state.error = null;
-        state.orders = state.orders.map((order) =>
-          order.id === action.payload.id ? action.payload : order,
-        );
+
+        // Если бэкенд вернул полный заказ — используем его
+        if (action.payload && action.payload.id && action.payload.items !== undefined) {
+          state.orders = state.orders.map((order) =>
+            order.id === action.payload.id ? action.payload : order,
+          );
+        }
+        // Если вернул только { id, status } — обновляем только статус
+        else if (action.payload && 'id' in action.payload && 'status' in action.payload) {
+          const { id, status } = action.payload;
+          state.orders = state.orders.map((order) =>
+            order.id === id ? { ...order, status } : order,
+          );
+        }
+        // Если вообще просто true/false — можно даже по meta.arg.id взять
+        // но это уже костыль
       })
       .addCase(updateOrderStatusThunk.rejected, (state, action) => {
         state.error = action.payload?.message || 'Не удалось обновить статус';
@@ -96,8 +108,9 @@ const OrderSlice = createSlice({
       })
       .addCase(deleteOrderThunk.fulfilled, (state, action) => {
         state.error = null;
-        state.orders = state.orders.filter((order) => order.id !== action.payload);
-        if (state.order?.id === action.payload) {
+        const deletedId = action.payload;
+        state.orders = state.orders.filter((order) => order.id !== deletedId);
+        if (state.order?.id === deletedId) {
           state.order = null;
         }
       })

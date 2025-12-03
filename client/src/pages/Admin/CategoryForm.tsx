@@ -24,7 +24,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
 
       <Button
         onClick={() => onSubmit(name.trim())}
-        disabled={!name.trim()}
+        // disabled={!name.trim()}
         className="w-full h-12 text-lg font-semibold"
       >
         {initial ? 'Сохранить изменения' : 'Создать категорию'}

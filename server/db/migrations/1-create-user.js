@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+// const { DataTypes } = require('sequelize');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

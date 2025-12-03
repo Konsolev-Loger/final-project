@@ -1,10 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  CreateOrderType,
-  OrderArrType,
-  OrderType,
-  UpdateOrderType,
-} from '../type/OrderType';
+import { CreateOrderType, OrderArrType, OrderType, UpdateOrderType } from '../type/OrderType';
 import { ServerResponseType } from '@/shared/types';
 import { axiosInstance } from '@/shared/lib/axiosInstance';
 
@@ -31,7 +26,7 @@ export const createOrderThunk = createAsyncThunk<
   try {
     const response = await axiosInstance.post('/orders', data);
     const { statusCode, error } = response.data;
-   if (error || (statusCode !== 200 && statusCode !== 201)) {
+    if (error || (statusCode !== 200 && statusCode !== 201)) {
       return rejectWithValue({
         statusCode: statusCode || 500,
         message: 'Не удалось оформить заказ',
@@ -70,28 +65,18 @@ export const getAllOrdersThunk = createAsyncThunk<
     return rejectWithValue(error as ServerResponseType<null>);
   }
 });
-export const getOrderByUserThunk = createAsyncThunk<
-  OrderType,
-  OrderType,
-  { rejectValue: ServerResponseType<null> }
->(ORDER_THUNK_TYPES.GET_ORDER_BY_USER, async ({ id }, { rejectWithValue }) => {
-  try {
-    const response = await axiosInstance.get(`/orders/user/${id}`);
-    const { statusCode, error } = response.data;
-    if (error || statusCode !== 200) {
-      return rejectWithValue({
-        statusCode: statusCode || 500,
-        message: 'Не удалоось получить заказ',
-        data: null,
-        error: 'Не удалоось получить заказ',
-      });
+
+export const getOrderByUserThunk = createAsyncThunk<OrderType[], number, { rejectValue: string }>(
+  'order/getUserOrders',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/orders/user/${userId}`);
+      return response.data.data; 
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || 'Ошибка загрузки заказов');
     }
-    return response.data.data;
-  } catch (error) {
-    console.log(error);
-    return rejectWithValue(error as ServerResponseType<null>);
-  }
-});
+  },
+);
 
 export const updateOrderCommentThunk = createAsyncThunk<
   OrderType,
@@ -146,7 +131,7 @@ export const deleteOrderThunk = createAsyncThunk<
 >(ORDER_THUNK_TYPES.DELETE_ORDER, async (id, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.delete(`/orders/${id}`);
-    const { data, statusCode, error } = response.data;
+    const { statusCode, error } = response.data;
     if (error || statusCode !== 200) {
       return rejectWithValue({
         statusCode: statusCode || 500,
@@ -155,7 +140,7 @@ export const deleteOrderThunk = createAsyncThunk<
         error: 'Не удалоось удалить заказ',
       });
     }
-    return data;
+    return id;
   } catch (error) {
     return rejectWithValue(error as ServerResponseType<null>);
   }

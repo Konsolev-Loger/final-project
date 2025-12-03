@@ -27,6 +27,7 @@ export type NewUserType = {
   name: string;
   email: string;
   phone: string;
+
 };
 
 export type UserResponseType = {

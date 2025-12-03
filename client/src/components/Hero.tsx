@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
 import { ShoppingCart } from 'lucide-react';
+import { Crown } from 'lucide-react';
 import heroImage from '@/assets/hero-finishing.jpg';
 
 export default function Hero(): React.JSX.Element {
@@ -13,9 +14,14 @@ export default function Hero(): React.JSX.Element {
   const scrollToCalculator = (): void => {
     document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
   };
+  if (user?.is_admin === true) {
+  }
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden" id="hero">
+    <section
+      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
+      id="hero"
+    >
       {/* Навигационная панель */}
       <div className="absolute top-0 left-0 right-0 z-30 py-4">
         <div className="container mx-auto px-4">
@@ -32,12 +38,9 @@ export default function Hero(): React.JSX.Element {
               >
                 Материалы
               </div>
-              {/* <Link 
-                to="/portfolio" 
-                className="hover:text-white transition-colors duration-200"
-              >
-                Портфолио
-              </Link> */}
+
+           
+
               <div
                 className="hover:text-white transition-colors duration-200"
                 style={{ cursor: 'pointer' }}
@@ -61,11 +64,20 @@ export default function Hero(): React.JSX.Element {
 
               {isLoggedIn ? (
                 <Link
-                  to="/profile"
-                  className="flex items-center gap-2 text-white hover:text-white/80 transition-colors duration-200"
+                  to={user?.is_admin ? '/admin' : '/profile'}
+                  className="flex items-center gap-2 text-white hover:text-white/80 transition-colors duration-200 font-medium"
                 >
-                  <User className="h-4 w-4" />
-                  <span className="text-sm font-light">Профиль</span>
+                  {user?.is_admin ? (
+                    <>
+                      <Crown className="h-5 w-5" />
+                      <span className="text-sm font-light">Админ</span>
+                    </>
+                  ) : (
+                    <>
+                      <User className="h-4 w-4" />
+                      <span className="text-sm font-light">Профиль</span>
+                    </>
+                  )}
                 </Link>
               ) : (
                 <Link
@@ -88,7 +100,8 @@ export default function Hero(): React.JSX.Element {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${heroImage})` }}
       >
-        <div className="absolute inset-0 bg-linear-to-r from-primary/90 to-primary/70" />
+        {/* <div className="absolute inset-0 bg-linear-to-r from-primary/70 to-primary/70" />*/}
+        <div className="absolute inset-0 bg-linear-to-r from-black/50 to-black/50" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -115,7 +128,7 @@ export default function Hero(): React.JSX.Element {
                 if (element) element.scrollIntoView({ behavior: 'smooth' });
               }}
               className="  text-white hover:bg-white hover:text-primary bg-transparent text-lg px-8 h-14"
-              style={{backgroundColor: "fff"}}
+              style={{ backgroundColor: 'fff' }}
             >
               Наши проекты
             </Button>

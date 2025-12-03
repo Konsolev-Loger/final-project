@@ -14,6 +14,7 @@ class TelegramBotService {
   setupHandlers() {
     this.bot.onText(/\/start/, (msg) => {
       const chatId = msg.chat.id;
+      // eslint-disable-next-line no-unused-vars
       const { username } = msg.from;
       const firstName = msg.from.first_name;
 
@@ -32,12 +33,14 @@ class TelegramBotService {
       );
     });
 
+    // eslint-disable-next-line consistent-return
     this.bot.onText(/\/link (\d+)/, async (msg, match) => {
       const chatId = msg.chat.id;
-      const userId = parseInt(match[1]);
+      const userId = parseInt(match[1], 10);
       const { username } = msg.from;
       const firstName = msg.from.first_name;
 
+      // eslint-disable-next-line no-restricted-globals
       if (isNaN(userId) || userId <= 0) {
         return this.bot.sendMessage(
           chatId,
@@ -145,6 +148,7 @@ class TelegramBotService {
     // Обработчик /unlink должен быть ВНЕ обработчика /myid!
     this.bot.onText(/\/unlink/, async (msg) => {
       const chatId = msg.chat.id;
+      // eslint-disable-next-line no-unused-vars
       const { username } = msg.from;
 
       let foundUserId = null;
@@ -183,6 +187,7 @@ class TelegramBotService {
     });
 
     // Обработчик /check тоже должен быть отдельно
+    // eslint-disable-next-line consistent-return
     this.bot.onText(/\/check/, (msg) => {
       const chatId = msg.chat.id;
       const allLinks = Array.from(this.userLinks.entries());
@@ -290,16 +295,16 @@ class TelegramBotService {
       if (error.response?.body?.error_code === 403) {
         this.userLinks.delete(userId);
         throw new Error(
-          'Вы заблокировали бота. Разблокируйте @code_super_bot в Telegram и привяжите аккаунт заново.',
+          'Вы заблокировали бота. Разблокируйте @code_super_bot в Telegram и привяжите аккаунт заново.', { cause: error },
         );
       }
 
-      throw new Error('Ошибка отправки сообщения в Telegram');
+      throw new Error('Ошибка отправки сообщения в Telegram', { cause: error });
     }
   }
 
   verifyCode(code) {
-    const numericCode = parseInt(code);
+    const numericCode = parseInt(code, 10);
     const data = this.emailCodes.get(numericCode);
 
     if (!data) {

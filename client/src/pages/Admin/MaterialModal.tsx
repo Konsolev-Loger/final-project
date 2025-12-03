@@ -1,13 +1,20 @@
 import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { MaterialForm } from './MaterialForm';
 
+import type { MaterialType } from '@/app/type/CategoryType';
+import type { CategoryType } from '@/app/type/CategoryType';
+
 interface MaterialFormDialogProps {
-  initial?: Partial<Material>;
-  categories: Category[];
-  onSubmit: (data: Partial<Material>) => Promise<void>;
+  initial?: Partial<MaterialType>;
+  categories: CategoryType[];
+  onSubmit: (data: Partial<MaterialType>) => Promise<void>;
 }
 
-export const MaterialFormDialog: React.FC<MaterialFormDialogProps> = ({ initial, categories, onSubmit }) => {
+export const MaterialFormDialog: React.FC<MaterialFormDialogProps> = ({
+  initial,
+  categories,
+  onSubmit,
+}) => {
   const isEdit = !!initial?.id;
 
   return (

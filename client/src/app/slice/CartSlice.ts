@@ -40,9 +40,9 @@ const cartSlice = createSlice({
       // === DELETE ONE ITEM ===
       .addCase(deleteOneItemThink.fulfilled, (state, action) => {
         state.cart = action.payload
-        if (state.cart) {
-          state.cart.items = state.cart.items?.filter((item) => item.id !== action.payload);
-        }
+        // if (state.cart) {
+        //   state.cart.items = state.cart.items?.filter((item) => item.id !== action.payload);
+        // }
       })
       // === CLEAR CART ===
       .addCase(deleteCartItemThunk.fulfilled, (state) => {

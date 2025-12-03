@@ -1,5 +1,5 @@
 // services/orderService.js
-const { Order, OrderItem, CastomRoom } = require('../../db/models');
+const { Order, OrderItem, CastomRoom, User } = require('../../db/models');
 
 class OrderService {
   static async getAll() {
@@ -7,6 +7,7 @@ class OrderService {
       include: [
         { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
         { model: CastomRoom, as: 'castomRooms' },
+        { model: User, as: 'user' },
       ],
     });
   }
@@ -25,6 +26,7 @@ class OrderService {
       comment,
       status: false,
       total_price,
+      is_cart: false,
     });
 
     // 2. Кастомные комнаты (если есть)
@@ -54,13 +56,13 @@ class OrderService {
     return Order.findByPk(order.id, {
       include: [
         { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-        { model: CastomRoom, as: 'castomRooms' },
+        // { model: CastomRoom, as: 'castomRooms' },
       ],
     });
   }
 
   // Получить заказ со всеми связями
-  static async getByIdorder(id, userId) {
+  static async getByIdorder(id) {
     const order = await Order.findByPk(id, {
       include: [
         {
@@ -79,11 +81,6 @@ class OrderService {
       throw new Error('Заказ не найден');
     }
 
-    // Ключевая проверка — заказ должен принадлежать пользователю
-    if (order.user_id !== userId) {
-      throw new Error('Доступ запрещён');
-    }
-
     return order;
   }
 
@@ -95,7 +92,7 @@ class OrderService {
         {
           model: OrderItem,
           as: 'items',
-          include: ['material'],
+          include: ['material', 'room', 'castomRooms'],
         },
         {
           model: CastomRoom,
@@ -106,98 +103,80 @@ class OrderService {
     });
   }
 
-  // 3. Обновить статус (только своего заказа)
-  static async updateStatus(id, status, userId) {
-    // Сначала получаем с проверкой владельца
-    const order = await this.getById(id, userId);
+  static async updateStatus(id, status, currentUser) {
+    if (!currentUser?.is_admin) {
+      throw new Error('Только администратор может менять статус заказа');
+    }
 
-    await order.update({ status });
+    const order = await Order.findByPk(id);
+    if (!order) throw new Error('Заказ не найден');
 
-    // Возвращаем свежие данные
-    return this.getById(id, userId);
+    await order.update({ status: Boolean(status) });
+
+    return Order.findByPk(id, {
+      /* include как выше */
+    });
   }
 
   // 4. Обновить комментарий (только своего заказа)
   static async updateComment(id, comment, userId) {
-    const order = await this.getById(id, userId);
-
+    const order = await this.getByIdorder(id, userId);
     await order.update({ comment: comment || '' });
-
     return this.getById(id, userId);
   }
 
   // Полное удаление заказа (со всеми позициями и кастомными комнатами)
-  static async delete(id, userId) {
-    const order = await this.getById(id, userId); // проверка существования + прав
 
-    // Просто удаляем всё по очереди — быстро и понятно
-    await OrderItem.destroy({ where: { order_id: id } });
+  static async delete(id, currentUser) {
+    if (!currentUser) {
+      throw new Error('Пользователь не авторизован');
+    }
+    // Ищем заказ
+    const order = await Order.findByPk(id);
+    if (!order) {
+      throw new Error('Заказ не найден');
+    }
+    // Если пользователь НЕ админ — проверяем, что заказ принадлежит ему
+    if (!currentUser.is_admin && order.user_id !== currentUser.id) {
+      throw new Error('Доступ запрещён: вы можете удалять только свои заказы');
+    }
+    // Удаляем связанные данные
+    await OrderItem.destroy({ where: { order_id: id } }); // если нет ON DELETE CASCADE
     await CastomRoom.destroy({ where: { order_id: id } });
+    // Удаляем сам заказ
     await order.destroy();
-
-    return { message: 'Заказ полностью удалён' };
+    return { message: 'Заказ полностью удалён', deletedOrderId: id };
   }
 
   // ───────────────── НОВЫЕ МЕТОДЫ ДЛЯ КОРЗИНЫ ─────────────────
 
-  // 1. Получить или создать корзину пользователя
-  // static async getCart(userId) {
-  //   let cart = await Order.findOne({
-  //     where: { user_id: userId, is_cart: true },
-  //     include: [
-  //       { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-  //       { model: CastomRoom, as: 'castomRooms' },
-  //     ],
-  //   });
-
-  //   if (!cart) {
-  //     cart = await Order.create({
-  //       user_id: userId,
-  //       total_price: 0,
-  //       comment: '',
-  //       status: null,
-  //       is_cart: true,
-  //     });
-  //     // После создания — сразу подгружаем связи
-  //     await cart.reload({
-  //       include: [
-  //         { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-  //         { model: CastomRoom, as: 'castomRooms' },
-  //       ],
-  //     });
-  //   }
-
-  //   return cart;
-  // }
   static async getCart(userId) {
-    let cart = await Order.findOne({
+    // Только находим существующую корзину, НЕ создаем новую!
+    return Order.findOne({
       where: { user_id: userId, is_cart: true },
       include: [
         { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
         { model: CastomRoom, as: 'castomRooms' },
       ],
     });
+  }
 
-    if (!cart) {
-      // Создаём корзину
-      await Order.create({
-        user_id: userId,
-        total_price: 0,
-        comment: '',
-        status: null,
-        is_cart: true,
-      });
+  static async createCart(userId) {
+    const existingCart = await Order.findOne({
+      where: { user_id: userId, is_cart: true },
+    });
 
-      cart = await Order.findOne({
-        where: { user_id: userId, is_cart: true },
-        include: [
-          { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
-          { model: CastomRoom, as: 'castomRooms' },
-        ],
-      });
+    if (existingCart) {
+      return existingCart;
     }
 
-    return cart;
+    return Order.create({
+      user_id: userId,
+      total_price: 0,
+      comment: '',
+      status: null,
+      is_cart: true,
+    });
   }
 
   static async addToCart(userId, itemData) {
@@ -280,20 +259,33 @@ class OrderService {
     return cart;
   }
 
+
   static async checkout(userId, comment = '') {
+    // 1. Находим корзину
     const cart = await this.getCart(userId);
+
+    if (!cart) {
+      throw new Error('Корзина не найдена. Добавьте товары в корзину.');
+    }
 
     if (!cart.items?.length && !cart.castomRooms?.length) {
       throw new Error('Корзина пуста');
     }
 
+    // 2. Превращаем корзину в заказ
     await cart.update({
       is_cart: false,
       status: false,
       comment: comment.trim(),
     });
 
-    return cart;
+    // 3. Возвращаем обновленный заказ
+    return Order.findByPk(cart.id, {
+      include: [
+        { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
+        { model: CastomRoom, as: 'castomRooms' },
+      ],
+    });
   }
 }
 

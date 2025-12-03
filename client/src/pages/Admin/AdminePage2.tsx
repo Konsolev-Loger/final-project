@@ -2,23 +2,12 @@ import { AdminTabs } from './AdminTab';
 import { MaterialsTab } from './MaterialTab';
 import { CategoriesTab } from './CategoryTab';
 import { OrdersTab } from './OrderTab';
-import { UsersTab } from './UserTab';
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { axiosInstance } from '@/shared/lib/axiosInstance';
 import { AdminLayout } from './Admin';
-
-interface Material {
-  id: number;
-  name: string;
-  price: number;
-  description?: string;
-  img?: string;
-  is_popular?: boolean;
-  category_id?: number;
-  category?: { id: number; name: string } | null;
-}
+import { MaterialType } from '@/app/type/CategoryType';
 
 interface Category {
   id: number;
@@ -31,18 +20,17 @@ const AdminPage: React.FC = () => {
     'materials',
   );
 
-   const getImageSrc = (img?: string): string => {
+  const getImageSrc = (img?: string): string => {
+    console.log(getImageSrc);
     if (!img) return '/fallback.png';
     if (img.startsWith('http://') || img.startsWith('https://')) return img;
     const base = (import.meta.env.VITE_API_URL as string | undefined) ?? '';
     const root = base ? base.replace(/\/api\/?$/, '') : 'http://localhost:3000';
     return `${root}/material/${img}`;
   };
-
-  const [materials, setMaterials] = useState<Material[]>([]);
+  // const [dialogOpen, setDialogOpen] = useState(false);
+  const [materials, setMaterials] = useState<MaterialType[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -99,33 +87,13 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const { data } = await axiosInstance.get('/users?page=1&limit=20');
-      if (data?.statusCode === 200 && data.data?.users) setUsers(data.data.users);
-    } catch (err) {
-      console.warn('fetchUsers error', err);
-    }
-  };
-
-  const fetchOrders = async () => {
-    try {
-      const { data } = await axiosInstance.get('/orders?page=1&limit=20');
-      if (data?.statusCode === 200 && data.data?.orders) setOrders(data.data.orders);
-    } catch (err) {
-      console.warn('fetchOrders error', err);
-    }
-  };
-
   useEffect(() => {
     fetchCategories();
     fetchMaterials();
-    fetchUsers();
-    fetchOrders();
   }, []);
 
   /* --- Materials CRUD --- */
-  const createMaterial = async (payload: Partial<Material>) => {
+  const createMaterial = async (payload: Partial<MaterialType>) => {
     setLoading(true);
     try {
       const { data } = await axiosInstance.post('/material', payload);
@@ -146,7 +114,7 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const updateMaterial = async (id: number, payload: Partial<Material>) => {
+  const updateMaterial = async (id: number, payload: Partial<MaterialType>) => {
     setLoading(true);
     try {
       const { data } = await axiosInstance.put(`/material/${id}`, payload);
@@ -190,7 +158,6 @@ const AdminPage: React.FC = () => {
 
   /* --- Categories CRUD --- */
   const createCategory = async (name: string) => {
-    setLoading(true);
     try {
       const { data } = await axiosInstance.post('/category', { name });
       if (data?.statusCode === 201 || data?.statusCode === 200) {
@@ -207,8 +174,6 @@ const AdminPage: React.FC = () => {
         description: serverMsg,
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -265,6 +230,7 @@ const AdminPage: React.FC = () => {
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab as (value: string) => void}
+        defaultValue="materials"
         className="w-full"
       >
         <AdminTabs activeTab={activeTab} onChange={setActiveTab as (value: string) => void} />
@@ -289,12 +255,12 @@ const AdminPage: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="orders" className="mt-0">
-          <OrdersTab orders={orders} />
+          <OrdersTab />
         </TabsContent>
 
-        <TabsContent value="users" className="mt-0">
-          <UsersTab users={users} />
-        </TabsContent>
+        {/* <TabsContent value="users" className="mt-0">
+          <UsersTab />
+        </TabsContent> */}
       </Tabs>
     </AdminLayout>
   );

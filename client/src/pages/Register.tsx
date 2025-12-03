@@ -110,6 +110,9 @@ export default function Register(): React.JSX.Element {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Введите пароль"
             />
+            <p className="text-xs text-muted-foreground mt-1.5 leading-tight">
+              Минимум 6 символов, можно использовать буквы, цифры и специальные знаки
+            </p>
           </div>
 
           {error && <div className="text-sm text-destructive">{error}</div>}

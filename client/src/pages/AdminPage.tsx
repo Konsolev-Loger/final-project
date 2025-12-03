@@ -327,12 +327,12 @@ const AdminPage: React.FC = () => {
               >
                 Заказы
               </TabsTrigger>
-              <TabsTrigger
+              {/* <TabsTrigger
                 value="users"
                 className="text-gray-900 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-white rounded-xl px-8 py-4 font-semibold transition-colors hover:bg-primary hover:text-white"
               >
                 Пользователи
-              </TabsTrigger>
+              </TabsTrigger> */}
             </TabsList>
 
             {/* Materials Tab */}

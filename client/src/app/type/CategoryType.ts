@@ -8,11 +8,13 @@ export type CategoryType = {
   updatedAt?: string;
 };
 export type MaterialType = {
+  createdAt: string | number | Date;
   id: number;
   name: string;
   title?: string;
   description?: string;
   price: string;
+  category_id?: number;
   img: string;
   is_popular: boolean;
 };

@@ -8,13 +8,21 @@ interface AdminLayoutProps {
   title?: string;
 }
 
-export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, loading, title = 'Админ-панель' }) => {
+export const AdminLayout: React.FC<AdminLayoutProps> = ({
+  children,
+  loading,
+  title = 'Админ-панель',
+}) => {
   const navigate = useNavigate();
 
   return (
     <section className="min-h-screen relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary/20 to-primary/10">
-      <div className="absolute inset-0 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url(${heroImage})` }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/85 via-primary/75 to-primary/90" />
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-fixed"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
+        {/* <div className="absolute inset-0 bg-gradient-to-r from-primary/85 via-primary/75 to-primary/90" /> */}
+        <div className="absolute inset-0 bg-linear-to-r from-black/50 to-black/50" />
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background/95 via-background/90 to-transparent" />
       </div>
 
