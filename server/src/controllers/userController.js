@@ -179,7 +179,7 @@ class UserController {
       delete userWithoutPassword.password;
       const { accessToken, refreshToken } = generateToken(userWithoutPassword);
 
-      res
+      return res
         .status(200)
         .cookie('refreshToken', refreshToken, cookieConfig.refresh)
         .json(
@@ -195,7 +195,7 @@ class UserController {
         );
     } catch ({ message }) {
       console.error('Ошибка контроллера рефрештокена', message);
-      res.status(500).json(formatResponse(500, 'Ошибка сервера', null, message));
+      return res.status(500).json(formatResponse(500, 'Ошибка сервера', null, message));
     }
   }
 

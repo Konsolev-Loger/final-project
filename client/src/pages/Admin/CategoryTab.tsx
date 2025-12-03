@@ -3,9 +3,10 @@ import { Plus, Pencil, Trash } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { CategoryFormDialog } from './CategoryFormDialog';
+import { CategoryType } from '@/app/type/CategoryType';
 
 interface CategoriesTabProps {
-  categories: Category[];
+  categories: CategoryType[];
   onCreate: (name: string) => Promise<void>;
   onUpdate: (id: number, name: string) => Promise<void>;
   onDelete: (id: number) => Promise<void>;

@@ -8,7 +8,6 @@ export type CategoryType = {
   updatedAt?: string;
 };
 export type MaterialType = {
-  category_id: ReactNode;
   createdAt: string | number | Date;
   id: number;
   name: string;

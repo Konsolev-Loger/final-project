@@ -81,7 +81,7 @@ export const deleteCartItemThunk = createAsyncThunk<
 });
 
 export const deleteOneItemThink = createAsyncThunk<
-  number,
+  OrderType,
   number,
   { rejectValue: ServerResponseType<null> }
 >(CART_ITEM_THUNK_TYPES.DELETE_ONE_ITEM, async (id, { rejectWithValue }) => {

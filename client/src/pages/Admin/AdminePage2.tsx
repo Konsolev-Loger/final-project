@@ -7,18 +7,7 @@ import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { axiosInstance } from '@/shared/lib/axiosInstance';
 import { AdminLayout } from './Admin';
-// import {UserTab} from "./UserTab";
-
-interface Material {
-  id: number;
-  name: string;
-  price: number;
-  description?: string;
-  img?: string;
-  is_popular?: boolean;
-  category_id?: number;
-  category?: { id: number; name: string } | null;
-}
+import { MaterialType } from '@/app/type/CategoryType';
 
 interface Category {
   id: number;
@@ -40,7 +29,7 @@ const AdminPage: React.FC = () => {
     return `${root}/material/${img}`;
   };
 
-  const [materials, setMaterials] = useState<Material[]>([]);
+  const [materials, setMaterials] = useState<MaterialType[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -104,7 +93,7 @@ const AdminPage: React.FC = () => {
   }, []);
 
   /* --- Materials CRUD --- */
-  const createMaterial = async (payload: Partial<Material>) => {
+  const createMaterial = async (payload: Partial<MaterialType>) => {
     setLoading(true);
     try {
       const { data } = await axiosInstance.post('/material', payload);
@@ -125,7 +114,7 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const updateMaterial = async (id: number, payload: Partial<Material>) => {
+  const updateMaterial = async (id: number, payload: Partial<MaterialType>) => {
     setLoading(true);
     try {
       const { data } = await axiosInstance.put(`/material/${id}`, payload);

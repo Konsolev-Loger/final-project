@@ -26,9 +26,9 @@ export class UserValidator {
   }
 
   static validateSignUpData(data: UserSignUpDataType) {
-    const { username, email, password } = data;
+    const { name, email, password } = data;
 
-    if (!username || typeof username !== 'string' || username.trim().length === 0) {
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
       return { isValid: false, error: 'Неверное имя пользователя' };
     }
 
