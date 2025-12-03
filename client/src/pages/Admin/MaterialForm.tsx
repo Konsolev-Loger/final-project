@@ -1,14 +1,17 @@
 import { useState } from 'react';
+import type { MaterialType } from '@/app/type/CategoryType';
+import type { CategoryType } from '@/app/type/CategoryType';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getImageSrc } from './getImageSrc';
 
 interface MaterialFormProps {
-  initial?: Partial<Material>;
-  categories: Category[];
-  onSubmit: (data: Partial<Material>) => Promise<void>;
+  initial?: Partial<MaterialType>;
+  categories: CategoryType[];
+  onSubmit: (data: Partial<MaterialType>) => Promise<void>;
   onClose?: () => void;
+  submitLabel?: string;
 }
 
 export const MaterialForm: React.FC<MaterialFormProps> = ({
@@ -16,6 +19,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({
   categories,
   onSubmit,
   onClose,
+  submitLabel,
 }) => {
   const [name, setName] = useState(initial?.name ?? '');
   const [price, setPrice] = useState<string>((initial?.price ?? '').toString());
@@ -28,7 +32,8 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({
 
     onSubmit({
       name: name.trim(),
-      price: Number(price),
+      // server stores price as string in DB — keep it consistent
+      price: price.toString(),
       description: description.trim() || undefined,
       img: img.trim() || undefined,
       category_id: categoryId || undefined,
@@ -39,7 +44,12 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({
     <div className="grid gap-4">
       <div className="grid gap-2">
         <Label>Название</Label>
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Гранит, мрамор..." autoFocus />
+        <Input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Гранит, мрамор..."
+          autoFocus
+        />
       </div>
 
       <div className="grid gap-2">
@@ -54,7 +64,11 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({
 
       <div className="grid gap-2">
         <Label>Описание (необязательно)</Label>
-        <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Высокопрочный камень..." />
+        <Input
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Высокопрочный камень..."
+        />
       </div>
 
       <div className="grid gap-2">
@@ -88,7 +102,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({
 
       <div className="flex gap-3 pt-4">
         <Button onClick={handleSubmit} className="flex-1">
-          {initial?.id ? 'Сохранить изменения' : 'Создать материал'}
+          {submitLabel ? submitLabel : initial?.id ? 'Сохранить изменения' : 'Создать материал'}
         </Button>
         <Button variant="outline" onClick={onClose}>
           Отмена

@@ -15,6 +15,7 @@ export type MaterialType = {
   title?: string;
   description?: string;
   price: string;
+  category_id?: number;
   img: string;
   is_popular: boolean;
 };
