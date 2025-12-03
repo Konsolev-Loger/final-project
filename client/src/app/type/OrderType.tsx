@@ -2,6 +2,7 @@ import { createContext } from 'react';
 import { MaterialType } from './CategoryType';
 
 export type OrderType = {
+  user: any;
   id: number;
   user_id: number;
   total_price: number;
@@ -70,6 +71,7 @@ export type OrderStateType = {
   orders: OrderArrType;
   order: OrderType | null;
   cart: OrderType | null;
+  userOrders: OrderType[];   // ← ДОБАВЬ
   error: string | null;
 };
 export type OrderContextType = {
@@ -90,6 +92,7 @@ export type OrderContextType = {
 
 export const inititalOrderState: OrderStateType = {
   orders: [],
+  userOrders: [],
   cart: null,
   order: null,
   error: null,

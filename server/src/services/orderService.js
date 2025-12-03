@@ -1,5 +1,5 @@
 // services/orderService.js
-const { Order, OrderItem, CastomRoom } = require('../../db/models');
+const { Order, OrderItem, CastomRoom, User } = require('../../db/models');
 
 class OrderService {
   static async getAll() {
@@ -7,6 +7,7 @@ class OrderService {
       include: [
         { model: OrderItem, as: 'items', include: ['material', 'room', 'castomRooms'] },
         { model: CastomRoom, as: 'castomRooms' },
+        { model: User, as: 'user' },
       ],
     });
   }
@@ -60,7 +61,7 @@ class OrderService {
   }
 
   // Получить заказ со всеми связями
-  static async getByIdorder(id, userId) {
+  static async getByIdorder(id) {
     const order = await Order.findByPk(id, {
       include: [
         {
@@ -77,11 +78,6 @@ class OrderService {
 
     if (!order) {
       throw new Error('Заказ не найден');
-    }
-
-    // Ключевая проверка — заказ должен принадлежать пользователю
-    if (order.user_id !== userId) {
-      throw new Error('Доступ запрещён');
     }
 
     return order;
@@ -107,19 +103,33 @@ class OrderService {
   }
 
   // 3. Обновить статус (только своего заказа)
-  static async updateStatus(id, status, userId) {
-    // Сначала получаем с проверкой владельца
-    const order = await this.getById(id, userId);
+  // static async updateStatus(id, status, userId) {
+  //   // Сначала получаем с проверкой владельца
+  //   const order = await this.getById(id, userId);
 
-    await order.update({ status });
+  //   await order.update({ status });
 
-    // Возвращаем свежие данные
-    return this.getById(id, userId);
+  //   // Возвращаем свежие данные
+  //   return this.getById(id, userId);
+  // }
+  static async updateStatus(id, status, currentUser) {
+    if (!currentUser?.is_admin) {
+      throw new Error('Только администратор может менять статус заказа');
+    }
+
+    const order = await Order.findByPk(id);
+    if (!order) throw new Error('Заказ не найден');
+
+    await order.update({ status: Boolean(status) });
+
+    return Order.findByPk(id, {
+      /* include как выше */
+    });
   }
 
   // 4. Обновить комментарий (только своего заказа)
   static async updateComment(id, comment, userId) {
-    const order = await this.getById(id, userId);
+    const order = await this.getByIdorder(id, userId);
 
     await order.update({ comment: comment || '' });
 
@@ -127,15 +137,41 @@ class OrderService {
   }
 
   // Полное удаление заказа (со всеми позициями и кастомными комнатами)
-  static async delete(id, userId) {
-    const order = await this.getById(id, userId); // проверка существования + прав
+  // static async delete(id, userId) {
+  //   const order = await this.getByIdorder(id, userId); // проверка существования + прав
 
-    // Просто удаляем всё по очереди — быстро и понятно
-    await OrderItem.destroy({ where: { order_id: id } });
+  //   // Просто удаляем всё по очереди — быстро и понятно
+  //   await OrderItem.destroy({ where: { order_id: id } });
+  //   await CastomRoom.destroy({ where: { order_id: id } });
+  //   await order.destroy();
+
+  //   return { message: 'Заказ полностью удалён' };
+  // }
+  static async delete(id, currentUser) {
+    if (!currentUser) {
+      throw new Error('Пользователь не авторизован');
+    }
+
+    // Ищем заказ
+    const order = await Order.findByPk(id);
+
+    if (!order) {
+      throw new Error('Заказ не найден');
+    }
+
+    // Если пользователь НЕ админ — проверяем, что заказ принадлежит ему
+    if (!currentUser.is_admin && order.user_id !== currentUser.id) {
+      throw new Error('Доступ запрещён: вы можете удалять только свои заказы');
+    }
+
+    // Удаляем связанные данные
+    await OrderItem.destroy({ where: { order_id: id } }); // если нет ON DELETE CASCADE
     await CastomRoom.destroy({ where: { order_id: id } });
+
+    // Удаляем сам заказ
     await order.destroy();
 
-    return { message: 'Заказ полностью удалён' };
+    return { message: 'Заказ полностью удалён', deletedOrderId: id };
   }
 
   // ───────────────── НОВЫЕ МЕТОДЫ ДЛЯ КОРЗИНЫ ─────────────────

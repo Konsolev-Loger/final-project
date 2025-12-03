@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 // services/adminService.js
 const { User, Order, Material, CastomRoom, OrderItem, Category, sequelize } = require('../../db/models'); 
 const bcrypt = require('bcrypt');
@@ -31,7 +32,9 @@ class AdminService {
       where: whereCondition,
       group: ['User.id'],
       order: [['createdAt', 'DESC']],
+      // eslint-disable-next-line radix
       limit: parseInt(limit),
+      // eslint-disable-next-line radix
       offset: parseInt(offset),
       subQuery: false,
       raw: false
@@ -55,7 +58,9 @@ class AdminService {
     return {
       users: usersWithStats,
       total: count.length || count, // Sequelize возвращает count как массив при GROUP BY
+      // eslint-disable-next-line radix
       page: parseInt(page),
+      // eslint-disable-next-line radix
       limit: parseInt(limit),
       totalPages: Math.ceil((count.length || count) / limit)
     };
@@ -97,12 +102,15 @@ class AdminService {
 
     // Хэшируем пароль
     if (userData.password) {
+      // eslint-disable-next-line no-param-reassign
       userData.password = await bcrypt.hash(userData.password, 10);
     }
 
     // Преобразуем role → is_admin
     if (userData.role !== undefined) {
+      // eslint-disable-next-line no-param-reassign
       userData.is_admin = userData.role === 'admin';
+      // eslint-disable-next-line no-param-reassign
       delete userData.role;
     }
 
@@ -204,7 +212,9 @@ class AdminService {
       ],
       where: whereCondition,
       order: [['createdAt', 'DESC']],
+      // eslint-disable-next-line radix
       limit: parseInt(limit),
+      // eslint-disable-next-line radix
       offset: parseInt(offset)
     });
 
@@ -228,7 +238,9 @@ class AdminService {
     return {
       orders: formattedOrders,
       total: count,
+      // eslint-disable-next-line radix
       page: parseInt(page),
+      // eslint-disable-next-line radix
       limit: parseInt(limit),
       totalPages: Math.ceil(count / limit)
     };
@@ -341,10 +353,14 @@ class AdminService {
 
     const orderItem = await OrderItem.create({
       order_id: orderId,
+      // eslint-disable-next-line radix
       material_id: parseInt(itemData.material_id),
+      // eslint-disable-next-line radix
       quantity: parseInt(itemData.quantity),
       price_at: parseFloat(itemData.price_at) || material.price,
+      // eslint-disable-next-line radix
       room_id: itemData.room_id ? parseInt(itemData.room_id) : null,
+      // eslint-disable-next-line radix
       castom_room_id: itemData.castom_room_id ? parseInt(itemData.castom_room_id) : null,
     });
 
@@ -447,6 +463,7 @@ class AdminService {
       popularMaterials: popularMaterials.map(item => ({
         material_id: item.material_id,
         material_name: item.material?.name,
+        // eslint-disable-next-line radix
         total_quantity: parseInt(item.total_quantity) || 0
       }))
     };
@@ -472,7 +489,9 @@ class AdminService {
       }],
       where: whereCondition,
       order: [['id', 'ASC']],
+      // eslint-disable-next-line radix
       limit: parseInt(limit),
+      // eslint-disable-next-line radix
       offset: parseInt(offset)
     });
 
@@ -494,7 +513,9 @@ class AdminService {
     return {
       materials: formattedMaterials,
       total: count,
+      // eslint-disable-next-line radix
       page: parseInt(page),
+      // eslint-disable-next-line radix
       limit: parseInt(limit),
       totalPages: Math.ceil(count / limit)
     };
@@ -517,7 +538,9 @@ class AdminService {
       }],
       where: whereCondition,
       order: [['id', 'ASC']],
+      // eslint-disable-next-line radix
       limit: parseInt(limit),
+      // eslint-disable-next-line radix
       offset: parseInt(offset)
     });
 
@@ -530,7 +553,9 @@ class AdminService {
     return {
       categories: formattedCategories,
       total: count,
+      // eslint-disable-next-line radix
       page: parseInt(page),
+      // eslint-disable-next-line radix
       limit: parseInt(limit),
       totalPages: Math.ceil(count / limit)
     };
