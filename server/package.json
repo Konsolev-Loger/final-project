@@ -5,6 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/app.js",
+    "start": "node ./src/app.js",
     "reset": "npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate",
     "create": "npx sequelize db:create",
     "seed": "npx sequelize db:seed:all"
