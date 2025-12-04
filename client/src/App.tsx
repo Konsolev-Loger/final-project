@@ -16,6 +16,9 @@ import CalculatePage from './pages/CalculatePage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import CartPage from './pages/CartPage';
 import AdminPage from './pages/Admin/AdminePage2';
+import { AIChatModal } from './components/AIChatModal';
+import { AIChatButton } from './components/AIChatButton';
+// import AdminPage from './pages/AdminPage';
 
 const queryClient = new QueryClient();
 
@@ -56,6 +59,8 @@ export default function App(): React.JSX.Element {
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <AIChatButton />
+        <AIChatModal />
       </TooltipProvider>
     </QueryClientProvider>
   );

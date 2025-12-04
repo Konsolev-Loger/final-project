@@ -8,9 +8,10 @@ const categoryRouter = require('./routes/categoryRouter');
 const materialRouter = require('./routes/materialRouter');
 const adminRouter = require('./routes/adminRouter');
 const emailVerificationRoutes = require('./routes/emailVerificationRoutes');
+const aiRouter = require('./routes/aiRouter');
 
 const app = express();
-
+app.use(express.json());
 serverConfig(app);
 
 app.use('/api/users', userRouter);
@@ -19,6 +20,7 @@ app.use('/api/rooms', roomRouter);
 app.use('/api/category', categoryRouter);
 app.use('/api/material', materialRouter);
 app.use('/admin', adminRouter);
+app.use('/api/ai', aiRouter);
 
 require('./services/telegramBot');
 app.use('/api/email-verification', emailVerificationRoutes);

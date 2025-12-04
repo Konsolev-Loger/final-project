@@ -24,10 +24,9 @@ export type UserType = {
 };
 
 export type NewUserType = {
-  name: string;
-  email: string;
-  phone: string;
-
+  name?: string;
+  email?: string;
+  phone?: string;
 };
 
 export type UserResponseType = {
