@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Home, ArrowRight } from 'lucide-react';
+import { useAppDispatch } from '@/store/hooks';
+import { setArea } from '@/store/calculatorSlice';
 
 interface Room {
   id: number;
@@ -13,6 +15,7 @@ interface Room {
 export default function RoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   async function getAllRooms(): Promise<void> {
     try {
@@ -49,7 +52,10 @@ export default function RoomsPage() {
           {rooms.map((el) => (
             <article
               key={el.id}
-              onClick={() => navigate('/calculate', { state: { area: el.area } })}
+              onClick={() => {
+                dispatch(setArea(el.area));
+                navigate('/calculate', { replace: true });
+              }}
               className="
                 group relative bg-card rounded-2xl overflow-hidden shadow-lg border border-border/60 cursor-pointer
                 transition-all duration-500 ease-out
@@ -100,7 +106,8 @@ export default function RoomsPage() {
                     style={{ backgroundColor: '#6d3100b8' }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate('/calculate', { state: { area: el.area } });
+                      dispatch(setArea(el.area));
+                      navigate('/calculate', { replace: true });
                     }}
                   >
                     Рассчитать

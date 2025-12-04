@@ -3,6 +3,7 @@ const { sendToGigaChat } = require('../services/gigachatService');
 
 const router = Router();
 
+// eslint-disable-next-line consistent-return
 router.post('/chat', async (req, res) => {
   try {
     const { message } = req.body;

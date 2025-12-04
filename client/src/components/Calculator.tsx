@@ -1,3 +1,4 @@
+// src/components/Calculator.tsx
 import { clearCalculator } from '@/store/calculatorSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setMaterial, setCategory, setArea } from '@/store/calculatorSlice';
@@ -16,7 +17,7 @@ import {
 } from '@/components/ui/select';
 import { Calculator as CalcIcon, ShoppingCart, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useMatch } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function Calculator() {
@@ -27,8 +28,10 @@ export default function Calculator() {
   );
   const [isAdding, setIsAdding] = useState(false);
   const navigate = useNavigate();
-
   const location = useLocation();
+
+  // Определяем, на какой мы странице
+  const isCalculatePage = Boolean(useMatch('/calculate'));
 
   const materialsInCategory = selectedCategoryId
     ? categories.find((cat) => cat.id === selectedCategoryId)?.materials || []
@@ -42,8 +45,14 @@ export default function Calculator() {
     dispatch(getAllCategories());
   }, [dispatch]);
 
+  // useEffect(() => {
+  //   if (location.state?.area && typeof location.state.area === 'number') {
+  //     dispatch(setArea(location.state.area));
+  //     window.history.replaceState({}, document.title);
+  //   }
+  // }, [location.state, dispatch]);
   useEffect(() => {
-    if (location.state?.area && typeof location.state.area === 'number') {
+    if (typeof location.state?.area === 'number') {
       dispatch(setArea(location.state.area));
       window.history.replaceState({}, document.title);
     }
@@ -51,20 +60,17 @@ export default function Calculator() {
 
   const handleAddToCart = async () => {
     if (!selectedMaterial || area <= 0) return;
-
     setIsAdding(true);
-
     const payload = {
       material_id: selectedMaterial.id,
       price_at: pricePerSqm,
       quantity: area,
     };
-
     try {
       await dispatch(addCartItemThunk(payload)).unwrap();
       toast.success(
         <div className="flex flex-col gap-1">
-          <span className="font-semibold">✅ Материал добавлен в корзину</span>
+          <span className="font-semibold">Материал добавлен в корзину</span>
           <span className="text-sm">
             {selectedMaterial.name} - {area} м²
           </span>
@@ -79,18 +85,20 @@ export default function Calculator() {
     }
   };
 
+  const titleColor = isCalculatePage ? 'text-white/95' : 'text-foreground ';
+  const subtitleColor = isCalculatePage ? 'text-white/80' : 'text-muted-foreground';
+  const cardTitleColor = isCalculatePage ? 'text-white' : 'text-foreground';
+  const cardDescColor = isCalculatePage ? 'text-white/70' : 'text-muted-foreground';
+
   return (
     <section className="py-16 lg:py-24" id="calculator">
       <div className="container mx-auto px-6 max-w-7xl">
         {/* Заголовок */}
         <div className="text-center mb-12">
-          <h2
-            className="text-4xl md:text-5xl font-bold tracking-tight"
-            style={{ color: '#ffffffbd' }}
-          >
+          <h2 className={`text-4xl md:text-5xl font-bold tracking-tight ${titleColor}`}>
             Калькулятор стоимости
           </h2>
-          <p className="mt-3 text-lg text-muted-foreground" style={{ color: '#ffffffb8' }}>
+          <p className={`mt-3 text-lg ${subtitleColor}`}>
             Подберите материал и узнайте точную цену за вашу площадь
           </p>
         </div>
@@ -102,10 +110,10 @@ export default function Calculator() {
                 <CalcIcon className="w-9 h-9 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-2xl md:text-3xl font-bold">
+                <CardTitle className={`text-2xl md:text-3xl font-bold ${cardTitleColor}`}>
                   Онлайн-калькулятор материалов
                 </CardTitle>
-                <CardDescription className="text-base mt-1">
+                <CardDescription className={`text-base mt-1 ${cardDescColor}`}>
                   Выберите категорию, материал и площадь — получите точную стоимость
                 </CardDescription>
               </div>
@@ -114,7 +122,7 @@ export default function Calculator() {
 
           <CardContent className="pt-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-              {/* Левая часть — выбор (всегда занимает своё место) */}
+              {/* Левая часть — выбор */}
               <div className="lg:col-span-2 space-y-7">
                 {/* Категория */}
                 <div className="space-y-3">
@@ -165,7 +173,7 @@ export default function Calculator() {
                 {/* Площадь */}
                 <div className="space-y-3">
                   <Label className="text-base font-semibold">Площадь (м²)</Label>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  <div className="flex flex-col gap-4">
                     <Input
                       type="number"
                       min="0.1"
@@ -186,13 +194,12 @@ export default function Calculator() {
                 </div>
               </div>
 
-              {/* Правая часть — всегда одинаковой высоты! */}
+              {/* Правая часть — итог */}
               <div className="lg:border-l lg:pl-10 flex flex-col justify-between min-h-[420px]">
                 <div className="space-y-6">
-                  {/* Блок с итогом — всегда на месте, просто меняется содержимое */}
                   <div className="rounded-2xl bg-primary/5 border border-primary/20 p-6 min-h-[260px] flex flex-col justify-center">
                     {selectedMaterial && area > 0 ? (
-                      <div className="space-y-5 animate-in fade-in-0 duration-300">
+                      <div className="space-y-5">
                         <h3 className="font-bold text-xl">Итоговая стоимость</h3>
                         <div className="space-y-4 text-lg">
                           <div className="flex justify-between">
@@ -216,7 +223,7 @@ export default function Calculator() {
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center text-muted-foreground animate-in fade-in-0 duration-300">
+                      <div className="text-center text-muted-foreground">
                         <CalcIcon className="w-20 h-20 mx-auto mb-5 opacity-20" />
                         <p className="text-lg font-medium">Заполните форму слева</p>
                         <p className="text-sm mt-2">Расчёт появится автоматически</p>
@@ -225,7 +232,7 @@ export default function Calculator() {
                   </div>
                 </div>
 
-                {/* Кнопки — всегда внизу, всегда одинаково */}
+                {/* Кнопки */}
                 <div className="mt-8 space-y-4">
                   <Button
                     size="lg"
@@ -236,7 +243,6 @@ export default function Calculator() {
                     <ShoppingCart className="w-6 h-6 mr-3" />
                     {isAdding ? 'Добавляем...' : 'Добавить в корзину'}
                   </Button>
-
                   <Button
                     variant="outline"
                     size="lg"

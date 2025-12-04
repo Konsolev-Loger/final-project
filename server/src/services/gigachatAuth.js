@@ -34,7 +34,7 @@ async function getGigaChatToken() {
     return accessToken;
   } catch (error) {
     console.error('GigaChat auth error:', error.response?.data || error.message);
-    throw new Error('Не удалось получить токен GigaChat');
+    throw new Error('Не удалось получить токен GigaChat', { cause: error });
   }
 }
 

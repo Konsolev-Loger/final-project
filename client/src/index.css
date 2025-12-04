@@ -1,6 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
 @import 'tailwindcss';
 
 @theme {
+  /* Шрифты */
+  --font-play: 'Play', sans-serif;
+  
   /* Цвета */
   --color-background: hsl(35 25% 96%);
   --color-foreground: hsl(25 30% 15%);
@@ -47,6 +51,7 @@
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
+  font-family: var(--font-play); /* Шрифт по умолчанию */
 }
 
 /* Темная тема */
@@ -90,4 +95,19 @@ body {
 
 .shadow-soft {
   box-shadow: var(--shadow-soft);
+}
+
+/* Классы для шрифта Play (по желанию) */
+.font-play {
+  font-family: var(--font-play);
+}
+
+.font-play-400 {
+  font-family: var(--font-play);
+  font-weight: 400;
+}
+
+.font-play-700 {
+  font-family: var(--font-play);
+  font-weight: 700;
 }

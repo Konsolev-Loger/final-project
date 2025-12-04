@@ -10,6 +10,10 @@ export const AIChatButton: React.FC = () => {
     <button
       onClick={() => dispatch(openChat())}
       className="fixed bottom-5 right-5 bg-[#8B4513] hover:bg-[#A0522D] text-white p-4 rounded-full shadow-lg transition-colors duration-200"
+      style={{
+        backgroundColor: '#71350ad0',
+        color: 'white',
+      }}
     >
       <Bot className="w-6 h-6" />
     </button>
