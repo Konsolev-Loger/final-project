@@ -109,9 +109,7 @@ export const MaterialForm: React.FC<MaterialFormProps> = ({
         <Button onClick={handleSubmit} className="flex-1">
           {submitLabel ? submitLabel : initial?.id ? 'Сохранить изменения' : 'Создать материал'}
         </Button>
-        {/* <Button variant="outline" onClick={onClose}>
-          Отмена
-        </Button> */}
+       
       </div>
     </div>
   );

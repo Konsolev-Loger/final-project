@@ -70,7 +70,8 @@ export default function RoomsPage() {
               {/* Изображение */}
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
-                  src={`http://localhost:3000/flats/${el.img}`}
+                  // src={`http://localhost:3000/flats/${el.img}`}
+                  src={`${import.meta.env.VITE_API_MATERIAL}/flats/${el.img}`}
                   alt={el.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />

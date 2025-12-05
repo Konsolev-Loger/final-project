@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
-import { getImageSrc } from '@/pages/Admin/getImageSrc';
+// import { getImageSrc } from '@/pages/Admin/getImageSrc';
 import type { MaterialType } from '@/app/type/CategoryType';
 import type { CategoryType } from '@/app/type/CategoryType';
 import { MaterialFormDialog } from './MaterialModal';
@@ -21,7 +21,8 @@ export const MaterialCard: React.FC<Props> = ({ material, categories, onUpdate, 
         <div className="p-6">
           <div className="flex items-start gap-4 mb-4">
             <img
-              src={getImageSrc(material.img)}
+              src={`${import.meta.env.VITE_API_MATERIAL}/material/${material.img}`}
+              // src={getImageSrc(material.img)}
               alt={material.name}
               className="w-20 h-20 object-cover rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300"
               onError={(e) => (e.currentTarget.src = '/fallback.png')}
