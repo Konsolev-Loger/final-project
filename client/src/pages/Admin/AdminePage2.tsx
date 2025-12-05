@@ -98,8 +98,8 @@ const AdminPage: React.FC = () => {
     try {
       const { data } = await axiosInstance.post('/material', payload);
       if (data?.statusCode === 201 || data?.statusCode === 200) {
-        const newItem = data.data?.material ?? data.data;
         setMaterials((s) => [newItem, ...s]);
+        const newItem = data.data?.material ?? data.data;
         toast({ title: 'Успех', description: 'Материал добавлен' });
       } else throw new Error(data?.message || 'Ошибка создания материала');
     } catch (err) {

@@ -28,6 +28,7 @@ export default function Hero(): React.JSX.Element {
           {/* Надписи вверху */}
           <div className="flex justify-between items-center px-2 mb-3">
             <div className="flex gap-8 text-white/90 text-sl font-light">
+           
               <div
                 className="hover:text-white transition-colors duration-200"
                 style={{ cursor: 'pointer' }}
@@ -38,8 +39,6 @@ export default function Hero(): React.JSX.Element {
               >
                 Материалы
               </div>
-
-           
 
               <div
                 className="hover:text-white transition-colors duration-200"
@@ -110,7 +109,7 @@ export default function Hero(): React.JSX.Element {
             Трендовые Отделочные Решения
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-white/90 font-light">
-            Вополагаем современные идеи в реальность. Премиум качество по честной цене.
+            Воплощаем современные идеи в реальность. Премиум качество по честной цене.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button

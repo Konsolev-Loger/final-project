@@ -161,7 +161,10 @@ export const OrdersTab: React.FC = () => {
                       {item.material?.img && (
                         <div className="flex-shrink-0">
                           <img
-                            src={`http://localhost:3000/material/${item.material.img}`}
+                            src={`${import.meta.env.VITE_API_MATERIAL}/material/${
+                              item.material.img
+                            }`}
+                            // src={`http://localhost:3000/material/${item.material.img}`}
                             alt={item.material.name}
                             className="w-32 h-32 object-cover rounded-lg"
                             onError={(e) => {

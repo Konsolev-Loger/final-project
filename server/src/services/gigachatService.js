@@ -24,7 +24,7 @@ async function getToken() {
     return accessToken;
   } catch (error) {
     console.error('Ошибка получения токена:', error.response?.data || error.message);
-    throw new Error('Token error');
+    throw new Error('Token error', { cause: error });
   }
 }
 
@@ -77,10 +77,10 @@ async function sendToGigaChat(userMessage) {
 
     if (error.response?.status === 401) {
       accessToken = null;
-      return await sendToGigaChat(userMessage);
+      return sendToGigaChat(userMessage);
     }
 
-    throw new Error('GigaChat error');
+    throw new Error('GigaChat error', { cause: error });
   }
 }
 

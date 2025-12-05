@@ -61,9 +61,15 @@ export const AIChatModal: React.FC = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 50 }}
-          className="fixed bottom-5 right-5 w-90 h-105 bg-white rounded-xl shadow-xl flex flex-col overflow-hidden"
+          className="fixed bottom-5 right-5 w-90 h-105 bg-white rounded-xl shadow-xl flex flex-col overflow-hidden z-50"
         >
-          <div className="flex justify-between items-center p-3 bg-[#8B4513] text-white">
+          <div
+            className="flex justify-between items-center p-3 bg-[#8B4513] text-white"
+            style={{
+              backgroundColor: '#71350adc',
+              color: 'white',
+            }}
+          >
             <span>AI Помощник</span>
             <button onClick={() => dispatch(closeChat())}>
               <XIcon className="w-5 h-5" />
@@ -92,7 +98,14 @@ export const AIChatModal: React.FC = () => {
               placeholder="Напишите сообщение..."
               className="flex-1 border rounded-md p-2 outline-none"
             />
-            <button type="submit" className="bg-[#8B4513] text-white p-2 rounded-md">
+            <button
+              type="submit"
+              className="bg-[#8B4513] text-white p-2 rounded-md"
+              style={{
+                backgroundColor: '#71350ad0',
+                color: 'white',
+              }}
+            >
               Отправить
             </button>
           </form>

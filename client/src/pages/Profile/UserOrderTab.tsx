@@ -38,7 +38,7 @@ export const UserOrdersTab = () => {
                 {/* ВОТ ЭТО ГЛАВНОЕ ИЗМЕНЕНИЕ */}
                 <CardTitle className="text-xl">Заказ №{userOrders.length - index}</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  #{order.id} ·{' '}
+                  {/* #{order.id} ·{' '} */}
                   {new Date(order.createdAt).toLocaleDateString('ru-RU', {
                     day: '2-digit',
                     month: 'long',
@@ -67,7 +67,8 @@ export const UserOrdersTab = () => {
                 <div key={item.id} className="flex gap-4 p-4 border rounded-lg">
                   {item.material?.img && (
                     <img
-                      src={`http://localhost:3000/material/${item.material.img}`}
+                      // src={`http://localhost:3000/material/${item.material.img}`}
+                      src={`${import.meta.env.VITE_API_MATERIAL}/material/${item.material.img}`}
                       alt={item.material.name}
                       className="w-24 h-24 object-cover rounded-lg"
                       onError={(e) => (e.currentTarget.src = '/placeholder.jpg')}

@@ -103,7 +103,10 @@ export default function MaterialsAccordion() {
                             <Card className="materials-card">
                               <div className="materials-image-wrapper">
                                 <img
-                                  src={`http://localhost:3000/material/${material.img}`}
+                                  // src={`http://localhost:3000/material/${material.img}`}
+                                  src={`${import.meta.env.VITE_API_MATERIAL}/material/${
+                                    material.img
+                                  }`}
                                   alt={material.name}
                                   className="materials-image"
                                 />
